@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ page import="java.util.*" %>
-<%@ page import="ec.date.*" %><
-<%@ page import="ec.product.*" %>
+<%@ page import="ec.date.*" %>
 <%@ page import="ec.company.*" %>
+<%@ page import="ec.product.*" %>
 <%@ page import="ec.color.*" %>
 <%@ page import="ec.size.*" %>
 <%@ page import="ec.category_product.*" %>
@@ -22,6 +22,10 @@
 	colorDao  coldao = new colorDao();
 	ArrayList<colorVo> colorList = new ArrayList<colorVo>();
 	colorList = coldao.colorList();
+	
+	/*DB저장되어있는 pd_id 최대값*/
+	productDao pdao = new productDao();
+	int max = pdao.productIdMax();
 	
 	sizeDao szdao = new sizeDao();
 	ArrayList<sizeVo> sizeList = new ArrayList<sizeVo>();
@@ -114,6 +118,7 @@
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group">
+                          <input type="hidden" name="max" id="max" value="<%=max%>">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">업체선택<span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
 	                        <select id="co_id" name="co_id" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">

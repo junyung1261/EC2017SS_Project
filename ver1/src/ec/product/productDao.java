@@ -8,7 +8,31 @@ import java.util.ArrayList;
 import ec.connUtil.ConnUtil;
 
 public class productDao {
+
+	//product insert 과정에서, jsp로부터 pd_id를 가져오지 못함(auto_increment)니까.
+	//따라서 가장 최근에 들어간 id값(max)로 id를 가져와서, product_detail_insert의 pd_id로 써야함//
 	
+	public int productIdMax() {
+		System.out.println("진입");
+		int cnt = 0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select MAX(pd_id) from product";
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			rs.next(); 
+			cnt = rs.getInt("MAX(pd_id)");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(ps, conn);
+		}
+		return cnt;
+	}
+
 	public int insertProduct(productVo vo, String co_id, int cgp_id) {
 		int rst = 0;
 		Connection conn = null;
@@ -48,29 +72,6 @@ public class productDao {
 			ConnUtil.close(ps, conn);
 		}
 		return rst;
-	}
-
-	//product insert 과정에서, jsp로부터 pd_id를 가져오지 못함(auto_increment)니까.
-	//따라서 가장 최근에 들어간 id값(max)로 id를 가져와서, product_detail_insert의 pd_id로 써야함//
-	
-	public int getProductIdMax() {
-		int cnt = 0;
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = ConnUtil.getConnection();
-			String sql = "select MAX(pd_id) from product";
-			ps = conn.prepareStatement(sql);
-			rs = ps.executeQuery();
-			rs.next(); 
-			cnt = rs.getInt("MAX(pd_id)");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			ConnUtil.close(ps, conn);
-		}
-		return cnt;
 	}
 
 	public ArrayList<productVo> productList(int req, String co_id) {

@@ -19,16 +19,15 @@
 	
 	int cgp_id = Integer.parseInt((String)request.getParameter("cgp_id"));
 	int stk_count = Integer.parseInt((String)request.getParameter("stk_count"));
-	
+	int pd_id = Integer.parseInt((String)request.getParameter("max"))+1;
+	System.out.println("pd_id :" +pd_id);
 	
 	int rst = 0;
 	int rst1 = 0;
 	int rst2 = 0;
-	int max = 0;
 	
 	rst1 = dao.insertProduct(vo, co_id, cgp_id);
 	
-	max = dao.getProductIdMax();
 	StringTokenizer str = new StringTokenizer(col_id, ",");
 	///////////////////////////////////////////////////////////////////////////
 	while (str.hasMoreTokens()) {
@@ -38,7 +37,7 @@
 	         StringTokenizer str2 = new StringTokenizer(sz_id, ",");
 	         while(str2.hasMoreTokens()){
 	            String col2 = str2.nextToken();
-	            rst2 = pddao.insertProductDetail(1, col_id, sz_id, stk_count);
+	            rst2 = pddao.insertProductDetail(pd_id, col_id, sz_id, stk_count);
 	         }
 	         //파싱해서 구한 다음토큰을 반환한다.
 	      }
