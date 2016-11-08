@@ -38,7 +38,7 @@
    
    for(int i = 0; i< col_id.length; i++ ){
       for(int j = 0; j< sz_id.length; j++){
-       rst2 = pddao.insertProductDetail(0, col_id[i], sz_id[j], stk_count);
+       rst2 = pddao.insertProductDetail(pd_id, col_id[i], sz_id[j], stk_count);
       }
       
    }
