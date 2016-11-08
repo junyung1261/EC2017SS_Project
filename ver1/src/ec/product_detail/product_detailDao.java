@@ -11,7 +11,7 @@ public class product_detailDao {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
-			conn = ConnUtil.getConnection();  //Column 5개 중 1개 Auto_inrement
+			conn = ConnUtil.getConnection();  //Column 5개 중 1개 Auto_inrement pdd_id
 			String sql = "insert into product_detail values(null,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			

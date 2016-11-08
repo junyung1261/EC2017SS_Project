@@ -147,7 +147,7 @@
 	                 	<div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">사업자등록번호 <span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="co_reg_num1" name="co_num1" required="required" class="form-control col-md-12 col-xs-12">
+	                        <input type="text" id="co_reg_num1" name="co_reg_num1" required="required" class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<button type="button" class="btn btn-warning btn-sm">유효성검증</button>
@@ -156,7 +156,7 @@
 	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">통신판매번호 <span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="co_reg_num2" name="co_num2" required="required" class="form-control col-md-12 col-xs-12">
+	                        <input type="text" id="co_reg_num2" name="co_reg_num2" required="required" class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<button type="button" class="btn btn-warning btn-sm">유효성검증</button>

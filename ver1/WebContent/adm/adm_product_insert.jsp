@@ -14,9 +14,6 @@
 	dvo = ddao.getToday();
 	String now = dvo.getMonth()+"/"+dvo.getDate()+"/"+dvo.getYear()+" "+dvo.getHour()+":"+dvo.getMinute()+":"+dvo.getSecond();
 	String today = dvo.getMonth()+"/"+dvo.getDate()+"/"+dvo.getYear();
-
-	productDao pdao = new productDao();
-	int productCount = pdao.productCount();
 	
 	companyDao codao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
@@ -125,12 +122,6 @@
 	                          <option value="<%=cvo.getCo_id()%>"><%=cvo.getCo_name() %></option>
 	                          <%} %>
 	                        </select>
-	                      </div>
-	                    </div>
-	                    <div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">제품번호 <span class="required">*</span></label>
-	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="pd_id" name="pd_id" value="<%=productCount+1 %>" class="form-control col-md-12 col-xs-12" readonly>
 	                      </div>
 	                    </div>
 	                    <div class="form-group">

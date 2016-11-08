@@ -15,33 +15,31 @@ public class productDao {
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();  //Column 19개 중 1개 Auto_inrement
-			String sql = "insert into product values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "insert into product values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
+			ps.setString(1, co_id);
+			ps.setInt(2, cgp_id);
+			ps.setString(3,vo.getPd_name());
 			
-			ps.setInt(1, vo.getPd_id());
-			ps.setString(2, co_id);
-			ps.setInt(3, cgp_id);
-			ps.setString(4,vo.getPd_name());
+			ps.setInt(4,vo.getPd_status());
+			ps.setString(5,vo.getPd_summary());
+			ps.setString(6, vo.getPd_main_img());
+			ps.setString(7, vo.getPd_detail_img());
 			
-			ps.setInt(5,vo.getPd_status());
-			ps.setString(6,vo.getPd_summary());
-			ps.setString(7, vo.getPd_main_img());
-			ps.setString(8, vo.getPd_detail_img());
+			ps.setString(8, vo.getPd_reg_date());
+			ps.setString(9, vo.getPd_modify_date());	
 			
-			ps.setString(9, vo.getPd_reg_date());
-			ps.setString(10, vo.getPd_modify_date());	
+			ps.setInt(10,vo.getPd_sell_count());
+			ps.setInt(11,vo.getPd_wish_count());
+			ps.setInt(12,vo.getPd_review_count());
+			ps.setFloat(13,vo.getPd_avg_rate());
 			
-			ps.setInt(11,vo.getPd_sell_count());
-			ps.setInt(12,vo.getPd_wish_count());
-			ps.setInt(13,vo.getPd_review_count());
-			ps.setFloat(14,vo.getPd_avg_rate());
+			ps.setString(14, vo.getPd_keyword());
 			
-			ps.setString(15, vo.getPd_keyword());
-			
-			ps.setInt(16,vo.getPd_price());
-			ps.setInt(17, vo.getPd_sale());
-			ps.setInt(18, vo.getPd_sale_type());
-			ps.setInt(19, vo.getPd_sale_value());
+			ps.setInt(15,vo.getPd_price());
+			ps.setInt(16, vo.getPd_sale());
+			ps.setInt(17, vo.getPd_sale_type());
+			ps.setInt(18, vo.getPd_sale_value());
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
@@ -52,18 +50,21 @@ public class productDao {
 		return rst;
 	}
 
-	public int productCount() {
+	//product insert 과정에서, jsp로부터 pd_id를 가져오지 못함(auto_increment)니까.
+	//따라서 가장 최근에 들어간 id값(max)로 id를 가져와서, product_detail_insert의 pd_id로 써야함//
+	
+	public int getProductIdMax() {
 		int cnt = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select count(*) from product";
+			String sql = "select MAX(pd_id) from product";
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
-			rs.next();
-			cnt = rs.getInt("count(*)");
+			rs.next(); 
+			cnt = rs.getInt("MAX(pd_id)");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
