@@ -1,10 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.product.*" %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+
+	productDao pdao = new productDao();
+	ArrayList<productVo> productList = new ArrayList<productVo>();
+	productList = pdao.productList(req, co_id);
 %>    
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
   <head>

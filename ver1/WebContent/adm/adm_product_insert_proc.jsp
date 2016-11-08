@@ -14,19 +14,23 @@
 	
 	
 	String co_id = (String)request.getParameter("co_id");
-	String sz_id = (String)request.getParameter("sz_id");
-	String col_id = (String)request.getParameter("col_id");
+	String[] sz_id = request.getParameterValues("sz_id");
+	String[] col_id = request.getParameterValues("col_id");
 	
 	int cgp_id = Integer.parseInt((String)request.getParameter("cgp_id"));
 	int stk_count = Integer.parseInt((String)request.getParameter("stk_count"));
 	int pd_id = Integer.parseInt((String)request.getParameter("max"))+1;
 	System.out.println("pd_id :" +pd_id);
 	
+	System.out.println(col_id);
+	System.out.println(sz_id);
+	System.out.println("pd_keyword:"+vo.getPd_keyword());
+	
 	int rst = 0;
 	int rst1 = 0;
 	int rst2 = 0;
 	
-	rst1 = dao.insertProduct(vo, co_id, cgp_id);
+	rst1 = dao.insertProduct(vo, pd_id, co_id, cgp_id); 
 	
 	StringTokenizer str = new StringTokenizer(col_id, ",");
 	///////////////////////////////////////////////////////////////////////////

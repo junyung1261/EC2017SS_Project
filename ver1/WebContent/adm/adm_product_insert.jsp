@@ -118,7 +118,12 @@
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group">
-                          <input type="hidden" name="max" id="max" value="<%=max%>">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">상품등록번호 <span class="required">*</span></label>
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
+	                        <input type="text" id="max" name="max" value="<%=max%>" class="form-control col-md-12 col-xs-12" readonly>
+	                      </div>
+	                    </div>
+                        <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">업체선택<span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
 	                        <select id="co_id" name="co_id" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">
@@ -207,7 +212,7 @@
 	                   <div class="form-group">
 	                     <label class="control-label col-md-2 col-sm-2 col-xs-12">사이즈옵션</label>
                          <div class="col-md-4 col-sm-4 col-xs-12">
-                           <select class="select2_multiple form-control" id="sz_id" name="sz_id" multiple="multiple">
+                           <select class="select2_multiple form-control" id="sz_id" name="sz_id[]" multiple="multiple">
                              <%for(sizeVo svo : sizeList){ %>
                              <option value="<%=svo.getSz_size()%>"><%=svo.getSz_size()%></option>
                              <%} %>
@@ -217,7 +222,7 @@
 	                   <div class="form-group">
 	                     <label class="control-label col-md-2 col-sm-2 col-xs-12">색상옵션</label>
                          <div class="col-md-4 col-sm-4 col-xs-12">
-                           <select class="select2_multiple form-control" id="col_id" name="col_id" multiple="multiple">
+                           <select class="select2_multiple form-control" id="col_id" name="col_id[]" multiple="multiple">
                              <%for(colorVo cvo : colorList){ %>
                              <option value="<%=cvo.getCol_name()%>"><%=cvo.getCol_name()%> (<%=cvo.getCol_eng()+", "+cvo.getCol_eng_short() %>)</option>
                              <%} %>
@@ -227,7 +232,7 @@
 	                   <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">옵션 별 기본수량 </label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="stk_count" name="stk_count" class="form-control col-md-12 col-xs-12" value="0" readonly>
+	                        <input type="text" id="stk_count" name="stk_count" class="form-control col-md-12 col-xs-12" value="0">
 	                      </div>
 	                    </div>
 	                   <div class="form-group">
@@ -421,7 +426,7 @@
       }
 
       $(document).ready(function() {
-        $('#co_tags').tagsInput({
+        $('#pd_keyword').tagsInput({
           width: 'auto'
         });
       });
