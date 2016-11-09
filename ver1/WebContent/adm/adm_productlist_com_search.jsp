@@ -17,7 +17,16 @@
 	
 	productDao pdao = new productDao();
 	ArrayList<productVo> productList = new ArrayList<productVo>();
+	ArrayList<productVo> productListMale = new ArrayList<productVo>();
+	ArrayList<productVo> productListFemale = new ArrayList<productVo>();
+	ArrayList<productVo> productListUnisex = new ArrayList<productVo>();
+	
+	//업체에 해당하는 전체 리스트//
 	productList = pdao.productList(2, co_id);
+	//업체에 해당하는 남성상품 리스트//
+	productListMale = pdao.productList(100, co_id);
+	productListFemale = pdao.productList(200, co_id);
+	productListUnisex = pdao.productList(300, co_id);
 	
 	companyDao cdao = new companyDao();
 	companyVo cvo = cdao.getCompanyInfo(co_id);
@@ -103,10 +112,22 @@
                   <div class="x_content">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                       <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#tab_content0" id="total-tab" role="tab" data-toggle="tab" aria-expanded="true">전체</a></li>
-                        <li role="presentation" class=""><a href="#tab_content1" id="top-tab" role="tab" data-toggle="tab" aria-expanded="true">상의</a></li>
-                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="bottom-tab" data-toggle="tab" aria-expanded="false">하의</a></li>
-                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="acc-tab2" data-toggle="tab" aria-expanded="false">악세서리</a></li>
+                        <li role="presentation" class="active">
+                        	<a href="#tab_content0" id="total-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                        	전체&nbsp;(<%= pdao.productCountByCom(0,co_id)%>)</a>
+                        </li>
+                        <li role="presentation" class="">
+                        	<a href="#tab_content1" id="male-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                        	남성&nbsp;(<%= pdao.productCountByCom(100,co_id)%>)</a>
+                        </li>
+                        <li role="presentation" class="">
+                        	<a href="#tab_content2" role="tab" id="female-tab" data-toggle="tab" aria-expanded="false">
+                        	여성&nbsp;(<%= pdao.productCountByCom(200,co_id)%>)</a>
+                        </li>
+                        <li role="presentation" class="">
+                        	<a href="#tab_content3" role="tab" id="unisex-tab2" data-toggle="tab" aria-expanded="false">
+                        	공용&nbsp;(<%= pdao.productCountByCom(300,co_id)%>)</a>
+                        </li>
                       </ul>
                       <div id="myTabContent" class="tab-content">
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content0" aria-labelledby="total-tab">
@@ -181,16 +202,220 @@
 					      <%} %>
 					      
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content1" aria-labelledby="top-tab">
-                        
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content1" aria-labelledby="male-tab">
+                          <%for(productVo pvo : productListMale){ %>
+                          <div class="col-md-2 col-sm-2 col-xs-2">
+			               <div class="x_panel">
+			                  <div class="x_title"><h2>상품정보조회 </h2><div class="clearfix"></div></div>
+			                  <div class="x_content">
+			                    <br />
+			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
+			                      <div class="profile_img">
+			                        <div id="crop-avatar">
+			                          <img class="img-responsive avatar-view" src="../images/picture.jpg" alt="Avatar" title="Change the avatar">
+			                        </div>
+			                      </div>
+			                      <br />
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : <%=pvo.getPd_id() %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data">
+			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
+			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
+			                        <%
+			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getCol_id()%><%} %></li>
+			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
+			                        <%
+			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getSz_id()%><%} %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ <%=pvo.getPd_price() %></li>
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 할인가 : ￦ 
+			                    <%  discountVo disvo = disDao.selectDiscount(pvo.getPd_id());     
+			                        if(disvo.getDis_method()==1){%><%=pvo.getPd_price()-disvo.getDis_value() %>(￦ <%=disvo.getDis_value() %>)<%} 
+			                        else{%><%=pvo.getPd_price()-(pvo.getPd_price()*disvo.getDis_rate()/100) %>
+			                        (<%=disvo.getDis_rate() %>% <i class="fa fa-arrow-down user-profile-icon"></i>)	
+			                        <%} %>
+			                        
+			                        </li>
+			                    <%	deliveryVo devo = deDao.selectDelivery(pvo.getPd_id()); 
+			                        if(devo.getDe_method()==0){ %> 
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li> 
+			                       <%}else if(devo.getDe_method()==1){%>
+			                       <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : 무료배송</li>
+			                       <%}else{%>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 조건부 무료 : ￦ <%=devo.getDe_price_condition()%>
+			                        	<i class="fa fa-arrow-up user-profile-icon"></i></li>
+			                        <%} %>
+			                        
+								<%	mileageVo milvo = milDao.selectMileage(pvo.getPd_id()); %>
+			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 : ￦ <%=pvo.getPd_price()*milvo.getMil_rate()/100 %>
+			                        (<%=milvo.getMil_rate() %>%)
+			                        </li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균평점 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li>
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균배송일 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li> 
+			                      </ul>
+			                      <br />
+			                    </div>
+					          </div>
+					        </div>
+					      </div>
+					      <%} %>
                         
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="bottom-tab">
-                        
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="female-tab">
+                          <%for(productVo pvo : productListFemale){ %>
+                          <div class="col-md-2 col-sm-2 col-xs-2">
+			               <div class="x_panel">
+			                  <div class="x_title"><h2>상품정보조회 </h2><div class="clearfix"></div></div>
+			                  <div class="x_content">
+			                    <br />
+			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
+			                      <div class="profile_img">
+			                        <div id="crop-avatar">
+			                          <img class="img-responsive avatar-view" src="../images/picture.jpg" alt="Avatar" title="Change the avatar">
+			                        </div>
+			                      </div>
+			                      <br />
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : <%=pvo.getPd_id() %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data">
+			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
+			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
+			                        <%
+			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getCol_id()%><%} %></li>
+			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
+			                        <%
+			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getSz_id()%><%} %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ <%=pvo.getPd_price() %></li>
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 할인가 : ￦ 
+			                    <%  discountVo disvo = disDao.selectDiscount(pvo.getPd_id());     
+			                        if(disvo.getDis_method()==1){%><%=pvo.getPd_price()-disvo.getDis_value() %>(￦ <%=disvo.getDis_value() %>)<%} 
+			                        else{%><%=pvo.getPd_price()-(pvo.getPd_price()*disvo.getDis_rate()/100) %>
+			                        (<%=disvo.getDis_rate() %>% <i class="fa fa-arrow-down user-profile-icon"></i>)	
+			                        <%} %>
+			                        
+			                        </li>
+			                    <%	deliveryVo devo = deDao.selectDelivery(pvo.getPd_id()); 
+			                        if(devo.getDe_method()==0){ %> 
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li> 
+			                       <%}else if(devo.getDe_method()==1){%>
+			                       <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : 무료배송</li>
+			                       <%}else{%>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 조건부 무료 : ￦ <%=devo.getDe_price_condition()%>
+			                        	<i class="fa fa-arrow-up user-profile-icon"></i></li>
+			                        <%} %>
+			                        
+								<%	mileageVo milvo = milDao.selectMileage(pvo.getPd_id()); %>
+			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 : ￦ <%=pvo.getPd_price()*milvo.getMil_rate()/100 %>
+			                        (<%=milvo.getMil_rate() %>%)
+			                        </li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균평점 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li>
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균배송일 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li> 
+			                      </ul>
+			                      <br />
+			                    </div>
+					          </div>
+					        </div>
+					      </div>
+					      <%} %>
                         
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="acc-tab">
-                        
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="unisex-tab">
+                          <%for(productVo pvo : productListUnisex){ %>
+                          <div class="col-md-2 col-sm-2 col-xs-2">
+			               <div class="x_panel">
+			                  <div class="x_title"><h2>상품정보조회 </h2><div class="clearfix"></div></div>
+			                  <div class="x_content">
+			                    <br />
+			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
+			                      <div class="profile_img">
+			                        <div id="crop-avatar">
+			                          <img class="img-responsive avatar-view" src="../images/picture.jpg" alt="Avatar" title="Change the avatar">
+			                        </div>
+			                      </div>
+			                      <br />
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : <%=pvo.getPd_id() %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data">
+			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
+			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
+			                        <%
+			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getCol_id()%><%} %></li>
+			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
+			                        <%
+			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getSz_id()%><%} %></li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ <%=pvo.getPd_price() %></li>
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 할인가 : ￦ 
+			                    <%  discountVo disvo = disDao.selectDiscount(pvo.getPd_id());     
+			                        if(disvo.getDis_method()==1){%><%=pvo.getPd_price()-disvo.getDis_value() %>(￦ <%=disvo.getDis_value() %>)<%} 
+			                        else{%><%=pvo.getPd_price()-(pvo.getPd_price()*disvo.getDis_rate()/100) %>
+			                        (<%=disvo.getDis_rate() %>% <i class="fa fa-arrow-down user-profile-icon"></i>)	
+			                        <%} %>
+			                        
+			                        </li>
+			                    <%	deliveryVo devo = deDao.selectDelivery(pvo.getPd_id()); 
+			                        if(devo.getDe_method()==0){ %> 
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li> 
+			                       <%}else if(devo.getDe_method()==1){%>
+			                       <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : 무료배송</li>
+			                       <%}else{%>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 조건부 무료 : ￦ <%=devo.getDe_price_condition()%>
+			                        	<i class="fa fa-arrow-up user-profile-icon"></i></li>
+			                        <%} %>
+			                        
+								<%	mileageVo milvo = milDao.selectMileage(pvo.getPd_id()); %>
+			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 : ￦ <%=pvo.getPd_price()*milvo.getMil_rate()/100 %>
+			                        (<%=milvo.getMil_rate() %>%)
+			                        </li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균평점 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li>
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균배송일 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li> 
+			                      </ul>
+			                      <br />
+			                    </div>
+					          </div>
+					        </div>
+					      </div>
+					      <%} %>
                         
                         </div>
                       </div>

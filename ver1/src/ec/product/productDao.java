@@ -98,6 +98,33 @@ public class productDao {
 					ps.setString(1, co_id);
 					ps.setString(2, month+"/[0-9]*/"+year);
 					break;
+				case 100:	// 남성카테고리
+					sql = "select count(*) from product "
+							+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+							+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+							+ "order by pd_id asc;";
+					ps = conn.prepareStatement(sql);
+					ps.setString(1, co_id);
+					ps.setString(2, "1"+"%");
+					break;
+				case 200:	// 남성카테고리
+					sql = "select count(*) from product "
+							+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+							+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+							+ "order by pd_id asc;";
+					ps = conn.prepareStatement(sql);
+					ps.setString(1, co_id);
+					ps.setString(2, "2"+"%");
+					break;
+				case 300:	// 남성카테고리
+					sql = "select count(*) from product "
+							+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+							+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+							+ "order by pd_id asc;";
+					ps = conn.prepareStatement(sql);
+					ps.setString(1, co_id);
+					ps.setString(2, "3"+"%");
+					break;	
 			}
 			rs = ps.executeQuery();
 			rs.next(); 
@@ -131,6 +158,36 @@ public class productDao {
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, co_id);
 				break;
+			case 100:
+				/*남성 리스트*/
+				sql = "select * from product "
+						+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+						+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+						+ "order by pd_id asc;";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, co_id);
+				ps.setString(2,"1"+"%");
+				break;
+			case 200:
+				/*여성 리스트*/
+				sql = "select * from product "
+						+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+						+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+						+ "order by pd_id asc;";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, co_id);
+				ps.setString(2,"2"+"%");
+				break;	
+			case 300:
+				/*공용 리스트*/
+				sql = "select * from product "
+						+ "where pd_id in (select pd_id from product_company_rel where co_id = ?) "
+						+ "and pd_id in (select pd_id from product_category_rel where cgp_id like ?) "
+						+ "order by pd_id asc;";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, co_id);
+				ps.setString(2,"3"+"%");
+				break;	
 			}
 			
 			rs = ps.executeQuery();

@@ -7,7 +7,10 @@
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
-
+	
+	dateVo dvo2 = new dateVo();
+	String set_day = null;
+	
 	productDao pdao = new productDao();
 	companyDao cdao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
@@ -93,11 +96,10 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <form class="form-horizontal form-label-left">
+                    <form name="productSearchByCom" method="post" action="adm_productlist_com_search.jsp" class="form-horizontal form-label-left">
                       <div class="form-group">
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                          <select class="select2_group form-control">
-                          	<option>업체선택  </option>
+                          <select name="co" class="select2_group form-control" onchange="document.productSearchByCom.submit()" >
                           	<%for(companyVo cvo : companyList){ %>
                             <option value="<%=cvo.getCo_id()%>"><%=cvo.getCo_name() %></option>
                             <%} %>
@@ -367,7 +369,7 @@
       var lineChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['16-10-28', '16-10-29', '16-10-30', '16-10-31', '16-11-01', '16-11-02', '16-11-03'],
+          labels: ['<%=ddao.getToday(-6)%>', '<%=ddao.getToday(-5)%>', '<%=ddao.getToday(-4)%>', '<%=ddao.getToday(-3)%>', '<%=ddao.getToday(-2)%>', '<%=ddao.getToday(-1)%>', '<%=ddao.getToday(0)%>'],
           datasets: [{
             label: "Android",
             backgroundColor: "rgba(38, 185, 154, 0.31)",
@@ -397,7 +399,7 @@
       var lineChart2 = new Chart(ctx2, {
         type: 'line',
         data: {
-          labels: ['16-10-28', '16-10-29', '16-10-30', '16-10-31', '16-11-01', '16-11-02', '16-11-03'],
+          labels: ['<%=ddao.getToday(-6)%>', '<%=ddao.getToday(-5)%>', '<%=ddao.getToday(-4)%>', '<%=ddao.getToday(-3)%>', '<%=ddao.getToday(-2)%>', '<%=ddao.getToday(-1)%>', '<%=ddao.getToday(0)%>'],
           datasets: [{
             label: "Android",
             backgroundColor: "rgba(38, 185, 154, 0.31)",
