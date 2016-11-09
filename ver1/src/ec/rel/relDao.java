@@ -48,17 +48,19 @@ public class relDao {
 		return rst;
 	}
 	
-	/*Product-Discount*/
-	public int insertPdDisRel(int pd_id, int dis_id) {
+	
+	
+	/*Product-Mileage*/
+	public int insertPdMilRel(int pd_id, int mil_id) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into product_discount_rel values(?,?)";
+			String sql = "insert into product_mileage_rel values(?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
-			ps.setInt(2, dis_id);
+			ps.setInt(2, mil_id);
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
@@ -68,28 +70,6 @@ public class relDao {
 		}
 		return rst;
 	}
-	
-	/*Product-Delivery*/
-	public int insertPdDeRel(int pd_id, int de_id) {
-		int rst = 0;
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = ConnUtil.getConnection();
-			String sql = "insert into product_delivery_rel values(?,?)";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, pd_id);
-			ps.setInt(2, de_id);
-			
-			rst = ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			ConnUtil.close(ps, conn);
-		}
-		return rst;
-	}
-	
 	
 
 }

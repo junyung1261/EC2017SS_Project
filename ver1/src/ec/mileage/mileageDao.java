@@ -1,27 +1,22 @@
-package ec.delivery;
+package ec.mileage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 import ec.connUtil.ConnUtil;
-
-public class deliveryDao {
-	
-	public int insertDelivery(deliveryVo vo, int pd_id) {
+public class mileageDao {
+	public int insertMileage(mileageVo vo, int pd_id) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into delivery values(?,?,?,?,?)";
+			String sql = "insert into mileage values(?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
-			ps.setInt(2, vo.getDe_method());
-			ps.setInt(3, vo.getDe_price());
-			ps.setInt(4, vo.getDe_price_exception());
-			ps.setInt(5, vo.getDe_price_condition());
+			ps.setInt(2, vo.getMil());
+			ps.setInt(3, vo.getMil_rate());
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -31,23 +26,21 @@ public class deliveryDao {
 		return rst;
 	}
 	
-	public deliveryVo selectDelivery(int pd_id) {
-		deliveryVo vo = new deliveryVo();
+	public mileageVo selectMileage(int pd_id) {
+		mileageVo vo = new mileageVo();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select * from delivery where de_id = ?";
+			String sql = "select * from mileage where mil_id = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				vo.setDe_id(rs.getInt("de_id"));
-				vo.setDe_method(rs.getInt("de_method"));
-				vo.setDe_price(rs.getInt("de_price"));
-				vo.setDe_price_exception(rs.getInt("de_price_exception"));
-				vo.setDe_price_condition(rs.getInt("de_price_condition"));
+				vo.setMil_id(rs.getInt("mil_id"));
+				vo.setMil(rs.getInt("mil"));
+				vo.setMil_rate(rs.getInt("mil_rate"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

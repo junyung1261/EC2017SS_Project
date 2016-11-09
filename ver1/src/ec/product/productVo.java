@@ -19,9 +19,6 @@ public class productVo {
 	private String pd_keyword;
 	
 	private int pd_price;
-	private int pd_sale; //0 or 1 할인중, 할인X
-	private int pd_sale_type;  //정률,정액
-	private int pd_sale_value; //정률값, 정액값
 	
 	
 	public int getPd_id() {
@@ -108,24 +105,5 @@ public class productVo {
 	public void setPd_price(int pd_price) {
 		this.pd_price = pd_price;
 	}
-	public int getPd_sale() {
-		return pd_sale;
-	}
-	public void setPd_sale(int pd_sale) {
-		this.pd_sale = pd_sale;
-	}
-	public int getPd_sale_type() {
-		return pd_sale_type;
-	}
-	public void setPd_sale_type(int pd_sale_type) {
-		this.pd_sale_type = pd_sale_type;
-	}
-	public int getPd_sale_value() {
-		return pd_sale_value;
-	}
-	public void setPd_sale_value(int pd_sale_value) {
-		this.pd_sale_value = pd_sale_value;
-	}
-	
 	
 }

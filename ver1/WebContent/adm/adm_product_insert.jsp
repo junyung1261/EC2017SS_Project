@@ -26,10 +26,6 @@
 	ArrayList<colorVo> colorList = new ArrayList<colorVo>();
 	colorList = coldao.colorList();
 	
-	/*DB저장되어있는 pd_id 최대값*/
-	productDao pdao = new productDao();
-	int pd_index = pdao.productIdMax();
-	
 	/*Size 리스트*/
 	sizeDao szdao = new sizeDao();
 	ArrayList<sizeVo> sizeList = new ArrayList<sizeVo>();
@@ -42,14 +38,6 @@
 	
 	/*중,소분류 리스트*/
 	ArrayList<category_productVo> cat2_cat3_list = new ArrayList<category_productVo>();
-	
-	/*DB저장되어있는 dis_id 최대값*/
-	discountDao disDao = new discountDao();
-	int dis_index = disDao.discountIdMax();
-	
-	/*DB저장되어있는 de_id 최대값*/
-	deliveryDao deDao = new deliveryDao();
-	int de_index = deDao.deliveryMax();
 	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -128,14 +116,6 @@
                     <form id="productInfo" name="productInfo" method="post" action="adm_product_insert_proc.jsp" data-parsley-validate class="form-horizontal form-label-left">
                     <div class="row">
                       <div class="col-md-12">
-                        <div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">상품등록번호 <span class="required">*</span></label>
-	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="pd_index" name="pd_index" value="<%=pd_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
-	                        <input type="hidden" id="dis_index" name="dis_index" value="<%=dis_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
-	                        <input type="hidden" id="de_index" name="de_index" value="<%=de_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
-	                      </div>
-	                    </div>
                         <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">업체선택<span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
@@ -267,39 +247,54 @@
 	               <div class="row"> 
 	                 <div class="col-md-12">     
 	                 	<div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본판매가 (￦)<span class="required">*</span></label>
-	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="pd_price" name="pd_price" required="required" class="form-control col-md-12 col-xs-12">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name"  >기본판매가 (￦)<span class="required">*</span></label>
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="pd_price" name="pd_price" required="required" class="form-control col-md-12 col-xs-12" placeholder="수치만 기입">
 	                      </div>
 	                    </div>
 	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인여부 <span class="required">*</span></label>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<div class="radio">
-	                      	<label><input type="radio" value="1" id="dis" name="dis" onclick = 'dis_radio(this)' checked>&nbsp;할인&nbsp;&nbsp;&nbsp;</label>
-                            <label><input type="radio" value="0" id="dis" name="dis" onclick = 'dis_radio(this)'>&nbsp;미할인&nbsp;&nbsp;</label>
+	                      	<label><input type="radio" value="0" id="dis" name="dis" onclick = 'dis_radio(this)' checked>미할인&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="dis" name="dis" onclick = 'dis_radio(this)'>할인</label>
                           	</div>
                           </div>
 	                    </div>
-	                    <div id = dis_div1 class="form-group">
+	                    <div id = dis_div1 class="form-group" style="display:none">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12"> 할인방법<span class="required">*</span></label>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<div class="radio">
-	                      	<label><input type="radio" value="0" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' checked>&nbsp;정률&nbsp;&nbsp;&nbsp;</label>
-                            <label><input type="radio" value="1" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' >&nbsp;정액&nbsp;&nbsp;</label>
+	                      	<label><input type="radio" value="0" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' checked>정률&nbsp;&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' >정액&nbsp;&nbsp;</label>
                           	</div>
                           </div>
 	                    </div>
-	                    <div id = dis_div2 class="form-group">
+	                    <div id = dis_div2 class="form-group" style="display:none">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인금액(￦)<span class="required">*</span></label>
-	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="dis_value" name="dis_value"" class="form-control col-md-12 col-xs-12">
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="dis_value" name="dis_value" class="form-control col-md-12 col-xs-12" value="0"  >
 	                      </div>
 	                    </div>
-	                    <div id = dis_div3 class="form-group">  
+	                    <div id = dis_div3 class="form-group" style="display:none">  
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인비율(%)<span class="required">*</span></label>
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="dis_rate" name="dis_rate" class="form-control col-md-12 col-xs-12" value="0" >
+	                      </div>
+	                    </div>
+	                    <div class="form-group">  
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">마일리지<span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="dis_rate" name="dis_rate" class="form-control col-md-12 col-xs-12">
+	                        <div class="radio">
+	                      	<label><input type="radio" value="0" id="mil" name="mil" onclick = 'mil_radio(this)' checked>미제공&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="mil" name="mil" onclick = 'mil_radio(this)' >제공&nbsp;&nbsp;</label>
+                          	</div>
+	                      </div>
+	                    </div>
+	                    <div id = "mil_div1" class="form-group" style="display:none">  
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">적립비율(%)<span class="required">*</span></label>
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="mil_rate" name="mil_rate" class="form-control col-md-12 col-xs-12" value="0" >
 	                      </div>
 	                    </div>
 	                 </div>
@@ -320,17 +315,17 @@
                           <div id="de_div1" class="form-group">
 	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본배송비</label>
 	                        <div class="col-md-1 col-sm-1 col-xs-12">
-	                          <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12">
+	                          <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12" value="0">
 	                        </div>
 	                        <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name">도서/산간</label>
 	                        <div class="col-md-1 col-sm-1 col-xs-12">
-	                          <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12">
+	                          <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12" value="0" >
 	                        </div>
 	                      </div>
 	                      <div id="de_div2" class="form-group" style="display:none">
 	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">조건부 무료배송</label>
 	                        <div class="col-md-3 col-sm-3 col-xs-12">
-	                          <input type="text" id="de_price_condition" name="de_price_condition" class="form-control col-md-12 col-xs-12" placeholder="주문최소금액">
+	                          <input type="text" id="de_price_condition" name="de_price_condition" class="form-control col-md-12 col-xs-12" value="0" >
 	                        </div>
 	                      </div>
 	                    </div>
@@ -384,19 +379,36 @@
     <!-- jQuery Tags Input -->
     <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
     
+    <Script language="javascript">
+    function account_price(){
+    	var sale_price = document.getElementById('pd_price').value;
+    	var discount_rate = document.getElementById('dis_rate').value;
+    	var discount_value = document.getElementById('dis_value').value;
+    	var mil_rate = document.getElementById('mil_rate').value;
+    	var delivery_base = document.getElementById('de_price').value;
+
+    	var total = sale_price-((sale_price*discount_rate)/100)+discount_value+delivery_base ;
+    	var account = sale_price-((sale_price*discount_rate)/100)-discount_value-((sale_price*mil_rate)/100); 
+    	
+    	document.getElementById('total').value = total ;
+    	document.getElementById('account').value = account;
+    	
+    }
+    </script>
     <script language="javascript">
     
     function dis_radio(e){
     	var fm = document.productInfo;
-    	if(fm.dis[1].checked==true){
+    	if(fm.dis[0].checked==true){
     		dis_div1.style.display = "none";
     		dis_div2.style.display = "none";
     		dis_div3.style.display = "none";
-    		
+    		document.getElementById('dis_rate').value=0;
+    		document.getElementById('dis_value').value=0;
     	}
-    	else if(fm.dis[0].checked==true){
+    	else if(fm.dis[1].checked==true){
     		dis_div1.style.display = "block";
-    		dis_div2.style.display = "block";
+    		dis_div2.style.display = "none";
     		dis_div3.style.display = "block";
     	}
     }
@@ -406,11 +418,13 @@
     	if(fm.dis_method[0].checked==true){
     		dis_div2.style.display = "none";
     		dis_div3.style.display = "block";
+    		document.getElementById('dis_value').value=0;
     		
     	}
     	else if(fm.dis_method[1].checked==true){
     		dis_div2.style.display = "block";
     		dis_div3.style.display = "none";
+    		document.getElementById('dis_rate').value=0;
     	}
     }
     
@@ -423,18 +437,29 @@
     	else if(fm.de_method[1].checked==true){
     		de_div1.style.display = "none";
     		de_div2.style.display = "none";
+    		document.getElementById('de_price').value=0;
+    		document.getElementById('de_price_exception').value=0;
     	}
     	else if(fm.de_method[2].checked==true){
-    		de_div1.style.display = "none";
+    		de_div1.style.display = "block";
     		de_div2.style.display = "block";
+    	}
+    }
+    
+    function mil_radio(e){
+    	var fm = document.productInfo;
+    	if(fm.mil[0].checked==true){
+    		mil_div1.style.display = "none";
+    		document.getElementById('mil_rate').value=0;
+    	}
+    	else if(mil[1].checked==true){
+    		mil_div1.style.display = "block";
     	}
     }
     </script>
     
     <script type="text/javascript">
-
 	function changes() {
-		
 		var objSel = document.getElementById("cgp_id");
 		for(i=objSel.length;i>=0;i--){
 			objSel.options[i] = null;
@@ -444,7 +469,6 @@
 		if(cgpName1=="남성"){
 			<%
 			cat2_cat3_list = cgpDao.getCgpCat2_Cat3("남성");
-			
 			for(category_productVo vo : cat2_cat3_list){%>
 			var objOption = document.createElement("option");
 			objOption.text = "<%=vo.getCgp_cat2()%> >> <%=vo.getCgp_cat3()%>";
@@ -456,7 +480,6 @@
 		else if(cgpName1=="여성"){
 			<%
 			cat2_cat3_list = cgpDao.getCgpCat2_Cat3("여성");
-			
 			for(category_productVo vo : cat2_cat3_list){%>
 			var objOption = document.createElement("option");
 			objOption.text = "<%=vo.getCgp_cat2()%> >> <%=vo.getCgp_cat3()%>";
@@ -468,7 +491,6 @@
 		else if(cgpName1=="공용"){
 			<%
 			cat2_cat3_list = cgpDao.getCgpCat2_Cat3("공용");
-			
 			for(category_productVo vo : cat2_cat3_list){%>
 			var objOption = document.createElement("option");
 			objOption.text = "<%=vo.getCgp_cat2()%> >> <%=vo.getCgp_cat3()%>";
@@ -476,16 +498,15 @@
 			objSel.options.add(objOption);
 			
 			<%}%>
-		}else{
+		}
+		else{
 			<%
 			cat2_cat3_list = cgpDao.getCgpCat2_Cat3("유아");
-			
 			for(category_productVo vo : cat2_cat3_list){%>
 			var objOption = document.createElement("option");
 			objOption.text = "<%=vo.getCgp_cat2()%> >> <%=vo.getCgp_cat3()%>";
 			objOption.value= "<%=vo.getCgp_id()%>";
 			objSel.options.add(objOption);
-			
 			<%}%>
 		}
 	}

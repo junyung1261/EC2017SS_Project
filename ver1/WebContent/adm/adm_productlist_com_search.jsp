@@ -1,9 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.product.*" %>
+<%@ page import="ec.product_detail.*" %>
+<%@ page import="ec.company.*" %>
+<%@ page import="ec.discount.*" %>
+<%@ page import="ec.delivery.*" %>
+<%@ page import="ec.mileage.*" %>
+
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	String co_id = (String)request.getParameter("co");
+	
+	productDao pdao = new productDao();
+	ArrayList<productVo> productList = new ArrayList<productVo>();
+	productList = pdao.productList(2, co_id);
+	
+	companyDao cdao = new companyDao();
+	companyVo cvo = cdao.getCompanyInfo(co_id);
+	
+	product_detailDao pddao = new product_detailDao();
+	ArrayList<product_detailVo> product_detailList = new ArrayList<product_detailVo>();
+
+	discountDao disDao = new discountDao();
+	deliveryDao deDao = new deliveryDao();
+	mileageDao milDao = new mileageDao();
+	
+	
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -29,101 +55,9 @@
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="adm_index.jsp" class="site_title"><i class="fa fa-paw"></i> <span>EC Corporation</span></a>
-            </div>
-
-            <div class="clearfix"></div>
-
-            <!-- menu profile quick info -->
-            <div class="profile">
-              <div class="profile_pic">
-                <img src="../images/img.jpg" alt="..." class="img-circle profile_img">
-              </div>
-              <div class="profile_info">
-                <span>Welcome,</span>
-                <h2>David Lee</h2>
-              </div>
-            </div>
-            <!-- /menu profile quick info -->
-
-            <br />
-
-            <!-- sidebar menu -->
-            <%@include file="adm_sidebar.jsp" %>
-            <!-- /sidebar menu -->
-
-            <!-- /menu footer buttons -->
-            <div class="sidebar-footer hidden-small">
-              <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-              </a>
-              <a data-toggle="tooltip" data-placement="top" title="Logout">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
-            </div>
-            <!-- /menu footer buttons -->
-          </div>
+          <div class="left_col scroll-view"><%@include file="adm_sidebar.jsp" %></div>
         </div>
-        <!-- top navigation -->
-        
-        <div class="top_nav">
-          <div class="nav_menu">
-            <nav>
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-
-              <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="../images/img.jpg" alt="">David Lee
-                    <span class=" fa fa-angle-down"></span>
-                  </a>
-                  <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="javascript:;"> Profile</a></li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">Caution</span>
-                        <span>Settings</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
-                  </ul>
-                </li>
-
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span class="image"><img src="../images/img.jpg" alt="Profile Image" /></span>
-                        <span>
-                          <span>Message Sender Name</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-        <!-- /top navigation -->
+        <%@include file = "adm_top.jsp" %>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -148,7 +82,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>MUTNAM 상품리스트<small><%=dvo.getYear()+"-"+dvo.getMonth()+"-"+dvo.getDate()+" "+dvo.getHour()+":"+dvo.getMinute()+":"+dvo.getSecond()+" 현재" %></small></h2>
+                    <h2><%=cvo.getCo_name() %> 상품리스트<small><%=dvo.getYear()+"-"+dvo.getMonth()+"-"+dvo.getDate()+" "+dvo.getHour()+":"+dvo.getMinute()+":"+dvo.getSecond()+" 현재" %></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -176,13 +110,10 @@
                       </ul>
                       <div id="myTabContent" class="tab-content">
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content0" aria-labelledby="total-tab">
-                          <div class="col-md-3 col-sm-3 col-xs-3">
+                          <%for(productVo pvo : productList){ %>
+                          <div class="col-md-2 col-sm-2 col-xs-2">
 			               <div class="x_panel">
-			                  <div class="x_title">
-			                    <h2>상품정보조회 </h2>
-			                    
-			                    <div class="clearfix"></div>
-			                  </div>
+			                  <div class="x_title"><h2>상품정보조회 </h2><div class="clearfix"></div></div>
 			                  <div class="x_content">
 			                    <br />
 			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
@@ -193,29 +124,62 @@
 			                      </div>
 			                      <br />
 			                      <ul class="list-unstyled user_data"> 
-			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : EA00000001</li>
+			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : <%=pvo.getPd_id() %></li>
 			                      </ul><div class="ln_solid"></div>
 			                      <ul class="list-unstyled user_data">
-			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : 겨울 남성 스트라이프 울 가디건</li>
-			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : Red, Navy, Black, Blue</li>
-			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : S, L, XL, XXL</li>
+			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
+			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
+			                        <%
+			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getCol_id()%><%} %></li>
+			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
+			                        <%
+			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                        for(product_detailVo pdvo : product_detailList){ %>
+			                        <%=pdvo.getSz_id()%><%} %></li>
 			                      </ul><div class="ln_solid"></div>
 			                      <ul class="list-unstyled user_data"> 
-			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ 25,000</li>
-			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ 2,500</li>
-			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 적립 : ￦ 250</li>
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ <%=pvo.getPd_price() %></li>
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 할인가 : ￦ 
+			                    <%  discountVo disvo = disDao.selectDiscount(pvo.getPd_id());     
+			                        if(disvo.getDis_method()==1){%><%=pvo.getPd_price()-disvo.getDis_value() %>(￦ <%=disvo.getDis_value() %>)<%} 
+			                        else{%><%=pvo.getPd_price()-(pvo.getPd_price()*disvo.getDis_rate()/100) %>
+			                        (<%=disvo.getDis_rate() %>% <i class="fa fa-arrow-down user-profile-icon"></i>)	
+			                        <%} %>
+			                        
+			                        </li>
+			                    <%	deliveryVo devo = deDao.selectDelivery(pvo.getPd_id()); 
+			                        if(devo.getDe_method()==0){ %> 
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li> 
+			                       <%}else if(devo.getDe_method()==1){%>
+			                       <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : 무료배송</li>
+			                       <%}else{%>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ <%=devo.getDe_price() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 도서/산간 : ￦ <%=devo.getDe_price_exception() %></li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 조건부 무료 : ￦ <%=devo.getDe_price_condition()%>
+			                        	<i class="fa fa-arrow-up user-profile-icon"></i></li>
+			                        <%} %>
+			                        
+								<%	mileageVo milvo = milDao.selectMileage(pvo.getPd_id()); %>
+			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 : ￦ <%=pvo.getPd_price()*milvo.getMil_rate()/100 %>
+			                        (<%=milvo.getMil_rate() %>%)
+			                        </li>
 			                      </ul><div class="ln_solid"></div>
 			                      <ul class="list-unstyled user_data"> 
-			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 상품 평균평점 : 
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균평점 : 
 			                            <div class="starrr stars-existing" data-rating='4'></div></li>
-			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 상품 평균배송일 : 
-			                            <div class="starrr stars-existing" data-rating='4'></div></li>
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 평균배송일 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li> 
 			                      </ul>
 			                      <br />
 			                    </div>
 					          </div>
 					        </div>
 					      </div>
+					      <%} %>
+					      
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="tab_content1" aria-labelledby="top-tab">
                         
@@ -239,13 +203,8 @@
         </div>
         <!-- /page content -->
 
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
+         <!-- footer content -->
+        <%@include file = "adm_footer.jsp" %>
         <!-- /footer content -->
       </div>
     </div>

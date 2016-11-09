@@ -14,8 +14,5 @@ pd_review_count int(255),
 pd_avg_rate float,
 
 pd_keyword VARCHAR(255) not null,
-pd_price int(255) not null,
-pd_sale int(255) not null,
-pd_sale_type int(255) not null,
-pd_sale_value int(255)
+pd_price int(255) not null
 );

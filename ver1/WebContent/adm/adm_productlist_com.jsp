@@ -3,13 +3,15 @@
 <%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
 <%@ page import="ec.product.*" %>
+<%@ page import="ec.company.*" %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
 
 	productDao pdao = new productDao();
-	ArrayList<productVo> productList = new ArrayList<productVo>();
-	productList = pdao.productList(1, null);
+	companyDao cdao = new companyDao();
+	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
+	companyList = cdao.companyList(1, null);
 %>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -95,14 +97,10 @@
                       <div class="form-group">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <select class="select2_group form-control">
-                            <option>업체선택  </option>
-                            <option>Company 1</option>
-                            <option>Company 2</option>
-                            <option>Company 2</option>
-                            <option>Company 2</option>
-                            <option>Company 2</option>
-                            <option>Company 2</option>
-                            <option>Company 2</option>
+                          	<option>업체선택  </option>
+                          	<%for(companyVo cvo : companyList){ %>
+                            <option value="<%=cvo.getCo_id()%>"><%=cvo.getCo_name() %></option>
+                            <%} %>
                           </select>
                         </div>
                       </div> 
@@ -187,30 +185,21 @@
 	                        </tr>
 	                      </thead>
 	                      <tbody>
+	                      	<%for(companyVo cvo:companyList){ %>
 	                        <tr>
 	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td><a href="adm_productlist_com_search.jsp?c=mutam">MUTNAM</a></td>
-	                          <td>멋남</td>
-	                          <td>1,150</td>
-	                          <td>550</td>
-	                          <td>15</td>
-	                          <td>1244</td>
-	                          <td>22</td>
-	                          <td>1266</td>
+	                          <td><%=cvo.getCo_id() %>&nbsp;&nbsp;<a href="adm_productlist_com_search.jsp?co=<%=cvo.getCo_id() %>"><i class="fa fa-external-link"></i></a></td>
+	                          <td><%=cvo.getCo_name() %></td>
+	                          <td><%=pdao.productCountByCom(0,cvo.getCo_id())%></td>
+	                          <td><%=pdao.productCountByCom(1,cvo.getCo_id())%></td>
+	                          <td><%=pdao.productCountByCom(3,cvo.getCo_id()) %></td>
+	                          <td>0</td>
+	                          <td>0</td>
+	                          <td>0</td>
 	                          <td></td>
 	                        </tr>
-	                        <tr>
-	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td>SCOU</td>
-	                          <td>스코우</td>
-	                          <td>150</td>
-	                          <td>100</td>
-	                          <td>10</td>
-	                          <td>1244</td>
-	                          <td>12</td>
-	                          <td>1256</td>
-	                          <td></td>
-	                        </tr>
+	                        <%} %>
+	                       
 	                      </tbody>
 	                    </table>
                         </div>
