@@ -4,6 +4,7 @@
 <%@ page import="ec.date.*" %>
 <%@ page import="ec.company.*" %>
 <%@ page import="ec.product.*" %>
+<%@ page import="ec.discount.*" %>
 <%@ page import="ec.color.*" %>
 <%@ page import="ec.size.*" %>
 <%@ page import="ec.category_product.*" %>
@@ -18,15 +19,17 @@
 	companyDao codao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
 	companyList = codao.CompanyNameAndIDList();
-
+	
+	/*색상 리스트*/
 	colorDao  coldao = new colorDao();
 	ArrayList<colorVo> colorList = new ArrayList<colorVo>();
 	colorList = coldao.colorList();
 	
 	/*DB저장되어있는 pd_id 최대값*/
 	productDao pdao = new productDao();
-	int max = pdao.productIdMax();
+	int pd_index = pdao.productIdMax();
 	
+	/*Size 리스트*/
 	sizeDao szdao = new sizeDao();
 	ArrayList<sizeVo> sizeList = new ArrayList<sizeVo>();
 	sizeList = szdao.sizeList();
@@ -36,9 +39,12 @@
 	ArrayList<String> cat1_list = new ArrayList<String>();
 	cat1_list = cgpDao.getCgpCat1();
 	
-	
 	/*중,소분류 리스트*/
 	ArrayList<category_productVo> cat2_cat3_list = new ArrayList<category_productVo>();
+	
+	/*DB저장되어있는 dis_id 최대값*/
+	discountDao disDao = new discountDao();
+	int dis_index = disDao.discountIdMax();
 	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -120,7 +126,8 @@
                         <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">상품등록번호 <span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="max" name="max" value="<%=max%>" class="form-control col-md-12 col-xs-12" readonly>
+	                        <input type="text" id="pd_index" name="pd_index" value="<%=pd_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
+	                        <input type="text" id="dis_index" name="dis_index" value="<%=dis_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
 	                      </div>
 	                    </div>
                         <div class="form-group">
@@ -212,7 +219,7 @@
 	                   <div class="form-group">
 	                     <label class="control-label col-md-2 col-sm-2 col-xs-12">사이즈옵션</label>
                          <div class="col-md-4 col-sm-4 col-xs-12">
-                           <select class="select2_multiple form-control" id="sz_id" name="sz_id[]" multiple="multiple">
+                           <select class="select2_multiple form-control" id="sz_id" name="sz_id" multiple="multiple">
                              <%for(sizeVo svo : sizeList){ %>
                              <option value="<%=svo.getSz_size()%>"><%=svo.getSz_size()%></option>
                              <%} %>
@@ -222,7 +229,7 @@
 	                   <div class="form-group">
 	                     <label class="control-label col-md-2 col-sm-2 col-xs-12">색상옵션</label>
                          <div class="col-md-4 col-sm-4 col-xs-12">
-                           <select class="select2_multiple form-control" id="col_id" name="col_id[]" multiple="multiple">
+                           <select class="select2_multiple form-control" id="col_id" name="col_id" multiple="multiple">
                              <%for(colorVo cvo : colorList){ %>
                              <option value="<%=cvo.getCol_name()%>"><%=cvo.getCol_name()%> (<%=cvo.getCol_eng()+", "+cvo.getCol_eng_short() %>)</option>
                              <%} %>
@@ -261,29 +268,62 @@
 	                    </div>
 	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인여부 <span class="required">*</span></label>
-	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<div class="radio">
-	                      	<label><input type="radio" value="0" id="pd_sale" name="pd_sale"> 미할인</label>
-                            <label><input type="radio" value="1" id="pd_sale" name="pd_sale"> 할인</label>
-                          	</div>
-                          </div>
-	                   
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12"> 할인방법<span class="required">*</span></label>
-	                      <div class="col-md-1 col-sm-1 col-xs-12">
-	                      	<div class="radio">
-	                      	<label><input type="radio" value="0" id="pd_sale_type" name="pd_sale_type"> 정액</label>
-                            <label><input type="radio" value="1" id="pd_sale_type" name="pd_sale_type"> 정률</label>
+	                      	<label><input type="radio" value="1" id="dis" name="dis" onclick = 'dis_radio(this)' checked>&nbsp;할인&nbsp;&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="0" id="dis" name="dis" onclick = 'dis_radio(this)'>&nbsp;미할인&nbsp;&nbsp;</label>
                           	</div>
                           </div>
 	                    </div>
-	                    <div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">정률:(%), 정액:(￦)<span class="required">*</span></label>
+	                    <div id = dis_div1 class="form-group">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12"> 할인방법<span class="required">*</span></label>
+	                      <div class="col-md-2 col-sm-2 col-xs-12">
+	                      	<div class="radio">
+	                      	<label><input type="radio" value="0" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' checked>&nbsp;정률&nbsp;&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="dis_method" name="dis_method" onclick = 'dis_method_radio(this)' >&nbsp;정액&nbsp;&nbsp;</label>
+                          	</div>
+                          </div>
+	                    </div>
+	                    <div id = dis_div2 class="form-group">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인금액(￦)<span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="pd_sale_value" name="pd_sale_value" required="required" class="form-control col-md-12 col-xs-12">
+	                        <input type="text" id="dis_value" name="dis_value"" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                    </div>
+	                    <div id = dis_div3 class="form-group">  
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">할인비율(%)<span class="required">*</span></label>
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
+	                        <input type="text" id="dis_rate" name="dis_rate" class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                    </div>
 	                 </div>
+	               </div>
+	               <div class="ln_solid"></div>
+	                 <div class="row">
+	                 	<div class="col-md-12"> 
+	                 	  <div class="form-group">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">배송방법 <span class="required">*</span></label>
+	                      <div class="col-md-2 col-sm-2 col-xs-12">
+	                      	<div class="radio">
+	                      	<label><input type="radio" value="0" id="de_method" name="de_method" checked>&nbsp;무료배송&nbsp;&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="de_method" name="de_method">&nbsp;기본배송비&nbsp;</label>
+                          	</div>
+                          </div>
+                          </div>
+                          <div class="form-group">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본배송비</label>
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                      <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name">도서/산간</label>
+	                      <div class="col-md-1 col-sm-1 col-xs-12">
+	                        <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                    </div>
+	                    </div>
+	                 	</div>
 	                 </div>
+	                 
 	                 <div class="ln_solid"></div>
 	                 <div class="row">
 	                   <div class="col-md-12">
@@ -331,6 +371,37 @@
     <script src="../build/js/custom.min.js"></script>
     <!-- jQuery Tags Input -->
     <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    
+    <script language="javascript">
+    
+    function dis_radio(e){
+    	var fm = document.productInfo;
+    	if(fm.dis[1].checked==true){
+    		dis_div1.style.display = "none";
+    		dis_div2.style.display = "none";
+    		dis_div3.style.display = "none";
+    		
+    	}
+    	else if(fm.dis[0].checked==true){
+    		dis_div1.style.display = "block";
+    		dis_div2.style.display = "block";
+    		dis_div3.style.display = "block";
+    	}
+    }
+    
+    function dis_method_radio(e){
+    	var fm = document.productInfo;
+    	if(fm.dis_method[0].checked==true){
+    		dis_div2.style.display = "none";
+    		dis_div3.style.display = "block";
+    		
+    	}
+    	else if(fm.dis_method[1].checked==true){
+    		dis_div2.style.display = "block";
+    		dis_div3.style.display = "none";
+    	}
+    }
+    </script>
     
     <script type="text/javascript">
 

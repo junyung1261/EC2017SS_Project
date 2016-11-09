@@ -9,7 +9,7 @@
 
 	productDao pdao = new productDao();
 	ArrayList<productVo> productList = new ArrayList<productVo>();
-	productList = pdao.productList(req, co_id);
+	productList = pdao.productList(1, null);
 %>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

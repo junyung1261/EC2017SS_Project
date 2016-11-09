@@ -1,7 +1,5 @@
 create table product(
 pd_id int(255) not null primary key auto_increment,
-co_id VARCHAR(255) not null,
-cgp_id int(255) not null,
 pd_name VARCHAR(255) not null,
 
 pd_status int(255) not null,

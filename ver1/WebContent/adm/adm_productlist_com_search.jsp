@@ -169,88 +169,63 @@
                   <div class="x_content">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                       <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">상의</a></li>
-                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">하의</a></li>
-                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">악세서리</a></li>
+                        <li role="presentation" class="active"><a href="#tab_content0" id="total-tab" role="tab" data-toggle="tab" aria-expanded="true">전체</a></li>
+                        <li role="presentation" class=""><a href="#tab_content1" id="top-tab" role="tab" data-toggle="tab" aria-expanded="true">상의</a></li>
+                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="bottom-tab" data-toggle="tab" aria-expanded="false">하의</a></li>
+                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="acc-tab2" data-toggle="tab" aria-expanded="false">악세서리</a></li>
                       </ul>
                       <div id="myTabContent" class="tab-content">
-                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content0" aria-labelledby="total-tab">
                           <div class="col-md-3 col-sm-3 col-xs-3">
-			                <div class="x_panel">
+			               <div class="x_panel">
 			                  <div class="x_title">
-			                    <h2>EA00000001 <small>BRAND NAME</small></h2>
-			                    <ul class="nav navbar-right panel_toolbox">
-			                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-			                      <li class="dropdown">
-			                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-			                        <ul class="dropdown-menu" role="menu">
-			                          <li><a href="#">Settings 1</a></li>
-			                          <li><a href="#">Settings 2</a></li>
-			                        </ul>
-			                      </li>
-			                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-			                    </ul>
+			                    <h2>상품정보조회 </h2>
+			                    
 			                    <div class="clearfix"></div>
 			                  </div>
 			                  <div class="x_content">
+			                    <br />
 			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
 			                      <div class="profile_img">
 			                        <div id="crop-avatar">
-			                          <!-- Current avatar -->
 			                          <img class="img-responsive avatar-view" src="../images/picture.jpg" alt="Avatar" title="Change the avatar">
 			                        </div>
 			                      </div>
-			                      <h2>남성 100% 울 스트라이프 가디건</h2>
-			
+			                      <br />
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-info-circle user-profile-icon"></i> 상품번호 : EA00000001</li>
+			                      </ul><div class="ln_solid"></div>
 			                      <ul class="list-unstyled user_data">
-			                        <li><i class="fa fa-tags user-profile-icon"></i> 상의 > 아우터 > 가디건</li>
-			                        <li><i class="fa fa-image user-profile-icon"></i> RED / BLUE / GRAY / BROWN / BLACK</li>
-									<li class="m-top-xs"><i class="fa fa-external-link user-profile-icon"></i>
-									  <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
-			                        </li>
+			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : 겨울 남성 스트라이프 울 가디건</li>
+			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : Red, Navy, Black, Blue</li>
+			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : S, L, XL, XXL</li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-shopping-cart user-profile-icon"></i> 판매가 : ￦ 25,000</li>
+			                        <li><i class="fa fa-truck user-profile-icon"></i> 배송비 : ￦ 2,500</li>
+			                        <li><i class="fa fa-credit-card user-profile-icon"></i> 마일리지 적립 : ￦ 250</li>
+			                      </ul><div class="ln_solid"></div>
+			                      <ul class="list-unstyled user_data"> 
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 상품 평균평점 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li>
+			                        <li><i class="fa fa-bar-chart user-profile-icon"></i> 상품 평균배송일 : 
+			                            <div class="starrr stars-existing" data-rating='4'></div></li>
 			                      </ul>
-			                      <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>&nbsp;View Detail</a>
-			                      <br />			
-			                      <!-- start skills -->
-			                      <h4>Skills</h4>
-			                      <ul class="list-unstyled user_data">
-			                        <li>
-			                          <p>Web Applications</p>
-			                          <div class="progress progress_sm">
-			                            <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-			                          </div>
-			                        </li>
-			                        <li>
-			                          <p>Website Design</p>
-			                          <div class="progress progress_sm">
-			                            <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="70"></div>
-			                          </div>
-			                        </li>
-			                        <li>
-			                          <p>Automation & Testing</p>
-			                          <div class="progress progress_sm">
-			                            <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="30"></div>
-			                          </div>
-			                        </li>
-			                        <li>
-			                          <p>UI / UX</p>
-			                          <div class="progress progress_sm">
-			                            <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="50"></div>
-			                          </div>
-			                        </li>
-			                      </ul>
-			                      <!-- end of skills -->
-			
+			                      <br />
 			                    </div>
-			                  </div>
-                            </div>
-                          </div>
+					          </div>
+					        </div>
+					      </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content1" aria-labelledby="top-tab">
                         
                         
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="bottom-tab">
+                        
+                        
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="acc-tab">
                         
                         
                         </div>
