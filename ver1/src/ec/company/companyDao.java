@@ -14,7 +14,7 @@ public class companyDao {
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into company values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "insert into company values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, vo.getCo_id());
 			ps.setString(2, vo.getCo_name());
@@ -25,15 +25,18 @@ public class companyDao {
 			ps.setString(7, vo.getCo_address());
 			ps.setString(8, vo.getCo_email());
 			ps.setString(9, vo.getCo_delivery());
-			ps.setString(10, vo.getCo_reg_num1());
-			ps.setString(11, vo.getCo_reg_num2());
-			ps.setString(12, vo.getCo_bank());
-			ps.setString(13, vo.getCo_account());
-			ps.setString(14, vo.getCo_password());
-			ps.setString(15, vo.getCo_grade());
-			ps.setString(16, vo.getCo_reg_date());
-			ps.setString(17, vo.getCo_exp_date());
-			ps.setString(18, vo.getCo_tags());
+			ps.setInt(10, vo.getCo_delivery_base());
+			ps.setInt(11, vo.getCo_delivery_exception());
+			ps.setInt(12, vo.getCo_delivery_condition());
+			ps.setString(13, vo.getCo_reg_num1());
+			ps.setString(14, vo.getCo_reg_num2());
+			ps.setString(15, vo.getCo_bank());
+			ps.setString(16, vo.getCo_account());
+			ps.setString(17, vo.getCo_password());
+			ps.setString(18, vo.getCo_grade());
+			ps.setString(19, vo.getCo_reg_date());
+			ps.setString(20, vo.getCo_exp_date());
+			ps.setString(21, vo.getCo_tags());
 
 			rst = ps.executeUpdate();
 		} catch (Exception e) {

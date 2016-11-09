@@ -9,6 +9,9 @@ public class companyVo {
 	private String co_address;
 	private String co_email;
 	private String co_delivery;
+	private int co_delivery_base;
+	private int co_delivery_exception;
+	private int co_delivery_condition;
 	
 	private String co_reg_num1;
 	private String co_reg_num2;
@@ -88,6 +91,30 @@ public class companyVo {
 
 	public void setCo_delivery(String co_delivery) {
 		this.co_delivery = co_delivery;
+	}
+
+	public int getCo_delivery_base() {
+		return co_delivery_base;
+	}
+
+	public void setCo_delivery_base(int co_delivery_base) {
+		this.co_delivery_base = co_delivery_base;
+	}
+
+	public int getCo_delivery_exception() {
+		return co_delivery_exception;
+	}
+
+	public void setCo_delivery_exception(int co_delivery_exception) {
+		this.co_delivery_exception = co_delivery_exception;
+	}
+
+	public int getCo_delivery_condition() {
+		return co_delivery_condition;
+	}
+
+	public void setCo_delivery_condition(int co_delivery_condition) {
+		this.co_delivery_condition = co_delivery_condition;
 	}
 
 	public String getCo_reg_num1() {

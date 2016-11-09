@@ -127,18 +127,6 @@
 	                        <input type="text" id="co_address" name="co_address" required="required" class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                    </div>
-	                    <div class="form-group">
-	                      <label class="control-label col-md-4 col-sm-4 col-xs-12">주거래 배송사 <span class="required">*</span></label>
-	                      <div class="col-md-8 col-sm-8 col-xs-12">
-	                         <select id="co_delivery" name="co_delivery" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">
-	                          <option></option>
-	                          <option value="hundai">현대택배</option>
-	                          <option value="daehan">대한통운택배</option>
-	                          <option value="logen">로젠택배</option>
-	                          <option value="cj">CJ택배</option>
-	                        </select>
-	                      </div>
-	                    </div>
 	                 </div>
 	                 </div>
 	                 <div class="ln_solid"></div>
@@ -160,6 +148,45 @@
 	                      </div>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                      	<button type="button" class="btn btn-warning btn-sm">유효성검증</button>
+	                      </div>
+	                    </div>
+	                 </div>
+	                 </div>
+	                 <div class="ln_solid"></div>
+	                 <div class="row">
+	                 <div class="col-md-6">
+	                   <div class="form-group">
+	                      <label class="control-label col-md-4 col-sm-4 col-xs-12">주거래 배송사 <span class="required">*</span></label>
+	                      <div class="col-md-8 col-sm-8 col-xs-12">
+	                         <select id="co_delivery" name="co_delivery" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">
+	                          <option></option>
+	                          <option value="hundai">현대택배</option>
+	                          <option value="daehan">대한통운택배</option>
+	                          <option value="logen">로젠택배</option>
+	                          <option value="cj">CJ택배</option>
+	                        </select>
+	                      </div>
+	                    </div>
+					</div>
+	                 <div class="col-md-6">
+	                    <div class="form-group">
+	                      <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">기본배송비 <span class="required">*</span></label>
+	                      <div class="col-md-2 col-sm-2 col-xs-12">
+	                        <input type="text" id="co_delivery_base" name="co_delivery_base" required="required" class="form-control col-md-12 col-xs-12">
+	                      </div>
+
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">도서/산간 <span class="required">*</span></label>
+	                      <div class="col-md-2 col-sm-2 col-xs-12"> 
+	                        <input type="text" id="co_delivery_exception" name="co_delivery_exception" required="required" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                    </div>
+	                    <div class="form-group">
+	                     <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name">조건부 무료 <span class="required">*</span></label>
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
+	                        <input type="text" id="co_delivery_condition" name="co_delivery_condition" required="required" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
+	                      	<button type="button" class="btn btn-warning btn-sm">원 이상 구매 시 무료</button>
 	                      </div>
 	                    </div>
 	                 </div>

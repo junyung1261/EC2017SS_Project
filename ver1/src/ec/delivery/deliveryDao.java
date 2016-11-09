@@ -1,26 +1,24 @@
-package ec.discount;
+package ec.delivery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import ec.connUtil.ConnUtil;
 
-public class discountDao {
+public class deliveryDao {
 	
-	public int discountIdMax() {
-		System.out.println("진입");
+	public int deliveryMax() {
 		int cnt = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select MAX(dis_id) from discount";
+			String sql = "select MAX(de_id) from delivery";
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			rs.next(); 
-			cnt = rs.getInt("MAX(dis_id)");
+			cnt = rs.getInt("MAX(de_id)");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -29,21 +27,18 @@ public class discountDao {
 		return cnt;
 	}
 	
-	public int insertDiscount(discountVo vo) {
+	public int insertDelivery(deliveryVo vo) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
-			conn = ConnUtil.getConnection();  //Column 5개 중 1개 Auto_inrement(dis_id)
-			String sql = "insert into discount values(null,?,?,?,?)";
+			conn = ConnUtil.getConnection();
+			String sql = "insert into delivery values(null,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, vo.getDis());
-			ps.setInt(2,vo.getDis_method());
-			
-			ps.setInt(3,vo.getDis_rate());
-			ps.setInt(4,vo.getDis_value());
-			
-			
+			ps.setInt(1, vo.getDe_method());
+			ps.setInt(2, vo.getDe_price());
+			ps.setInt(3, vo.getDe_price_exception());
+			ps.setInt(4, vo.getDe_price_condition());
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

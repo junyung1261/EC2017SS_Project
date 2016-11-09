@@ -5,9 +5,7 @@
 <jsp:useBean id="vo" class="ec.company.companyVo" />
 <jsp:setProperty property="*" name="vo" />
 <%
-	System.out.println("업체생성프로시저진입");
 	int rst = 0;
-	
 	rst = dao.insertCompany(vo);
 	if (rst > 0) {
 %>

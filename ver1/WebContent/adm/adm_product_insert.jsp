@@ -5,6 +5,7 @@
 <%@ page import="ec.company.*" %>
 <%@ page import="ec.product.*" %>
 <%@ page import="ec.discount.*" %>
+<%@ page import="ec.delivery.*" %>
 <%@ page import="ec.color.*" %>
 <%@ page import="ec.size.*" %>
 <%@ page import="ec.category_product.*" %>
@@ -45,6 +46,10 @@
 	/*DB저장되어있는 dis_id 최대값*/
 	discountDao disDao = new discountDao();
 	int dis_index = disDao.discountIdMax();
+	
+	/*DB저장되어있는 de_id 최대값*/
+	deliveryDao deDao = new deliveryDao();
+	int de_index = deDao.deliveryMax();
 	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -127,7 +132,8 @@
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">상품등록번호 <span class="required">*</span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
 	                        <input type="text" id="pd_index" name="pd_index" value="<%=pd_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
-	                        <input type="text" id="dis_index" name="dis_index" value="<%=dis_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
+	                        <input type="hidden" id="dis_index" name="dis_index" value="<%=dis_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
+	                        <input type="hidden" id="de_index" name="de_index" value="<%=de_index+1%>" class="form-control col-md-12 col-xs-12" readonly>
 	                      </div>
 	                    </div>
                         <div class="form-group">
@@ -303,26 +309,32 @@
 	                 	<div class="col-md-12"> 
 	                 	  <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">배송방법 <span class="required">*</span></label>
-	                      <div class="col-md-2 col-sm-2 col-xs-12">
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
 	                      	<div class="radio">
-	                      	<label><input type="radio" value="0" id="de_method" name="de_method" checked>&nbsp;무료배송&nbsp;&nbsp;&nbsp;</label>
-                            <label><input type="radio" value="1" id="de_method" name="de_method">&nbsp;기본배송비&nbsp;</label>
+	                      	<label><input type="radio" value="0" id="de_method" name="de_method" onclick='de_radio(this)' checked>&nbsp;기본배송비&nbsp;&nbsp;&nbsp;</label>
+                            <label><input type="radio" value="1" id="de_method" name="de_method" onclick='de_radio(this)'>&nbsp;무료배송&nbsp;</label>
+                            <label><input type="radio" value="2" id="de_method" name="de_method" onclick='de_radio(this)'>&nbsp;조건부 무료배송&nbsp;</label>
                           	</div>
                           </div>
                           </div>
-                          <div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본배송비</label>
-	                      <div class="col-md-1 col-sm-1 col-xs-12">
-	                        <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12">
+                          <div id="de_div1" class="form-group">
+	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본배송비</label>
+	                        <div class="col-md-1 col-sm-1 col-xs-12">
+	                          <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12">
+	                        </div>
+	                        <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name">도서/산간</label>
+	                        <div class="col-md-1 col-sm-1 col-xs-12">
+	                          <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12">
+	                        </div>
 	                      </div>
-	                      <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name">도서/산간</label>
-	                      <div class="col-md-1 col-sm-1 col-xs-12">
-	                        <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12">
+	                      <div id="de_div2" class="form-group" style="display:none">
+	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">조건부 무료배송</label>
+	                        <div class="col-md-3 col-sm-3 col-xs-12">
+	                          <input type="text" id="de_price_condition" name="de_price_condition" class="form-control col-md-12 col-xs-12" placeholder="주문최소금액">
+	                        </div>
 	                      </div>
-	                    </div>
 	                    </div>
 	                 	</div>
-	                 </div>
 	                 
 	                 <div class="ln_solid"></div>
 	                 <div class="row">
@@ -331,7 +343,7 @@
 	                      <div class="col-md-12 col-sm-12 col-xs-12">
 	                        <button type="submit" class="btn btn-primary pull-right">작성완료</button>
 	                        <button type="button" class="btn btn-danger pull-right">작성취소</button>	                        
-	                      </div>
+	                      </div> 
 	                    </div>
 	                  </div>
 	                  </div>
@@ -388,7 +400,7 @@
     		dis_div3.style.display = "block";
     	}
     }
-    
+
     function dis_method_radio(e){
     	var fm = document.productInfo;
     	if(fm.dis_method[0].checked==true){
@@ -399,6 +411,22 @@
     	else if(fm.dis_method[1].checked==true){
     		dis_div2.style.display = "block";
     		dis_div3.style.display = "none";
+    	}
+    }
+    
+    function de_radio(e){
+    	var fm = document.productInfo;
+    	if(fm.de_method[0].checked==true){
+    		de_div1.style.display = "block";
+    		de_div2.style.display = "none"; 
+    	}
+    	else if(fm.de_method[1].checked==true){
+    		de_div1.style.display = "none";
+    		de_div2.style.display = "none";
+    	}
+    	else if(fm.de_method[2].checked==true){
+    		de_div1.style.display = "none";
+    		de_div2.style.display = "block";
     	}
     }
     </script>
