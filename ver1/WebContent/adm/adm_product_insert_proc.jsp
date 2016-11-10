@@ -76,7 +76,7 @@
 	System.out.println("mileage ÁøÀÔ");
 	rst7 = milDao.insertMileage(milVo, pd_id); 
    
-	rst = rst1 * rst2 * rst3 * rst4 * rst5 * rst6 ;
+	rst = rst1 * rst2 * rst3 * rst4 * rst5 * rst6 * rst7 ;
    
 	if (rst > 0) {
 %>

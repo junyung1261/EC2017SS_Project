@@ -46,6 +46,7 @@
       </li>
       <li><a><i class="fa fa-user-plus"></i> 회원관리<span class="fa fa-chevron-down"></span></a>
         <ul class="nav child_menu">
+          <li><a href="adm_member_insert.jsp">회원 신규등록</a></li>
           <li><a href="adm_member.jsp">회원 리스트</a></li>
           <li><a href="adm_member_grade.jsp">회원 등급관리</a></li>
         </ul>

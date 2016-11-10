@@ -1,9 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.member.*" %>
+<%@ page import="ec.member_address.*" %>
+<%@ page import="ec.member_grade.*" %>
+
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	memberDao mdao = new memberDao();
+	ArrayList<memberVo> memberList = new ArrayList<memberVo>();
+	memberList = mdao.memberList(1, 0);
+	
+	member_addressDao madao = new member_addressDao();
+	member_gradeDao mgdao = new member_gradeDao();
+	
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -171,20 +184,15 @@
 			                      <li class="dropdown">
 			                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
 			                        <ul class="dropdown-menu" role="menu">
-			                          <li><a href="#">Settings 1</a>
-			                          </li>
-			                          <li><a href="#">Settings 2</a>
-			                          </li>
+			                          <li><a href="#">Settings 1</a></li>
+			                          <li><a href="#">Settings 2</a></li>
 			                        </ul>
 			                      </li>
-			                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-			                      </li>
+			                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
 			                    </ul>
 			                    <div class="clearfix"></div>
 			                  </div>
-			                  <div class="x_content">
-							    <div id="echart_sonar" style="height:370px;"></div>
-			                  </div>
+			                  <div class="x_content"><div id="echart_sonar" style="height:370px;"></div></div>
 			                </div>
 			              </div>
                           
@@ -193,25 +201,19 @@
 			                  <div class="x_title">
 			                    <h2>회원 연령대 - 성별 분석 (iOS)</h2>
 			                    <ul class="nav navbar-right panel_toolbox">
-			                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-			                      </li>
+			                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
 			                      <li class="dropdown">
 			                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
 			                        <ul class="dropdown-menu" role="menu">
-			                          <li><a href="#">Settings 1</a>
-			                          </li>
-			                          <li><a href="#">Settings 2</a>
-			                          </li>
+			                          <li><a href="#">Settings 1</a></li>
+			                          <li><a href="#">Settings 2</a></li>
 			                        </ul>
 			                      </li>
-			                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-			                      </li>
+			                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
 			                    </ul>
 			                    <div class="clearfix"></div>
 			                  </div>
-			                  <div class="x_content">
-							    <div id="echart_sonar2" style="height:370px;"></div>
-			                  </div>
+			                  <div class="x_content"><div id="echart_sonar2" style="height:370px;"></div></div>
 			                </div>
 			              </div>
 			              </div>
@@ -222,50 +224,43 @@
 	                        <tr>
 	                          <th><input type="checkbox" id="check-all" class="flat"></th>
 	                          <th>회원번호</th>
-	                          <th>ID</th>
-	                          <th>이름</th>
-	                          <th>E-mail</th>
-	                          <th>연락처</th>
+	                          <th>유입경로</th>
+	                          <th>회원ID</th>
 	                          <th>생년월일</th>
 	                          <th>성별</th>
-	                          <th>우편번호</th>
-	                          <th>주소</th>
-	                          <th>가입일</th>
-	                          <th>유입경로</th>
-	                          <th>정보변경</th>                          
+	                          <th>메세지 수신</th>
+	                          <th>연락처</th>
+	                          <th>회원등급</th>
+	                          <th>가입시간</th>    
+	                          <th>수령인명</th>
+	                          <th>수령인 우편번호</th>
+	                          <th>수령인 주소</th>                 
 	                        </tr>
 	                      </thead>
 	                      <tbody>
+	                      <%for(memberVo mvo : memberList){ 
+	                    	  member_addressVo mavo = madao.getMemberInfo(mvo.getMem_id());
+	                    	  member_gradeVo mgvo = mgdao.getMemberGradeInfo(mvo.getMem_grade());
+	                    	 %>
 	                        <tr>
 	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td>1</td>
-	                          <td>client1</td>
-	                          <td>David Lee</td>
-	                          <td>kstuve321232@gmail.com</td>
-	                          <td>010-2121-1313</td>
-	                          <td>1949-12-31</td>
-	                          <td>남</td>
-	                          <td>135-797</td>
-	                          <td>서울특별시 동작구 상도동 7-113 B102</td>
-	                          <td>2016-11-03</td>
-	                          <td>Android</td>
-	                          <td></td>   
+	                          <td><%=mvo.getMem_id() %></td>
+	                          <td><%if(mvo.getMem_method()==0){ %>안드로이드<%}else{ %>iOS<%} %></td>
+	                          <td><%=mvo.getMem_user_id() %></td>
+	                          <td><%=mvo.getMem_birth() %></td>
+	                          <td><%if(mvo.getMem_gender()==0){%>남자<%}else{%>여자<%} %></td>
+	                          <td><%if(mvo.getMem_msg_receive()==1){ %>미수신<%}else{%>수신<%} %></td>
+	                          <td><%=mvo.getMem_phone() %></td>
+	                          <td><%=mgvo.getMg_name_ko() %></td>
+	                          <td><%=mvo.getMem_reg() %></td>
+	                          <td><%if(mavo.getMa_name_recipient()==null){ %>수령인 미기재<%}
+	                          		else{ %><%=mavo.getMa_name_recipient() %><%} %></td>
+	                          <td><%if(mavo.getMa_addr_zipcode()==null){ %>우편번호 미기재 <%}
+	                          		else{ %><%=mavo.getMa_addr_zipcode() %><%} %></td>
+	                          <td><%if(mavo.getMa_addr_base()==null){ %>주소 미기재<%}
+	                          		else{%><%=mavo.getMa_addr_base()%><%}%></td>
 	                        </tr>
-	                        <tr>
-	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td>2</td>
-	                          <td>client2</td>
-	                          <td>David Lee2</td>
-	                          <td>kstuve321232@gmail.com</td>
-	                          <td>010-2121-1313</td>
-	                          <td>1949-12-31</td>
-	                          <td>남</td>
-	                          <td>135-797</td>
-	                          <td>서울특별시 동작구 상도동 7-113 B102</td>
-	                          <td>2016-11-03</td>
-	                          <td>iOS</td>
-	                          <td></td>                    
-	                        </tr>
+	                       <%} %>
 	                      </tbody>
 	                    </table>
                         </div>

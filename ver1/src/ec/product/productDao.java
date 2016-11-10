@@ -10,7 +10,6 @@ import ec.connUtil.ConnUtil;
 public class productDao {
 
 	public int nextInsertProductId() {
-		System.out.println("¡¯¿‘");
 		int cnt = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
