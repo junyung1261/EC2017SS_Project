@@ -1,9 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.member.*"%>
+<%@ page import = "ec.ec_charge.*,ec.ec_pay.*,ec.ec_refund.*,ec.ec_total.*" %>
+
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	memberDao mdao = new memberDao();
+	ArrayList<memberVo> memberList = new ArrayList<memberVo>();
+	memberList = mdao.memberList(1,0);	//회원 전체 리스트
+	
+	ecDao ecdao = new ecDao();
+	epDao epdao = new epDao();
+	erDao erdao = new erDao();
+	etDao etdao = new etDao();
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -265,48 +278,40 @@
                           <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
 	                      <thead>
 	                        <tr>
+	                          <th>회원번호</th>
 	                          <th>회원ID</th>
-	                          <th>회원 등급</th>
 	                          <th>유입 경로</th>
 	                          <th>캐취 충전</th>
 	                          <th>캐쉬 사용</th>
 	                          <th>캐쉬 환불</th>
-	                          <th>보유 캐쉬</th>
-	                          <th>마지막 충전일자</th>
-	                          <th>마지막 충전금액</th>
-	                          <th>마지막 사용일자</th>
-	                          <th>마지막 사용금액</th>
+	                          <th>캐쉬 잔액</th>
+	                          <th>마지막 충전시간</th>
+	                          <th>마지막 사용시간</th>
+	                          <th>마지막 환불시간</th>
 	                          <th>상세보기</th>
 	                        </tr>
 	                      </thead>
 	                      <tbody>
+	                      <%for(memberVo mvo:memberList){  %>
 	                        <tr>
-	                          <td>client1</td>
-	                          <td>브론즈</td>
-	                          <td>Android</td>
-	                          <td>￦ 300,000</td>
-	                          <td>￦ 40,000</td>
-	                          <td>￦ 40,000</td>
-	                          <td>￦ 220,000</td>
-	                          <td>2016-11-03</td>
-	                          <td>￦ 300,000</td>
-	                          <td>2016-11-04</td>
-	                          <td>￦ 40,000</td>
+	                          <td><%=mvo.getMem_id() %></td>
+	                          <td><%=mvo.getMem_user_id() %>&nbsp;<i class="fa fa-external-link"></i></td>
+	                          <td><%if(mvo.getMem_method()==0){ %>안드로이드<%}else{ %>iOS<%} %></td>
+	                          <td>￦ <%=ecdao.getTotalCharge(mvo.getMem_id()) %></td>
+	                          <td>￦ <%=epdao.getTotalPay(mvo.getMem_id()) %></td>
+	                          <td>￦ <%=erdao.getTotalRefund(mvo.getMem_id()) %></td>
+	                          <td>￦ <%=etdao.getTotal(mvo.getMem_id()) %></td>
+	                          <td><%if(ecdao.getRecentChargeTime(mvo.getMem_id())==null){ %>충전기록없음<%}else{ %>
+	                              <%=ecdao.getRecentChargeTime(mvo.getMem_id()) %><%} %>
+	                          </td>
+	                          <td><%if(epdao.getRecentPayTime(mvo.getMem_id())==null){ %>사용기록없음<%}else{ %>
+	                              <%=epdao.getRecentPayTime(mvo.getMem_id()) %><%} %> 
+	                          </td>
+	                          <td><%if(erdao.getRecentRefundTime(mvo.getMem_id())==null){ %>환불기록없음<%}else{ %>
+	                              <%=erdao.getRecentRefundTime(mvo.getMem_id()) %><%} %>  
+	                          </td>
 	                          <td>오류검증Alg+버튼</td>
-	                        </tr>
-	                        <tr>
-	                          <td>client2</td>
-	                          <td>다이아몬드</td>
-	                          <td>iOS</td>
-	                          <td>￦ 1,000,000</td>
-	                          <td>￦ 400,000</td>
-	                          <td>￦ 100,000</td>
-	                          <td>￦ 500,000</td>
-	                          <td>2016-11-03</td>
-	                          <td>￦ 700,000</td>
-	                          <td>2016-11-04</td>
-	                          <td>￦ 200,000</td>
-	                          <td>오류검증Alg+버튼</td>
+	                      <%} %>
 	                        </tr>
 	                      </tbody>
 	                    </table>

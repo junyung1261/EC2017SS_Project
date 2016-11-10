@@ -138,13 +138,13 @@
 	                      <thead>
 	                        <tr>
 	                          <th><input type="checkbox" id="check-all" class="flat"></th>
-	                          <th>ID</th>
-	                          <th>이름</th>
+	                          <th>회원번호</th>
+	                          <th>회원ID</th>
 	                          <th>유입경로</th>
+	                          <th>예금주</th>
 	                          <th>은행</th>
 	                          <th>계좌번호</th>
-	                          <th>계좌등록일</th>
-	                          <th>정보변경</th>                          
+	                          <th>정보변경시간</th>                          
 	                        </tr>
 	                      </thead>
 	                      <tbody>

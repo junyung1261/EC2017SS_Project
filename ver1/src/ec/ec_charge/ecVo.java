@@ -1,11 +1,11 @@
 package ec.ec_charge;
 
 public class ecVo {
-	private int ec_id;
-	private int ec_mem_id;
-	private int ec_how;
-	private int ec_value;
-	private String ec_time;
+	private int ec_id;			//기본 id PK, AUTO
+	private int ec_mem_id;		//회원 id
+	private int ec_how;			//ec 충전방식 (0:최초충전  1:휴대폰소액결제 2: ..)
+	private int ec_value;		//ec 충전금액
+	private String ec_time;		//ec 충전시간
 	
 	public int getEc_id() {
 		return ec_id;

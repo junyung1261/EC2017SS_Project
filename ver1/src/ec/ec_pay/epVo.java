@@ -3,7 +3,7 @@ package ec.ec_pay;
 public class epVo {
 	private int ep_id;
 	private int ep_mem_id;
-	private int ep_where;
+	private int ep_where;		//ec 사용처 (0:최초 관리자 설정 , 1: 상품구매 ..)
 	private int ep_value;
 	private String ep_time;
 	
