@@ -3,7 +3,7 @@
    pageEncoding="EUC-KR"%>
 <%@ page import = "java.util.*"%>
 <%@ page import = "ec.date.*" %>
-<%@ page import = "ec.member.*,ec.member_address.*" %>
+<%@ page import = "ec.member.*,ec.member_address.*, ec.member_account.*" %>
 <%@ page import = "ec.mileage_charge.*, ec.mileage_pay.*, ec.mileage_total.*" %>
 <%@ page import = "ec.ec_charge.*,ec.ec_pay.*,ec.ec_refund.*,ec.ec_total.*" %>
 <%@ page import = "ec.rel.*" %>
@@ -17,62 +17,63 @@
 <jsp:useBean id="mavo" class="ec.member_address.member_addressVo" />
 <jsp:setProperty property="*" name="mavo" />
 
+<jsp:useBean id="macdao" class="ec.member_account.member_accountDao" />
+<jsp:useBean id="macvo" class="ec.member_account.member_accountVo" />
+<jsp:setProperty property="*" name="macvo" />
+
 <%	int mem_id = mdao.nextInsertMemberId();
 	dateDao d = new dateDao();
 	dateVo v = d.getToday();
 	String now = v.getMonth()+"/"+v.getDate()+"/"+v.getYear()+" "+v.getHour()+":"+v.getMinute()+":"+v.getSecond();
-	
-    System.out.println(mvo.getMem_user_id());
-    
-	int rst = 0;  //total error
-	int rst1 = 0; //insert member error
-   	int rst2 = 0; //insert memer_delivery error
-   	int rst3 = 0; //insert mileage_charge initialize error
-   	int rst4 = 0; //insert mileage_pay initialize error
-   	int rst5 = 0; //insert mileage_total initialize error
-   	int rst6 = 0; //insert ec_charge initialize error
-   	int rst7 = 0; //insert ec_pay initialize error
-   	int rst8 = 0; //insert ec_refund initialize error
-   	int rst9 = 0; //insert ec_total initialize error
-   	
-	///////////////////////////////////////////////////////////////////////////
+
+	int[] rst = new int[11];
+
+	rst[0]=1;
+	///////////////////////////////////////////////////////////////////////////////////////////////////
 	System.out.println("member 진입");
-	rst1 = mdao.insertMember(mvo);  
-	///////////////////////////////////////////////////////////////////////////
+	rst[1] = mdao.insertMember(mvo);											  //insert member error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
 	System.out.println("member_address 생성");
-	rst2 = madao.insertMemberAddress(mavo, mem_id); 
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("mileage_charge 생성");	//가입 시 마일리지 최초 0원 설정
+	rst[2] = madao.insertMemberAddress(mavo, mem_id);					  //insert member_address error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("member_account 생성");
+	rst[3] = macdao.insertMemberAccount(macvo, mem_id, now);			  //insert member_account error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("mileage_charge 생성");
 	mcDao mcdao = new mcDao();
-   	rst3 = mcdao.mileageChargeInitial(mem_id,now);
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("mileage_pay 생성");	//가입 시 마일리지 최초 0원 설정
+   	rst[4] = mcdao.mileageChargeInitial(mem_id,now);		   //insert mileage_charge initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("mileage_pay 생성");
 	mpDao mpdao = new mpDao();
-	rst4 = mpdao.mileagePayInitial(mem_id,now);
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("mileage_total 생성");	//가입 시 마일리지 최초 0원 설정
+	rst[5] = mpdao.mileagePayInitial(mem_id,now);			      //insert mileage_pay initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("mileage_total 생성");	
 	mtDao mtdao = new mtDao();
-	rst5 = mtdao.mileageTotalInitial(mem_id,now);
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_charge 생성");	    //가입 시 최초 0원 설정
+	rst[6] = mtdao.mileageTotalInitial(mem_id,now);				//insert mileage_total initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("ec_charge 생성");	 
 	ecDao ecdao = new ecDao();
-   	rst6 = ecdao.ecChargeInitial(mem_id, now);
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_charge 생성");	    //가입 시 최초 0원 설정
+   	rst[7] = ecdao.ecChargeInitial(mem_id, now);					//insert ec_charge initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("ec_charge 생성");	 
 	epDao epdao = new epDao();
-   	rst7 = epdao.ecPayInitial(mem_id, now);
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_total 생성");	//가입 시 최초 0원 설정
+   	rst[8] = epdao.ecPayInitial(mem_id, now);						   //insert ec_pay initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("ec_total 생성");	
 	erDao erdao = new erDao();
-	rst8 = erdao.ecRefundInitial(mem_id, now); 
-	///////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_total 생성");	//가입 시 최초 0원 설정
+	rst[9] = erdao.ecRefundInitial(mem_id, now);					//insert ec_refund initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	System.out.println("ec_total 생성");
 	etDao etdao = new etDao();
-   	rst9 = etdao.ecTotalInitial(mem_id, now); 
-	///////////////////////////////////////////////////////////////////////////
-	rst = rst1 * rst2 * rst3 * rst4 * rst5 * rst6 * rst7 * rst8 * rst9 ;
+   	rst[10] = etdao.ecTotalInitial(mem_id, now);					 //insert ec_total initialize error
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	for(int i=1;i==10;i++){
+		rst[0] = rst[0]*rst[i];
+	}
+
    
-	if (rst > 0) {
+	if (rst[0] > 0) {
 %>
 <script type="text/javascript">
 	alert("회원 추가 성공");

@@ -2,8 +2,9 @@
     pageEncoding="EUC-KR"%>
 <%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
-<%@ page import="ec.member.*" %>
-<%@ page import="ec.member_grade.*" %>
+<%@ page import="ec.bank.*" %>
+<%@ page import="ec.member.*, ec.member_grade.*" %>
+
 <%  request.setCharacterEncoding("euc-kr"); %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
@@ -12,6 +13,10 @@
 	
 	memberDao mdao = new memberDao();
 	int mem_id = mdao.nextInsertMemberId();
+	
+	bankDao bdao = new bankDao();
+	ArrayList<bankVo> bankList = new ArrayList<bankVo>();
+	bankList = bdao.bankList();
 	
 	member_gradeDao mgdao = new member_gradeDao();
 	ArrayList<member_gradeVo> member_gradeList = new ArrayList<member_gradeVo>();
@@ -197,23 +202,24 @@
 	                 	<div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">예금주명</label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="mb_name" name="mb_name" class="form-control col-md-12 col-xs-12">
+	                        <input type="text" id="mac_name" name="mac_name" class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                    </div>
 	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12">환불계좌은행<span class="required"></span></label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <select id="mb_bank" name="mb_bank" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">
-	                          <option></option>
-	                          <option>신한은행</option>
-	                          <option>우리은행</option>
+	                        <select id="mac_bank" name="mac_bank" class="select2_single form-control col-md-12 col-xs-12" tabindex="-1">
+	                        <option></option>
+	                        <%for(bankVo bvo : bankList){ %>
+	                          <option value="<%=bvo.getBank_id()%>"><%=bvo.getBank_name() %></option>
+	                        <%} %>
 	                        </select>
 	                      </div>
 	                    </div>
 	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">환불계좌번호</label>
 	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                        <input type="text" id="mb_account" name="mb_account"  class="form-control col-md-12 col-xs-12">
+	                        <input type="text" id="mac_account" name="mac_account"  class="form-control col-md-12 col-xs-12">
 	                      </div>
 	                    </div>
 	                  </div>

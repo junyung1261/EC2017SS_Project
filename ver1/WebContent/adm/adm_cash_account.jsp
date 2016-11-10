@@ -1,9 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.member.*, ec.member_account.*" %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	memberDao mdao = new memberDao();
+	ArrayList<memberVo> memberList = new ArrayList<memberVo>();
+	memberList = mdao.memberList(1, 0);
+	
+	member_accountDao macdao = new member_accountDao();
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -116,10 +124,8 @@
 			                      <li class="dropdown">
 			                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
 			                        <ul class="dropdown-menu" role="menu">
-			                          <li><a href="#">Settings 1</a>
-			                          </li>
-			                          <li><a href="#">Settings 2</a>
-			                          </li>
+			                          <li><a href="#">Settings 1</a></li>
+			                          <li><a href="#">Settings 2</a></li>
 			                        </ul>
 			                      </li>
 			                      <li><a class="close-link"><i class="fa fa-close"></i></a>
@@ -137,7 +143,6 @@
                           <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action">
 	                      <thead>
 	                        <tr>
-	                          <th><input type="checkbox" id="check-all" class="flat"></th>
 	                          <th>회원번호</th>
 	                          <th>회원ID</th>
 	                          <th>유입경로</th>
@@ -148,26 +153,19 @@
 	                        </tr>
 	                      </thead>
 	                      <tbody>
+	                      <%for(memberVo mvo : memberList){ 
+	                      	member_accountVo macvo = macdao.getMemberAccountInfo(mvo.getMem_id());
+	                      %>
 	                        <tr>
-	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td>client1</td>
-	                          <td>David Lee</td>
-	                          <td>iOS</td>
-	                          <td>우리</td>
-	                          <td>1002-111-222222</td>
-	                          <td>2016-11-03</td>
-	                          <td></td>   
+	                          <td><%=mvo.getMem_id() %></td>
+	                          <td><%=mvo.getMem_user_id() %></td>
+	                          <td><%if(mvo.getMem_method()==0){ %>안드로이드<%}else{ %>iOS<%} %></td>
+	                          <td><%if(macvo.getMac_name()==null){ %>미기재<%}else{ %><%=macvo.getMac_name()%><%} %></td>
+	                          <td><%if(macvo.getMac_bank()==0){ %>미기재<%}else{ %><%=macvo.getMac_bank()%><%} %></td>
+	                          <td><%if(macvo.getMac_account()==null){ %>미기재<%}else{ %><%=macvo.getMac_account()%><%} %></td>
+	                          <td><%=macvo.getMac_reg() %></td>   
 	                        </tr>
-	                        <tr>
-	                          <td><input type="checkbox" class="flat" name="table_records"></td>
-	                          <td>client2</td>
-	                          <td>David Lee</td>
-	                          <td>Android</td>
-	                          <td>신한</td>
-	                          <td>110-111-222222</td>
-	                          <td>2016-11-03</td>
-	                          <td></td>                   
-	                        </tr>
+	                       <%} %>
 	                      </tbody>
 	                      </table>
                         </div>
