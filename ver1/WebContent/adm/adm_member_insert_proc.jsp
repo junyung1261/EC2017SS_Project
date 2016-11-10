@@ -4,7 +4,7 @@
 <%@ page import = "java.util.*"%>
 <%@ page import = "ec.member.*" %>
 <%@ page import = "ec.member_address.*" %>
-<%@ page import = "ec.member_mileage_charge.*" %>
+<%@ page import = "ec.mileage_charge.*" %>
 <%@ page import = "ec.member_ec_charge.*" %>
 <%@ page import = "ec.rel.*" %>
 
@@ -17,9 +17,9 @@
 <jsp:useBean id="mavo" class="ec.member_address.member_addressVo" />
 <jsp:setProperty property="*" name="mavo" />
 
-<jsp:useBean id="mmcdao" class="ec.member_mileage_charge.mmcDao" />
-<jsp:useBean id="mmcvo" class="ec.member_mileage_charge.mmcVo" />
-<jsp:setProperty property="*" name="mmcvo" />
+<jsp:useBean id="mcdao" class="ec.mileage_charge.mcDao" />
+<jsp:useBean id="mcvo" class="ec.mileage_charge.mcVo" />
+<jsp:setProperty property="*" name="mcvo" />
 
 <jsp:useBean id="mecdao" class="ec.member_ec_charge.mecDao" />
 <jsp:useBean id="mecvo" class="ec.member_ec_charge.mecVo" />
@@ -40,7 +40,7 @@
 	rst2 = madao.insertMemberAddress(mavo, mem_id); 
 	///////////////////////////////////////////////////////////////////////////
 	System.out.println("member_mileage_charge 진입");	//가입 시 마일리지 최초 0원 설정
-   	rst3 = mmcdao.insertMemberMileageCharge(mmcvo, mem_id);
+   	rst3 = mcdao.mileageCharge(mcvo, mem_id);
 	///////////////////////////////////////////////////////////////////////////
 	System.out.println("member_ec_charge 진입");	//가입 시 최초 0원 설정
    	rst4 = mecdao.insertMemberECCharge(mecvo, mem_id);

@@ -224,12 +224,12 @@
 	                  	<!-- 회원 가입시간 정보전달 -->
 	                  	<input type="hidden" id="mem_reg" name="mem_reg" value="<%=now %>">
 	                    <!-- 마일리지 생성 (기본 0원 컬럼 생성) -->
-	                    <input type="hidden" id="mmc_how" name="mmc_how" value="0">
-	                    <input type="hidden" id="mmc_value" name="mmc_value" value="0">
-	                    <input type="hidden" id="mmc_time" name="mmc_time" value="<%=now%>">
-	                    <input type="hidden" id="mec_how" name="mec_how" value="0">
-	                    <input type="hidden" id="mec_value" name="mec_value" value="0">
-	                    <input type="hidden" id="mec_time" name="mec_time" value="<%=now%>">
+	                    <input type="hidden" id="mc_how" name="mc_how" value="0">
+	                    <input type="hidden" id="mc_value" name="mc_value" value="0">
+	                    <input type="hidden" id="mc_time" name="mc_time" value="<%=now%>">
+	                    <input type="hidden" id="ec_how" name="ec_how" value="0">
+	                    <input type="hidden" id="ec_value" name="ec_value" value="0">
+	                    <input type="hidden" id="ec_time" name="ec_time" value="<%=now%>">
 	                    
 	                    <button type="submit" class="btn btn-primary pull-right">작성완료</button>
 	                    <button type="button" class="btn btn-danger pull-right">작성취소</button>	                        
