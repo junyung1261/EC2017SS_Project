@@ -40,7 +40,7 @@ public class member_gradeDao {
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select * from member_grade where mg_id = ? order by mg_id asc";
+			String sql = "select * from member_grade order by mg_id asc";
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {

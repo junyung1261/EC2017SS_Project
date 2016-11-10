@@ -1,23 +1,21 @@
-package ec.member_ec_pay;
+package ec.ec_refund;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import ec.connUtil.ConnUtil;
 
-public class mepDao {
-	public int insertMemberECCharge(mepVo vo, int mem_id) {
+public class erDao {
+	public int ecRefundInitial(int mem_id, String time) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into member_ec_pay values(null,?,?,?,?)";
+			String sql = "insert into ec_refund values(null,?,0,0,0,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, mem_id);
-			ps.setInt(2, vo.getMep_where());
-			ps.setInt(3, vo.getMep_value());
-			ps.setString(4, vo.getMep_time());
+			ps.setString(2, time);
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {

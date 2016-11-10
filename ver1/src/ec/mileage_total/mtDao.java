@@ -1,18 +1,18 @@
-package ec.mileage_pay;
+package ec.mileage_total;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import ec.connUtil.ConnUtil;
 
-public class mpDao {
-	public int mileagePayInitial(int mem_id, String time) {
+public class mtDao {
+	public int mileageTotalInitial(int mem_id, String time) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into mileage_pay values(null,?,0,0,?)";
+			String sql = "insert into mileage_total values(null,?,0,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, mem_id);
 			ps.setString(2, time);

@@ -6,18 +6,16 @@ import java.sql.PreparedStatement;
 import ec.connUtil.ConnUtil;
 
 public class mcDao {
-	public int mileageCharge(mcVo vo, int mem_id) {
+	public int mileageChargeInitial(int mem_id, String time) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "insert into mileage_charge values(null,?,?,?,?)";
+			String sql = "insert into mileage_charge values(null,?,0,0,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, mem_id);
-			ps.setInt(2, vo.getMc_how());	//0:관리자발급	1:판매자발급
-			ps.setInt(3, vo.getMc_value());
-			ps.setString(4, vo.getMc_time());
+			ps.setString(2, time);
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
