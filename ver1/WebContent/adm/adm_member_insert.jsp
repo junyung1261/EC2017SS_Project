@@ -179,6 +179,12 @@
 	                      </div>
 	                    </div>
 	                    <div class="form-group">
+	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본 수령인 연락처</label>
+	                      <div class="col-md-4 col-sm-4 col-xs-12">
+	                        <input type="text" id="ma_phone_recipient" name="ma_phone_recipient" class="form-control col-md-12 col-xs-12">
+	                      </div>
+	                    </div>
+	                    <div class="form-group">
 	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본 배송지 우편번호</label>
 	                      <div class="col-md-2 col-sm-2 col-xs-12">
 	                        <input type="text" id="ma_addr_zipcode" name="ma_addr_zipcode"  class="form-control col-md-12 col-xs-12" readonly>

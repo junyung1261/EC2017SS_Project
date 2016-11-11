@@ -90,45 +90,16 @@ public class companyDao {
 		return vo;
 	}
 
-	public ArrayList<companyVo> CompanyNameAndIDList() {
+
+	public ArrayList<companyVo> companyList() {
 		ArrayList<companyVo> list = new ArrayList<companyVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select * from company order by co_name asc";
+			String sql =  "select * from company order by co_id asc";
 			ps = conn.prepareStatement(sql);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				companyVo vo = new companyVo();				
-				vo.setCo_id(rs.getString("co_id"));
-				vo.setCo_name(rs.getString("co_name"));
-				list.add(vo);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			ConnUtil.close(rs, ps, conn);
-		}
-		return list;
-	}
-	
-	public ArrayList<companyVo> companyList(int req, String co_id) {
-		ArrayList<companyVo> list = new ArrayList<companyVo>();
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = ConnUtil.getConnection();
-			String sql = null;
-			switch(req){
-				/*전체 리스트*/
-			case 1:
-				sql = "select * from company order by co_id asc";
-				ps = conn.prepareStatement(sql);
-				break;
-			}
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				companyVo vo = new companyVo();

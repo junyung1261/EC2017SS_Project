@@ -4,6 +4,7 @@ public class member_addressVo {
 	private int ma_id;
 	private int ma_mem_id;
 	private String ma_name_recipient;
+	private String ma_phone_recipient;
 	private String ma_addr_zipcode;
 	private String ma_addr_base;
 	
@@ -24,6 +25,12 @@ public class member_addressVo {
 	}
 	public void setMa_name_recipient(String ma_name_recipient) {
 		this.ma_name_recipient = ma_name_recipient;
+	}
+	public String getMa_phone_recipient() {
+		return ma_phone_recipient;
+	}
+	public void setMa_phone_recipient(String ma_phone_recipient) {
+		this.ma_phone_recipient = ma_phone_recipient;
 	}
 	public String getMa_addr_zipcode() {
 		return ma_addr_zipcode;

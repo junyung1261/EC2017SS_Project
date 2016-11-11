@@ -8,7 +8,7 @@ import ec.connUtil.ConnUtil;
 
 public class product_detailDao {
 	// 수정부분 안되면 다십변경  int pd_id, String col_id, String sz_id, int stk_count _//
-	public int insertProductDetail(int pd_id,product_detailVo vo) {
+	public int insertProductDetail(int pd_id, String col_id, String sz_id, int pd_stk_count) {
 		int rst = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -18,9 +18,9 @@ public class product_detailDao {
 			ps = conn.prepareStatement(sql);
 			
 			ps.setInt(1, pd_id);
-			ps.setString(2, vo.getCol_id());
-			ps.setString(3, vo.getSz_id());
-			ps.setInt(4, vo.getPdd_stk_count());
+			ps.setString(2, col_id);
+			ps.setString(3, sz_id);
+			ps.setInt(4, pd_stk_count);
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public class product_detailDao {
 		return rst;
 	}
 	
-	public ArrayList<product_detailVo> getProductColor(int req, int pd_id) {
+	public ArrayList<product_detailVo> getProductColor(int pd_id) {
 		ArrayList<product_detailVo> list = new ArrayList<product_detailVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -54,7 +54,7 @@ public class product_detailDao {
 		}
 		return list;
 	}
-	public ArrayList<product_detailVo> getProductSize(int req, int pd_id) {
+	public ArrayList<product_detailVo> getProductSize(int pd_id) {
 		ArrayList<product_detailVo> list = new ArrayList<product_detailVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -78,4 +78,45 @@ public class product_detailDao {
 		}
 		return list;
 	}
+	public int getProductStock(int pd_id, String col_id, String sz_id) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int cnt = 0;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select pdd_stk_count from product_detail where pd_id = ? and col_id=? and sz_id = ? ";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, pd_id);
+			ps.setString(2, col_id);
+			ps.setString(3, sz_id);
+			rs = ps.executeQuery();
+			rs.next();
+			cnt = rs.getInt("pdd_stk_count");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return cnt;
+	}
+	public int updateProductStock(int pd_id, String col_id, String sz_id){
+		  int rst = 0;
+		  Connection conn = null;
+		  PreparedStatement ps = null;
+		  try{
+		   conn = ConnUtil.getConnection();
+		   String sql = "update product_detail set pdd_stk_count = pdd_stk_count-1 where pd_id = ? and col_id = ? and sz_id = ?;";
+		   ps = conn.prepareStatement(sql);
+		   ps.setInt(1, pd_id);
+		   ps.setString(2, col_id);
+		   ps.setString(3, sz_id);
+		rst = ps.executeUpdate();
+		  }catch(Exception e){
+		   e.printStackTrace();
+		  }finally{
+		   ConnUtil.close(ps, conn);
+		  }
+		  return rst;
+		 }
 }

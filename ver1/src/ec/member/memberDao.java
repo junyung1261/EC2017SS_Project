@@ -100,4 +100,35 @@ public class memberDao {
 		}
 		return list;
 	}
+	
+	public memberVo selectMember(int mem_id) {
+		memberVo vo = new memberVo();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from member where mem_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, mem_id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				vo.setMem_id(rs.getInt("mem_id"));
+				vo.setMem_method(rs.getInt("mem_method"));
+				vo.setMem_user_id(rs.getString("mem_user_id"));
+				vo.setMem_birth(rs.getString("mem_birth"));
+				vo.setMem_gender(rs.getInt("mem_gender"));
+				vo.setMem_msg_receive(rs.getInt("mem_msg_receive"));
+				vo.setMem_phone(rs.getString("mem_phone"));
+				vo.setMem_grade(rs.getInt("mem_grade")); 
+				vo.setMem_reg(rs.getString("mem_reg"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return vo;
+	}
+
 }

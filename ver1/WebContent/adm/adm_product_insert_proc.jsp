@@ -14,10 +14,6 @@
 <jsp:useBean id="vo" class="ec.product.productVo" />
 <jsp:setProperty property="*" name="vo" />
 
-<jsp:useBean id="ddao" class="ec.product_detail.product_detailDao" />
-<jsp:useBean id="dvo" class="ec.product_detail.product_detailVo" />
-<jsp:setProperty property="*" name="dvo" />
-
 <jsp:useBean id="disDao" class="ec.discount.discountDao"/>
 <jsp:useBean id="disVo" class="ec.discount.discountVo"/>
 <jsp:setProperty property="*" name="disVo" />
@@ -36,6 +32,8 @@
    
 	String[] sz_id = request.getParameterValues("sz_id");
 	String[] col_id = request.getParameterValues("col_id");
+	System.out.println(sz_id);
+	System.out.println(col_id);
 	int stk_count = Integer.parseInt((String)request.getParameter("stk_count"));
   
 	String co_id = (String)request.getParameter("co_id");
@@ -55,9 +53,10 @@
 	rst1 = dao.insertProduct(vo);  
 	///////////////////////////////////////////////////////////////////////////
 	System.out.println("product_detail ¡¯¿‘");
+	product_detailDao ddao = new product_detailDao();
 	for(int i = 0; i< col_id.length; i++ ){
 		for(int j = 0; j< sz_id.length; j++){
-			rst2 = pddao.insertProductDetail(pd_id, dvo);
+			rst2 = ddao.insertProductDetail(pd_id, col_id[i], sz_id[j], stk_count);
 		}
 	}
 	///////////////////////////////////////////////////////////////////////////

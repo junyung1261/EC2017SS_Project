@@ -134,7 +134,10 @@
                           <%for(productVo pvo : productList){ %>
                           <div class="col-md-2 col-sm-2 col-xs-2">
 			               <div class="x_panel">
-			                  <div class="x_title"><h2>상품정보조회 </h2><div class="clearfix"></div></div>
+			                  <div class="x_title"><h2>상품정보조회 </h2>
+			                    <button type="button" class="btn btn-warning btn-xs pull-right" onClick="javascript:window.open('adm_order_insert_pop.jsp?pid=<%=pvo.getPd_id() %>','<%=pvo.getPd_id() %>주문','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');">주문</button>
+			                    <div class="clearfix"></div>
+			                  </div>
 			                  <div class="x_content">
 			                    <br />
 			                    <div class="col-md-12 col-sm-12 col-xs-12 profile_left">
@@ -151,12 +154,12 @@
 			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
 			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
 			                        <%
-			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductColor(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getCol_id()%><%} %></li>
 			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
 			                        <%
-			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductSize(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getSz_id()%><%} %></li>
 			                      </ul><div class="ln_solid"></div>
@@ -223,12 +226,12 @@
 			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
 			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
 			                        <%
-			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductColor(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getCol_id()%><%} %></li>
 			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
 			                        <%
-			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductSize(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getSz_id()%><%} %></li>
 			                      </ul><div class="ln_solid"></div>
@@ -295,12 +298,12 @@
 			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
 			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
 			                        <%
-			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductColor(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getCol_id()%><%} %></li>
 			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
 			                        <%
-			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductSize(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getSz_id()%><%} %></li>
 			                      </ul><div class="ln_solid"></div>
@@ -367,12 +370,12 @@
 			                        <li><i class="fa fa-gift user-profile-icon"></i> 상품명 : <%=pvo.getPd_name() %></li>
 			                        <li><i class="fa fa-spinner user-profile-icon"></i> 색상 : 
 			                        <%
-			                    	product_detailList = pddao.getProductColor(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductColor(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getCol_id()%><%} %></li>
 			                        <li><i class="fa fa-user user-profile-icon"></i> 사이즈 : 
 			                        <%
-			                    	product_detailList = pddao.getProductSize(0, pvo.getPd_id());
+			                    	product_detailList = pddao.getProductSize(pvo.getPd_id());
 			                        for(product_detailVo pdvo : product_detailList){ %>
 			                        <%=pdvo.getSz_id()%><%} %></li>
 			                      </ul><div class="ln_solid"></div>
@@ -446,5 +449,7 @@
     <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
+    
+
   </body>
 </html>

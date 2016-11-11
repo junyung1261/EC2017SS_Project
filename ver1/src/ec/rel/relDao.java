@@ -2,6 +2,7 @@ package ec.rel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import ec.connUtil.ConnUtil;
 
@@ -26,6 +27,27 @@ public class relDao {
 			ConnUtil.close(ps, conn);
 		}
 		return rst;
+	}
+	
+	public String getCoByPd(int pd_id) {
+		String result = null;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select co_id from product_company_rel where pd_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, pd_id);
+			rs = ps.executeQuery();
+			rs.next(); 
+			result = rs.getString("co_id");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return result;
 	}
 	/*Product-Category*/
 	public int insertPdCgpRel(int pd_id, int cgp_id) {

@@ -218,5 +218,40 @@ public class productDao {
 		return list;
 	}
 	
+	public productVo getProductInfo(int pd_id) {
+		productVo vo = new productVo();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from product where pd_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, pd_id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				vo.setPd_id(rs.getInt("pd_id"));
+				vo.setPd_name(rs.getString("pd_name"));
+				vo.setPd_status(rs.getInt("pd_status"));
+				vo.setPd_summary(rs.getString("pd_summary"));
+				vo.setPd_main_img(rs.getString("pd_main_img"));
+				vo.setPd_main_img(rs.getString("pd_detail_img"));
+				vo.setPd_reg_date(rs.getString("pd_reg_date"));
+				vo.setPd_modify_date(rs.getString("pd_modify_date"));
+				vo.setPd_sell_count(rs.getInt("pd_sell_count"));
+				vo.setPd_wish_count(rs.getInt("pd_wish_count"));
+				vo.setPd_review_count(rs.getInt("pd_review_count"));
+				vo.setPd_avg_rate(rs.getInt("pd_avg_rate"));
+				vo.setPd_keyword(rs.getString("pd_keyword"));
+				vo.setPd_price(rs.getInt("pd_price"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return vo;
+	}
+	
 	
 }

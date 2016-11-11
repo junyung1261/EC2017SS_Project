@@ -1,9 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>    
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.order.*" %>
+<%@ page import="ec.company.*" %>
+<%@ page import="ec.product.*" %>
+<%@ page import="ec.member.*" %>
+<%@ page import="ec.rel.*" %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	orderDao odao = new orderDao();
+	ArrayList<orderVo> list = new ArrayList<orderVo>();
+	
+	String co_id = null;
+	if(request.getParameter("co_id")!=null){
+		co_id = request.getParameter("co_id");
+		list = odao.orderList(1, co_id);
+	}else{
+		list = odao.orderList(101, null);
+	}
+	
+	companyDao cdao = new companyDao();
+	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
+	companyList = cdao.companyList();
+	
+	productDao pdao = new productDao();
+	memberDao mdao = new memberDao();
+
+	relDao rdao = new relDao();
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -84,18 +110,14 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                    <form class="form-horizontal form-label-left">
+                    <form name="company_list" action="adm_order_pre.jsp" method="post" class="form-horizontal form-label-left">
                       <div class="form-group">
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                          <select name="com_id" class="select2_single form-control">
-                            <option></option>
-                            <option value="company1">Company 1</option>
-                            <option value="company2">Company 2</option>
-                            <option value="company3">Company 3</option>
-                            <option value="company4">Company 4</option>
-                            <option value="company5">Company 5</option>
-                            <option value="company6">Company 6</option>
-                            <option value="company7">Company 7</option>
+                          <select name="co_id" class="select2_single form-control" onChange="javascript:document.company_list.submit()">
+                            <option>업체선택  </option>
+                            <%for(companyVo cvo : companyList){ %>
+                            <option value="<%=cvo.getCo_id()%>"><%=cvo.getCo_name() %></option>
+                            <%} %>
                           </select>
                         </div>
                       </div> 
@@ -166,48 +188,45 @@
                                 <th>사이즈</th>
                                 <th>수량</th>
                                 <th>결제방법</th>
-                                <th>주문금액</th>
-                                <th>배송비</th>
-                                <th>배송방법</th>
+                                <th>결제금액</th>
+                                <th>배송비 결제방식</th>
+                                <th>마일리지 사용</th>
                                 <th>수령인명</th>
                                 <th>수령인 연락처</th>
                                 <th>수령인 주소</th>
                                 <th>상태</th>
+                                <th>결제시간</th>
                               </tr>
                             </thead>
                             <tbody>
+                            <%for(orderVo ovo : list){ %>
                               <tr>
-                                <td>EC00000001  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>MUTNAM&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>EA00000001&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>Black</td>
-                                <td>XL</td>
-                                <td>2</td>
-                                <td>휴대폰 소액결제</td>
-                                <td>￦ 33,300</td>
-                                <td><button type="button" class="btn btn-info btn-xs">선결제</button></td>
-                                <td><button type="button" class="btn btn-success btn-xs">택배</button></td>
-                                <td>김준영</td>
-                                <td>010-8888-8888</td>
-                                <td>서울특별시 동작구 상도1동 7-113 B102</td>
+                                <td><%=ovo.getOrd_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=rdao.getCoByPd(ovo.getOrd_pd_id()) %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=ovo.getOrd_pd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=ovo.getOrd_opt_color() %></td>
+                                <td><%=ovo.getOrd_opt_size() %></td>
+                                <td><%=ovo.getOrd_opt_count() %></td>
+                                <td><%if(ovo.getOrd_account_method()==0){ %>EC Pay<%}
+                                	else if(ovo.getOrd_account_method()==1){%>휴대폰 소액결제<%}
+                                	else if(ovo.getOrd_account_method()==2){%>신용카드<%}
+                                	else if(ovo.getOrd_account_method()==3){%>실시간 계좌이체<%}
+                                	else{%>무통장 입금 <%} %>
+                                </td>
+                                <td><%=ovo.getOrd_account_value() %></td>
+                                <td><button type="button" class="btn btn-info btn-xs">
+                                	<%if(ovo.getOrd_delivery_pay_method()==0){ %>선결제<%}
+                                	else{%>착불<%} %>
+                                	</button>
+                                </td>
+                                <td><button type="button" class="btn btn-success btn-xs"><%=ovo.getOrd_mileage_value() %></button></td>
+                                <td><%=ovo.getOrd_name_recipient() %></td>
+                                <td><%=ovo.getOrd_phone_recipient() %></td>
+                                <td><%=ovo.getOrd_address() %></td>
                                 <td><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">상품준비중</button></td>
+                                <td><%=ovo.getOrd_account_time() %></td>
                               </tr>
-                              <tr>
-                                <td>EC00000002  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>MUTNAM&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>EA00000002&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td>Purple</td>
-                                <td>Free</td>
-                                <td>12</td>
-                                <td>실시간 계좌이체</td>
-                                <td>￦ 133,300</td>
-                                <td><button type="button" class="btn btn-info btn-xs">무료배송</button></td>
-                                <td><button type="button" class="btn btn-success btn-xs">방문수령</button></td>
-                                <td>김준영</td>
-                                <td>010-8888-8888</td>
-                                <td>서울특별시 동작구 상도1동 7-113 102-208</td>
-                                <td><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">상품준비중</button></td>
-                              </tr>
+                              <%} %>
                             </tbody>
                           </table>
                         </div>

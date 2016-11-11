@@ -3,7 +3,7 @@ package ec.delivery;
 public class deliveryVo {
 
 	private int de_id;
-	private int de_method;
+	private int de_method;			//0 기본배송   1무료배송  2조건부무료
 	private int de_price;
 	private int de_price_exception;
 	private int de_price_condition;
