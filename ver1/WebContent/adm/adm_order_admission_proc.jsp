@@ -62,7 +62,11 @@
 	if(ovo.getOrd_mileage()==1){								//마일리지 사용인 경우에
 		totalPrice -= ovo.getOrd_mileage_value();				//사용하려는 값을 받아온다.
 		eachPrice[ord3.length-1] -= ovo.getOrd_mileage_value();
+		
+		
 		eachMileage[ord3.length-1] = ovo.getOrd_mileage_value();
+		
+		
 		//*오류처리 (가지고있는 마일리지보다 더 많은 마일리지 사용이 검출되었을 경우)*//
 	}
 	

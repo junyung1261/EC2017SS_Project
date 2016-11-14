@@ -17,6 +17,7 @@ public class ConnUtil {
    }
 
    public static Connection getConnection() throws SQLException {
+      //String url = "jdbc:mysql://183.109.81.220:3306/ver1?useSSL=true&verifyServerCertificate=false";
       String url = "jdbc:mysql://183.109.81.220:3306/ver1";
       String id = "KimJY";
       String password = "kjy2016^";

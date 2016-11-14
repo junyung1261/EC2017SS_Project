@@ -19,7 +19,7 @@
 	
 	companyDao codao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
-	companyList = codao.CompanyNameAndIDList();
+	companyList = codao.companyList();
 	
 	/*색상 리스트*/
 	colorDao  coldao = new colorDao();

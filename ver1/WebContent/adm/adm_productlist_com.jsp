@@ -14,7 +14,7 @@
 	productDao pdao = new productDao();
 	companyDao cdao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
-	companyList = cdao.companyList(1, null);
+	companyList = cdao.companyList();
 %>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
