@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import ec.connUtil.ConnUtil;
 public class orderDao {
+	//
 	public int orderInitialize(orderVo vo, String ord_opt_color, String ord_opt_size, String ord_opt_count, int ord_account_value,int ord_delivery_pay, int ord_mileage_value, int ord_status, String ord_status_msg) {
 		int rst = 0;
 		Connection conn = null;

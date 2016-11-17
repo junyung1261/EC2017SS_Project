@@ -15,6 +15,7 @@
 	ArrayList<orderVo> list = new ArrayList<orderVo>();
 	
 	String co_id = null;
+	
 	if(request.getParameter("co_id")!=null){
 		co_id = request.getParameter("co_id");
 		list = odao.orderList(0, co_id);
@@ -235,6 +236,7 @@
                             <thead>
                               <tr>
                                 <th>주문번호</th>
+                                <th>추가</th>
                                 <th>업체 ID</th>
                                 <th>상품번호</th>
                                 <th>상품명</th>
@@ -255,6 +257,7 @@
                             %>
                               <tr>
                                 <td><%=ovo.getOrd_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td></td>
                                 <td><%=rdao.getCoByPd(ovo.getOrd_pd_id()) %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
                                 <td><%=ovo.getOrd_pd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
                                 <td><%=pvo.getPd_name() %></td>

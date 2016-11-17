@@ -63,9 +63,13 @@
 		totalPrice -= ovo.getOrd_mileage_value();				//사용하려는 값을 받아온다.
 		eachPrice[ord3.length-1] -= ovo.getOrd_mileage_value();
 		
-		
-		eachMileage[ord3.length-1] = ovo.getOrd_mileage_value();
-		
+		int ableMileage= ovo.getOrd_mileage_value();
+		if(ableMileage>eachPrice[ord3.length-1]){				//마일리지가 세번째 상품 가격보다 클 경우
+			
+			eachMileage[ord3.length-1] = eachPrice[ord3.length-1];		// 세번째 상품 가격만큼 마일리지를 다 쓴다.
+			ableMileage -= eachPrice[ord3.length-1];
+			
+		}
 		
 		//*오류처리 (가지고있는 마일리지보다 더 많은 마일리지 사용이 검출되었을 경우)*//
 	}
