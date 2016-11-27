@@ -1,0 +1,23 @@
+create table company(
+co_id VARCHAR(255) not null primary key,
+co_name VARCHAR(255) not null,
+co_ceo VARCHAR(255) not null,
+co_phone VARCHAR(255) not null,
+co_tel VARCHAR(255) not null,
+co_fax VARCHAR(255) not null,
+co_address VARCHAR(255) not null,
+co_email VARCHAR(255) not null,
+co_delivery VARCHAR(255) not null,
+co_delivery_base int(255) not null,
+co_delivery_exception int(255) not null,
+co_delivery_condition int(255) not null,
+co_reg_num1 VARCHAR(255) not null,
+co_reg_num2 VARCHAR(255) not null,
+co_bank VARCHAR(255) not null,
+co_account VARCHAR(255) not null,
+co_password VARCHAR(255) not null,
+co_grade VARCHAR(255) not null,
+co_reg_date VARCHAR(255) not null,
+co_exp_date VARCHAR(255) not null,
+co_tags VARCHAR(255) not null
+);
