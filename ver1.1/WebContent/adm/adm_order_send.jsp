@@ -1,9 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+
+<%@ page import="java.util.*" %>    
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.order.*" %>
+<%@ page import="ec.company.*" %>
+<%@ page import="ec.product.*,ec.product_detail.*" %>
+<%@ page import="ec.member.*" %>
+<%@ page import="ec.rel.*" %>
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+
+orderDao odao = new orderDao();
+ArrayList<orderVo> list = new ArrayList<orderVo>();
+
+String co_id = null;
+if(request.getParameter("co_id")!=null){
+	co_id = request.getParameter("co_id");
+	list = odao.orderList(102, co_id);
+}else{
+	list = odao.orderList(2, null);
+}
+
+companyDao cdao = new companyDao();
+ArrayList<companyVo> companyList = new ArrayList<companyVo>();
+companyList = cdao.companyList();
+
+product_detailDao pddao = new product_detailDao();
+productDao pdao = new productDao();
+memberDao mdao = new memberDao();
+
+relDao rdao = new relDao();
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -173,44 +201,39 @@
 	                          <th>색상</th>
 	                          <th>사이즈</th>
 	                          <th>주문수량</th>
-	                          <th>배송방법</th>
+	                          <th>택배업체</th>
 	                          <th>송장번호</th>
-	                          <th>수령인</th>
-	                          <th>수령인 주소</th>
-	                          <th>수령인 연락처</th>
+	                         
 	                          <th>상태</th>
 	                        </tr>
 	                      </thead>
 	                      <tbody>
-	                        <tr>
-	                          <td>EC00000001  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                              <td>MUTNAM&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                              <td>EA00000001&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-                              <td>Black</td>
-	                          <td>XL</td>
-	                          <td>2</td>
-	                          <td><button type="button" class="btn btn-info btn-xs">로젠택배</button></td>
-	                          <td>232312121212</td>
-	                          <td>김준영</td>
-	                          <td>서울특별시 동작구 상도1동 7-113 B102</td>
-	                          <td>010-8888-8888</td>
-	                          <td><button type="button" class="btn btn-warning btn-xs">배송중</button></td>
-                            </tr>
-	                        <tr>
-	                          <td>EC00000003  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                              <td>MUTNAM&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                              <td>EA00000003&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-	                          <td>Purple</td>
-	                          <td>Free</td>
-	                          <td>12</td>
-	                          <td><button type="button" class="btn btn-info btn-xs">대한통운</button></td>
-	                          <td>4242211</td>
-	                          <td>김준영</td>
-	                          <td>서울특별시 동작구 상도1동 7-113 102-208</td>
-	                          <td>010-8888-8888</td>
-	                          <td><button type="button" class="btn btn-warning btn-xs">배송완료</button>
-	                          &nbsp;<button type="button" class="btn btn-danger btn-xs">구매확정대기</button></td>
-	                        </tr>
+	                         <%for(orderVo ovo : list){ 
+	                        	 product_detailVo pdvo = pddao.selectByPdd_id(ovo.getPdd_id());
+	                             productVo pvo = pdao.getProductInfo(pdvo.getPd_id());%>
+                              <tr>
+                                <td><%=ovo.getOr_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=rdao.getCoByPd(ovo.getPd_id()) %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=ovo.getPd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=pdvo.getCol_id() %></td>
+                                <td><%=pdvo.getSz_id() %></td>
+                                <td><%=ovo.getOrd_count() %></td>
+                                <td><button type="button" class="btn btn-info btn-xs">
+                                	<%if(ovo.getOrd_delivery_co_id()==0){ %>로젠택배<%}
+                                	else if(ovo.getOrd_delivery_co_id()==1){%>대한통운<%}
+                                	else if(ovo.getOrd_delivery_co_id()==2){%>우체국택배<%}
+                                	else if(ovo.getOrd_delivery_co_id()==3){%>니기미택배<%}
+                                	%>
+                                	</button>
+                                </td>
+                                <td><button type="button" class="btn btn-success btn-xs"><%=ovo.getOrd_delivery_num() %></button></td>
+                               	
+                                <td><%if(ovo.getOrd_status()==200){ %><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">배송중</button><%}
+                                	else if(ovo.getOrd_status()==201){%><button type="button" class="btn btn-danger btn-xs" onClick="javascript:orderPrePopup();">배송완료</button><%}
+                                	else if(ovo.getOrd_status()==202){%><button type="button" class="btn btn-success btn-xs" onClick="javascript:orderPrePopup();">구매확정</button><%}
+                                	%>
+                              </tr>
+                              <%} %>
 	                      </tbody>
 	                    </table>
                         </div>

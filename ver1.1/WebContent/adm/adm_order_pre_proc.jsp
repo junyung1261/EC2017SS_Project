@@ -4,7 +4,8 @@
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
-	String order_id = (String)request.getParameter("oid");
+	String order_id = request.getParameter("oid");
+	System.out.println(order_id);
 	int order_deivery_method = Integer.parseInt((String)request.getParameter("odm"));
 	//odm = 0 ; 택배 
 	//odm = 1 ; 방문수령

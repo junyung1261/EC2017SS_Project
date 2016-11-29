@@ -3,7 +3,7 @@ package ec.order;
 import java.util.ArrayList;
 
 public class orderVo {
-	private	int	or_id;
+	private	long or_id;
 	private	int	mem_id;
 	private String mem_name;
 	private String mem_phone;
@@ -30,15 +30,15 @@ public class orderVo {
 	private int ord_use_mileage;
 	private int ord_delivery_pay;
 	private int ord_delivery_method;
-	private int ord_deliver_co_id;
+	private int ord_delivery_co_id;
 	private int ord_delivery_num;
 	private int ord_status;
 	
 	
-	public int getOr_id() {
+	public long getOr_id() {
 		return or_id;
 	}
-	public void setOr_id(int or_id) {
+	public void setOr_id(long or_id) {
 		this.or_id = or_id;
 	}
 	public int getMem_id() {
@@ -185,11 +185,11 @@ public class orderVo {
 	public void setOrd_delivery_method(int ord_delivery_method) {
 		this.ord_delivery_method = ord_delivery_method;
 	}
-	public int getOrd_deliver_co_id() {
-		return ord_deliver_co_id;
+	public int getOrd_delivery_co_id() {
+		return ord_delivery_co_id;
 	}
-	public void setOrd_deliver_co_id(int ord_deliver_co_id) {
-		this.ord_deliver_co_id = ord_deliver_co_id;
+	public void setOrd_delivery_co_id(int ord_deliver_co_id) {
+		this.ord_delivery_co_id = ord_deliver_co_id;
 	}
 	public int getOrd_delivery_num() {
 		return ord_delivery_num;

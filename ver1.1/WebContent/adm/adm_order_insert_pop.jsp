@@ -51,7 +51,7 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
   </head>
 
-  <body class="" style="overflow-x:hidden; overflow-y:hidden">
+  <body class="" style="overflow-x:hidden; overflow-y:auto">
     <div class="container body">
       <div class="main_container">
         <!-- page content -->

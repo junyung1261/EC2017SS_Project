@@ -210,7 +210,7 @@
 			if (mode == "01") {
 				theForm.method = "post";
 
-				theForm.action = "adm_order_account.jsp";
+				theForm.action = "adm_order_account_pop.jsp";
 
 			} else if (mode == "02") {
 
