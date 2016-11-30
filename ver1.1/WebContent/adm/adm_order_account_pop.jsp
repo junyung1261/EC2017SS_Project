@@ -29,7 +29,8 @@
 	
 			
 	int mem_id = mavo.getMa_id(); // 로그인 회원 1이라고 가정.
-
+	ArrayList<String> co_id_list = new ArrayList<String>();
+		
 	productDao pdao = new productDao();
 	product_detailDao pddao = new product_detailDao();
 
@@ -58,15 +59,19 @@
 			String[] parse = set[i].split(",");
 			product_detailVo pdvo = new product_detailVo();
 			pdvo = pddao.selectByPdd_id(Integer.parseInt(parse[1]));
-
-			pdvo.setPdd_stk_count(Integer.parseInt(parse[2].replace("\"", "")));
-
+	
+			pdvo.setPdd_stk_count(Integer.parseInt(parse[2]));
+			co_id_list.add(parse[3].replace("\"", ""));
 			pdd_id_list.add(pdvo);
 		}
 
 	}
-
-	ArrayList<String> co_list = new ArrayList<String>();
+	HashSet<String> hs = new HashSet<String>(co_id_list);
+	ArrayList<String> co_list = new ArrayList<String>(hs);
+	
+	
+	for(String str : co_list) System.out.println(str);
+	
 	ArrayList<Integer> initial_ord_total = new ArrayList<Integer>();
 	int totalPrice = 0;
 	int total_mileage = 0;
@@ -126,29 +131,37 @@
 													<div class="clearfix"></div>
 												</div>
 												<div class="x_content">
-
+<%
+															int i=1;
+															for(String str: co_list)	{
+															%>
+													배송그룹 <%=i++ %>
 													<table class="table table-bordered">
+													
 														<thead>
 															<tr>
-																<th>#</th>
+																
 																<th>상품정보</th>
 																<th>상품금액/수량</th>
 																<th>주문금액/적립금</th>
 															</tr>
 														</thead>
 														<tbody>
-															<%
 															
-																int i = 0;
-																for (product_detailVo pdvo : pdd_id_list) {
-																	i++;
+															<%
+															for (product_detailVo pdvo : pdd_id_list) {
+																	
+																
 																	productVo pvo = pdao.getProductInfo(pddao.selectByPdd_id(pdvo.getPdd_id()).getPd_id());
 
 																	String co_id = rdao.getCoByPd(pdvo.getPd_id());
-																	totalPrice += pvo.getPd_price() * pdvo.getPdd_stk_count();
+																	
+																	
+																	if(co_id.equalsIgnoreCase(str)){
+																		totalPrice += pvo.getPd_price() * pdvo.getPdd_stk_count();
 															%>
 															<tr>
-																<td rowspan=2><%=i%></td>
+																
 																<td><%=co_id%>/<%=pvo.getPd_name()%><br />
 																	옵션&nbsp;:&nbsp;<%=pdvo.getCol_id()%>/ <%=pdvo.getSz_id()%>
 																<input type="hidden" name="co_id" value="<%=co_id%>">
@@ -180,12 +193,13 @@
 																</td>
 															</tr>
 															<%}%>
+															<%}%>
 															
 
 														</tbody>
 
 													</table>
-													<input type="hidden" name="index" value="<%=i%>">
+												<%}%>
 													
 															
 												</div>

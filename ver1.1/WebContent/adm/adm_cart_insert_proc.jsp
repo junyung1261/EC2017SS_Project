@@ -16,7 +16,7 @@
 <%	
 	int rst = 0;		//주문 데이터베이스 삽입 검증
 	int rst1 = 0;		//주문 시 기존 상품 재고 수량 변경 검증
-	
+	int i=0;
 	memberDao mdao = new memberDao();
 	memberVo mvo = mdao.selectMember(1);
 	
@@ -32,8 +32,19 @@
 	product_detailVo pdvo = pddao.getPdd_info(pd_id, col_id, sz_id);
 	
 	cartDao cdao = new cartDao();
+	ArrayList<cartVo> my_list = cdao.getCart_List(mvo.getMem_id());
 	
-	rst = cdao.insertCart(pdvo, mvo.getMem_id(), opt_count);
+	for(cartVo cvo : my_list){
+		
+		if(pdvo.getPdd_id() == my_list.get(i++).getPdd_id()) {
+			rst = cdao.updateCart_List(mvo.getMem_id(), pdvo.getPdd_id(), opt_count);
+			break;
+			
+		}
+		
+	}
+	System.out.println(i +"" +  my_list.size());
+	if(i==my_list.size()) rst = cdao.insertCart(pdvo, mvo.getMem_id(), opt_count);
 	
 	
 	

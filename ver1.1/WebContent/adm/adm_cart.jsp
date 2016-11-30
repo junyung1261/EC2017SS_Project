@@ -125,7 +125,7 @@
 													<tr>
 														<td class="a-center "><input type="checkbox"
 															class="flat" id="record_id" name="table_records[]"
-															value=<%=mvo.getMem_id()%>,<%=pddvo.getPdd_id()%>,<%=cartvo.getCart_count()%>"></td>
+															value=<%=mvo.getMem_id()%>,<%=pddvo.getPdd_id()%>,<%=cartvo.getCart_count()%>,<%=co_id%>"></td>
 														<td><%=co_id%>/<%=pdvo.getPd_name()%><br /><%=pddvo.getCol_id()%>
 															/ <%=pddvo.getSz_id()%><a
 															href="javascript:orderPopup();"><i

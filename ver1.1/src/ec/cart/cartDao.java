@@ -60,7 +60,7 @@ public class cartDao {
 		PreparedStatement ps = null;
 		try {
 			conn = ConnUtil.getConnection();  
-			String sql = "update cart set count=? where mem_id=? and pdd_id=?";
+			String sql = "update cart set cart_count= cart_count + ? where mem_id=? and pdd_id=?";
 			ps = conn.prepareStatement(sql);
 			
 			ps.setInt(1, count);
