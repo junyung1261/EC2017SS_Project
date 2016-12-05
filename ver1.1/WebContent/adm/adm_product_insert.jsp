@@ -5,7 +5,7 @@
 <%@ page import="ec.company.*" %>
 <%@ page import="ec.product.*" %>
 <%@ page import="ec.discount.*" %>
-<%@ page import="ec.delivery.*" %>
+
 <%@ page import="ec.color.*" %>
 <%@ page import="ec.size.*" %>
 <%@ page import="ec.category_product.*" %>
@@ -314,38 +314,7 @@
 	                    </div>
 	                 </div>
 	               </div>
-	               <div class="ln_solid"></div>
-	                 <div class="row">
-	                 	<div class="col-md-12"> 
-	                 	  <div class="form-group">
-	                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">배송방법 <span class="required">*</span></label>
-	                      <div class="col-md-4 col-sm-4 col-xs-12">
-	                      	<div class="radio">
-	                      	<label><input type="radio" value="0" id="de_method" name="de_method" onclick='de_radio(this)' checked>&nbsp;기본배송비&nbsp;&nbsp;&nbsp;</label>
-                            <label><input type="radio" value="1" id="de_method" name="de_method" onclick='de_radio(this)'>&nbsp;무료배송&nbsp;</label>
-                            <label><input type="radio" value="2" id="de_method" name="de_method" onclick='de_radio(this)'>&nbsp;조건부 무료배송&nbsp;</label>
-                          	</div>
-                          </div>
-                          </div>
-                          <div id="de_div1" class="form-group">
-	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">기본배송비</label>
-	                        <div class="col-md-1 col-sm-1 col-xs-12">
-	                          <input type="text" id="de_price" name="de_price" class="form-control col-md-12 col-xs-12" value="0">
-	                        </div>
-	                        <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name">도서/산간</label>
-	                        <div class="col-md-1 col-sm-1 col-xs-12">
-	                          <input type="text" id="de_price_exception" name="de_price_exception" class="form-control col-md-12 col-xs-12" value="0" >
-	                        </div>
-	                      </div>
-	                      <div id="de_div2" class="form-group" style="display:none">
-	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">조건부 무료배송</label>
-	                        <div class="col-md-3 col-sm-3 col-xs-12">
-	                          <input type="text" id="de_price_condition" name="de_price_condition" class="form-control col-md-12 col-xs-12" value="0" >
-	                        </div>
-	                      </div>
-	                    </div>
-	                 	</div>
-	                 
+	               
 	                 <div class="ln_solid"></div>
 	                 <div class="row">
 	                   <div class="col-md-12">
@@ -442,24 +411,7 @@
     		document.getElementById('dis_rate').value=0;
     	}
     }
-    
-    function de_radio(e){
-    	var fm = document.productInfo;
-    	if(fm.de_method[0].checked==true){
-    		de_div1.style.display = "block";
-    		de_div2.style.display = "none"; 
-    	}
-    	else if(fm.de_method[1].checked==true){
-    		de_div1.style.display = "none";
-    		de_div2.style.display = "none";
-    		document.getElementById('de_price').value=0;
-    		document.getElementById('de_price_exception').value=0;
-    	}
-    	else if(fm.de_method[2].checked==true){
-    		de_div1.style.display = "block";
-    		de_div2.style.display = "block";
-    	}
-    }
+   
     
     function mil_radio(e){
     	var fm = document.productInfo;

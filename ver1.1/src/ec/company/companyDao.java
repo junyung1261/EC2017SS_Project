@@ -25,7 +25,7 @@ public class companyDao {
 			ps.setString(6, vo.getCo_fax());
 			ps.setString(7, vo.getCo_address());
 			ps.setString(8, vo.getCo_email());
-			ps.setString(9, vo.getCo_delivery());
+			ps.setInt(9, vo.getCo_delivery());
 			ps.setInt(10, vo.getCo_delivery_base());
 			ps.setInt(11, vo.getCo_delivery_exception());
 			ps.setInt(12, vo.getCo_delivery_condition());
@@ -68,7 +68,7 @@ public class companyDao {
 				vo.setCo_fax(rs.getString("co_fax"));
 				vo.setCo_address(rs.getString("co_address"));
 				vo.setCo_email(rs.getString("co_email"));
-				vo.setCo_delivery(rs.getString("co_delivery"));
+				vo.setCo_delivery(rs.getInt("co_delivery"));
 				vo.setCo_delivery_base(rs.getInt("co_delivery_base"));
 				vo.setCo_delivery_exception(rs.getInt("co_delivery_exception"));
 				vo.setCo_delivery_condition(rs.getInt("co_delivery_condition"));
@@ -112,7 +112,7 @@ public class companyDao {
 				vo.setCo_fax(rs.getString("co_fax"));
 				vo.setCo_address(rs.getString("co_address"));
 				vo.setCo_email(rs.getString("co_email"));
-				vo.setCo_delivery(rs.getString("co_delivery"));
+				vo.setCo_delivery(rs.getInt("co_delivery"));
 				vo.setCo_delivery_base(rs.getInt("co_delivery_base"));
 				vo.setCo_delivery_exception(rs.getInt("co_delivery_exception"));
 				vo.setCo_delivery_condition(rs.getInt("co_delivery_condition"));

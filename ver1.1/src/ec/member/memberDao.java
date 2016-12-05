@@ -36,7 +36,7 @@ public class memberDao {
 			conn = ConnUtil.getConnection();  //Column 8°³ Áß 1°³ Auto_inrement mem_id
 			String sql = "insert into member values(null,?,?,?,?,?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, vo.getMem_method());
+			ps.setString(1, vo.getMem_method());
 			ps.setString(2, vo.getMem_user_id());
 			ps.setString(3, vo.getMem_password());
 			ps.setString(4, vo.getMem_birth());
@@ -82,7 +82,7 @@ public class memberDao {
 				memberVo vo = new memberVo();
 				
 				vo.setMem_id(rs.getInt("mem_id"));
-				vo.setMem_method(rs.getInt("mem_method"));
+				vo.setMem_method(rs.getString("mem_method"));
 				vo.setMem_user_id(rs.getString("mem_user_id"));
 				vo.setMem_birth(rs.getString("mem_birth"));
 				vo.setMem_gender(rs.getInt("mem_gender"));
@@ -114,7 +114,7 @@ public class memberDao {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				vo.setMem_id(rs.getInt("mem_id"));
-				vo.setMem_method(rs.getInt("mem_method"));
+				vo.setMem_method(rs.getString("mem_method"));
 				vo.setMem_user_id(rs.getString("mem_user_id"));
 				vo.setMem_birth(rs.getString("mem_birth"));
 				vo.setMem_gender(rs.getInt("mem_gender"));

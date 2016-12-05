@@ -8,7 +8,7 @@ public class companyVo {
 	private String co_fax;
 	private String co_address;
 	private String co_email;
-	private String co_delivery;
+	private int co_delivery;
 	private int co_delivery_base;
 	private int co_delivery_exception;
 	private int co_delivery_condition;
@@ -85,11 +85,11 @@ public class companyVo {
 		this.co_email = co_email;
 	}
 
-	public String getCo_delivery() {
+	public int getCo_delivery() {
 		return co_delivery;
 	}
 
-	public void setCo_delivery(String co_delivery) {
+	public void setCo_delivery(int co_delivery) {
 		this.co_delivery = co_delivery;
 	}
 

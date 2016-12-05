@@ -6,13 +6,14 @@
 <%@ page import="ec.order.*" %>
 <%@ page import="ec.color.*" %>
 <%@ page import="ec.member.*" %>
+
 <%	
 	request.setCharacterEncoding("euc-kr"); 
 	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
 	int pd_id = Integer.parseInt((String)request.getParameter("pid"));
-	
+	String co_id = (String)request.getParameter("cid");
 	memberDao mdao = new memberDao();
 	memberVo mvo = mdao.selectMember(1);
 	
@@ -106,7 +107,7 @@
                     <div class="form-group">
                       <label class="control-label col-md-2 col-sm-2 col-xs-12">수량</label>
                       <div class="col-md-10 col-sm-10 col-xs-12">
-                        <input name="opt_count" class="form-control" required = "required">
+                        <input type="text" name="opt_count" class="form-control" required = "required">
                           
                          
                       </div>
@@ -114,7 +115,7 @@
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-12 col-xs-12" >
-                       
+                      <input type="hidden" name="co_id" value="<%=co_id %>">
                      <input type="button" class="btn btn-primary pull-right" value="바로구매" onClick="getPost('01')">
                      <input type="button" class="btn btn-primary pull-right" value="장바구니" onClick="getPost('02')">
                       </div>
@@ -166,17 +167,12 @@
     function changes(){
     	
     	var objSel = document.getElementById("opt_size");
-    	
-    		
-    
-    	
+
     	for(i=objSel.length; i>=0; i--){
     		objSel.options[i]=null;
-    		
     	}
 
     	var sel = document.getElementById("opt_col").value;
-    	
     	
     	<%
     	colorDao cdao = new colorDao();
@@ -200,12 +196,11 @@
     	
     }
     
-    
+    <!-- 01: 바로주문  02: 장바구니 -->
     function getPost(mode){
     	var theForm = document.form_order_insert;
     	if(mode=="01"){
     		theForm.method ="post";
-    		
     		theForm.action ="adm_order_account_pop.jsp";
     		
     	}
@@ -215,7 +210,6 @@
     		
     		theForm.action ="adm_cart_insert_proc.jsp";
     	}
-    	
     	
     	theForm.submit();
     }

@@ -27,29 +27,25 @@ public class mtDao {
 		return rst;
 	}
 	
-	public mtVo getMileageInfo(int pd_id) {
-		mtVo vo = new mtVo();
+	public int getTotal(int mem_id) {
+		int total = 0;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			conn = ConnUtil.getConnection();
-			String sql = "select * from mileage_total where mt_mem_id = ?";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, pd_id);
+				conn = ConnUtil.getConnection();
+				String sql = "select mt_value from mileage_total where mt_mem_id = ?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, mem_id);
+					
 			rs = ps.executeQuery();
-			if (rs.next()) {
-				
-				vo.setMt_id(rs.getInt("mt_id"));
-				vo.setMt_mem_id(rs.getInt("mt_mem_id"));
-				vo.setMt_value(rs.getInt("mt_value"));
-				vo.setMt_time(rs.getString("mt_time"));
-			}
+			rs.next(); 
+			total = rs.getInt("mt_value");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			ConnUtil.close(rs, ps, conn);
+			ConnUtil.close(ps, conn);
 		}
-		return vo;
+		return total;
 	}
 }

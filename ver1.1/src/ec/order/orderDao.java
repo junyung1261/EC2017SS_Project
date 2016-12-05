@@ -36,7 +36,7 @@ public class orderDao {
 			String sql = "insert into order_info values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			
-			
+			System.out.println(datetime+num);
 			
 			
 			ps.setLong	(1, Long.parseLong(datetime+num));

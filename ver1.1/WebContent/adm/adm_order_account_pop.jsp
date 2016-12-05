@@ -4,28 +4,22 @@
 <%@ page import="ec.date.*"%>
 <%@ page import="ec.product.*,ec.product_detail.*"%>
 <%@ page import="ec.member_address.*"%>
-<%@ page import="ec.delivery.*"%>
 <%@ page import="ec.mileage_total.*"%>
+<%@ page import="ec.ec_total.*"%>
 <%@ page import="ec.color.*"%>
 <%@ page import="ec.member.*"%>
 <%@ page import="ec.order.*"%>
 <%@ page import="ec.cart.*"%>
 <%@ page import="ec.rel.*"%>
+<%@ page import="ec.company.*"%>
 
 <%
 	request.setCharacterEncoding("euc-kr");
 	dateDao ddao = new dateDao();
-	dateVo dvo = new dateVo();
-	dvo = ddao.getToday();
-
 	member_addressDao madao = new member_addressDao();
 	member_addressVo mavo = madao.getMemberInfo(1);
-
-	
 		
-	String now =  dvo.getMonth() + "/" + dvo.getDate() + "/" + dvo.getYear() + " " + dvo.getHour() + ":"
-				+ dvo.getMinute() + ":" + dvo.getSecond();
-	
+	String now =  ddao.now();
 	
 			
 	int mem_id = mavo.getMa_id(); // 로그인 회원 1이라고 가정.
@@ -33,9 +27,8 @@
 		
 	productDao pdao = new productDao();
 	product_detailDao pddao = new product_detailDao();
-
-	deliveryDao dedao = new deliveryDao();
 	relDao rdao = new relDao();
+	companyDao cdao = new companyDao();	
 
 	ArrayList<product_detailVo> pdd_id_list = new ArrayList<product_detailVo>();
 
@@ -45,8 +38,7 @@
 		product_detailVo pdvo = new product_detailVo();
 
 		pvo = pdao.getProductInfo(Integer.parseInt(request.getParameter("pd_id")));
-		pdvo = pddao.getPdd_info(pvo.getPd_id(), request.getParameter("opt_col"),
-				request.getParameter("opt_size"));
+		pdvo = pddao.getPdd_info(pvo.getPd_id(), request.getParameter("opt_col"), request.getParameter("opt_size"));
 		pdvo.setPdd_stk_count(Integer.parseInt(request.getParameter("opt_count")));
 
 		pdd_id_list.add(pdvo);
@@ -55,7 +47,6 @@
 		String[] set = request.getParameterValues("table_records[]");
 
 		for (int i = 0; i < set.length; i++) {
-
 			String[] parse = set[i].split(",");
 			product_detailVo pdvo = new product_detailVo();
 			pdvo = pddao.selectByPdd_id(Integer.parseInt(parse[1]));
@@ -64,17 +55,26 @@
 			co_id_list.add(parse[3].replace("\"", ""));
 			pdd_id_list.add(pdvo);
 		}
-
 	}
+	
 	HashSet<String> hs = new HashSet<String>(co_id_list);
 	ArrayList<String> co_list = new ArrayList<String>(hs);
-	
-	
+
 	for(String str : co_list) System.out.println(str);
 	
 	ArrayList<Integer> initial_ord_total = new ArrayList<Integer>();
+	ArrayList<Integer> delPrice = new ArrayList<Integer>();
 	int totalPrice = 0;
 	int total_mileage = 0;
+	int total_deliveryPay = 0;
+	
+	etDao etdao = new etDao();
+	mtDao mtdao = new mtDao();
+	int avail_ec = etdao.getTotal(mem_id);
+	int avail_mil = mtdao.getTotal(mem_id);
+	int avail = avail_ec + avail_mil;
+	
+	
 	
 	
 %>
@@ -88,16 +88,13 @@
 
 
 <!-- Bootstrap -->
-<link href="../vendors/bootstrap/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Font Awesome -->
-<link href="../vendors/font-awesome/css/font-awesome.min.css"
-	rel="stylesheet">
+<link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 <!-- NProgress -->
 <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
 <!-- Select2 -->
-<link href="../vendors/select2/dist/css/select2.min.css"
-	rel="stylesheet">
+<link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
 <!-- Custom Theme Style -->
 <link href="../build/css/custom.min.css" rel="stylesheet">
 </head>
@@ -113,97 +110,92 @@
 							<div class="x_panel">
 								<div class="x_title">
 									<h2>상품주문</h2>
-
 									<div class="clearfix"></div>
 								</div>
 								<div class="x_content">
 									<br />
-									<form name="orderInfo" action="adm_order_admission_proc.jsp"
-										method="post" class="form-horizontal form-label-left">
-
+									<form name="orderInfo" action="adm_order_admission_proc.jsp" method="post" class="form-horizontal form-label-left">
 										<div class="col-md-12 col-sm-12 col-xs-12">
 											<div class="x_panel">
 												<div class="x_title">
-													<h2>
-														상품정보 <small></small>
-													</h2>
-
+													<h2>상품정보 <small></small></h2>
 													<div class="clearfix"></div>
 												</div>
 												<div class="x_content">
-<%
-															int i=1;
-															for(String str: co_list)	{
-															%>
-													배송그룹 <%=i++ %>
+												<%	int i=0;
+													if(co_list.size()==0) co_list.add("one_set");
+													for(String str: co_list) {%> 배송그룹 <%=i+1 %>
 													<table class="table table-bordered">
-													
 														<thead>
-															<tr>
-																
-																<th>상품정보</th>
-																<th>상품금액/수량</th>
-																<th>주문금액/적립금</th>
-															</tr>
+														<tr>
+															<th>상품정보</th>
+															<th>상품금액/수량</th>
+															<th>주문금액/적립금</th>
+														</tr>
 														</thead>
 														<tbody>
+													<%	int groupPrice=0;
+														String co_id = null;
+														int pd_count_in_co=0;
+														for (product_detailVo pdvo : pdd_id_list) {
 															
-															<%
-															for (product_detailVo pdvo : pdd_id_list) {
-																	
-																
-																	productVo pvo = pdao.getProductInfo(pddao.selectByPdd_id(pdvo.getPdd_id()).getPd_id());
-
-																	String co_id = rdao.getCoByPd(pdvo.getPd_id());
-																	
-																	
-																	if(co_id.equalsIgnoreCase(str)){
-																		totalPrice += pvo.getPd_price() * pdvo.getPdd_stk_count();
+															productVo pvo = pdao.getProductInfo(pddao.selectByPdd_id(pdvo.getPdd_id()).getPd_id());
+															co_id = rdao.getCoByPd(pdvo.getPd_id());
+															if(co_id.equalsIgnoreCase(str) || co_list.size()==1){
+																totalPrice += pvo.getPd_price() * pdvo.getPdd_stk_count();
+																pd_count_in_co++;
+													%>
+														<tr>
+														<td><%=co_id%>/<%=pvo.getPd_name()%><br />
+															옵션&nbsp;:&nbsp;<%=pdvo.getCol_id()%>/ <%=pdvo.getSz_id()%>
+															<input type="hidden" name="co_id" value="<%=co_id%>">
+															<input type="hidden" name="pd_id" value="<%=pvo.getPd_id()%>">
+															<input type="hidden" name="pdd_id" value="<%=pdvo.getPdd_id()%>">
+														</td>
+														<td><%=pvo.getPd_price()%>원 <br /><%=pdvo.getPdd_stk_count()%>&nbsp;개&nbsp;
+															<input type="hidden" name="ord_count" value="<%=pdvo.getPdd_stk_count()%>">
+														</td>	
+														<td rowspan=2>
+															<input type="text" id="ord_total_price" name="ord_price" value="<%=pvo.getPd_price() * pdvo.getPdd_stk_count()%>" class="form-control" readonly>원 
+															<input type="hidden" name="ord_total_price" value="<%=pvo.getPd_price() * pdvo.getPdd_stk_count()%>">
+															<br /> <%=pvo.getPd_price() * pdvo.getPdd_stk_count() * 0.02%>
+															<br />
+														</td>
+															<%	groupPrice += pvo.getPd_price() * pdvo.getPdd_stk_count();
+																initial_ord_total.add(pvo.getPd_price() * pdvo.getPdd_stk_count());
 															%>
-															<tr>
-																
-																<td><%=co_id%>/<%=pvo.getPd_name()%><br />
-																	옵션&nbsp;:&nbsp;<%=pdvo.getCol_id()%>/ <%=pdvo.getSz_id()%>
-																<input type="hidden" name="co_id" value="<%=co_id%>">
-																
-																<input type="hidden" name="pd_id" value="<%=pvo.getPd_id()%>">
-																<input type="hidden" name="pdd_id" value="<%=pdvo.getPdd_id()%>">
-																</td>
-																<td><%=pvo.getPd_price()%>원 <br /><%=pdvo.getPdd_stk_count()%>&nbsp;개&nbsp;
-
-																<input type="hidden" name="ord_count" value="<%=pdvo.getPdd_stk_count()%>">
-																</td>	
-																<td rowspan=2><input type="text" id="ord_total_price" name="ord_price" value="<%=pvo.getPd_price() * pdvo.getPdd_stk_count()%>"
-																	class="form-control" readonly>원 
-																	<input type="hidden" name="ord_total_price" value="<%=pvo.getPd_price() * pdvo.getPdd_stk_count()%>">
-																	<br /> <%=pvo.getPd_price() * pdvo.getPdd_stk_count() * 0.02%>
-																</td>
-																<%
-																	initial_ord_total.add(pvo.getPd_price() * pdvo.getPdd_stk_count());
-																%>
-
-															</tr>
-															<tr>
-
-																<td colspan=2>EC_Money사용<input type="checkbox"
-																	value="1" id="mileage_check" name="mileage_check"
-																	onclick='mil_check(this)'>사용 <input type="text"
-																	id="ord_use_mileage" name="ord_use_mileage"
-																	class="form-control" value=0 onkeyup="calTotal()">
-																</td>
-															</tr>
-															<%}%>
-															<%}%>
-															
-
+														</tr>
+														<tr>
+														<td colspan=2>EC_Money사용
+															<input type="text" id="ord_use_mileage" name="ord_use_mileage" class="form-control" value=0 onkeyup="calTotal()" placeholder="<%=avail%>">
+														</td>
+														</tr>
+														<%}
+														}%><input type="hidden" name="pro_index" value="<%=pd_count_in_co%>">
+														<tr><%
+															int deliveryPay=0;
+															companyVo cvo = cdao.getCompanyInfo(co_id);
+															if(cvo.getCo_delivery()==0) deliveryPay=0;
+															else {
+																if(groupPrice >= cvo.getCo_delivery_condition()) deliveryPay=0;
+																//else if(exceptionChk==1) deliveryPay = cvo.getCo_delivery_exception();
+																else deliveryPay = cvo.getCo_delivery_base();
+																delPrice.add(deliveryPay);
+																total_deliveryPay += deliveryPay;
+															}
+															%>
+														<td colspan=2>
+														<input type="radio" id="ord_delivery_method<%=i %>" name="ord_delivery_method<%=i %>" onclick="delChange(<%=i %>, this.value)" value="0" checked>선결제
+														<input type="radio" id="ord_delivery_method<%=i %>" name="ord_delivery_method<%=i %>" onclick="delChange(<%=i %>, this.value)" value="1" >착불
+														</td>
+														<td>배송비<input type="text" id="ord_delivery_pay" name="ord_delivery_pay" value="<%=deliveryPay%>" class="form-control" readonly>원</td>
+														</tr>
 														</tbody>
-
 													</table>
-												<%}%>
-													
-															
-												</div>
+												<%i++;}%>
+												<input type="hidden" name="del_index" value="<%=i%>">
 											</div>
+										</div>
 										</div>
 
 										<div class="col-md-12 col-sm-12 col-xs-12">
@@ -236,17 +228,28 @@
 															</tr>
 															<tr>
 
-																<td>총 상품금액: <input type="text"
-																	id="or_price" name="or_account_value" class="form-control"
+																<td>상품금액: <input type="text"
+																	id="or_price"  class="form-control"
 																	value="<%=totalPrice%>" readonly>원 <input
 																	type="hidden" name="or_total_price"
 																	value="<%=totalPrice%>">
 																</td>
+															</tr>
+															<tr>
 
+																<td>총 배송금액: <input type="text"
+																	id="or_del_price" name="or_total_delivery_price"" class="form-control"
+																	value="<%=total_deliveryPay%>" readonly>원 
+																
+																</td>
+															</tr>
+															<tr>
 
-
-
-
+																<td>총 주문금액: <input type="text"
+																	id="or_final_price" name="or_account_value" class="form-control"
+																	value="<%=total_deliveryPay + totalPrice%>" readonly>
+																	
+																</td>
 															</tr>
 														</tbody>
 													</table>
@@ -448,8 +451,10 @@
 			var or_mileage = document.getElementById("or_total_mileage");
 			var ord_total = document.getElementsByName("ord_price");
 			var mil_value = document.getElementsByName("ord_use_mileage");
+			var final_price = document.getElementById("or_final_price");
+			var total_del = document.getElementById("or_del_price");
 
-			var initialPrice =<%=initial_ord_total%>;
+			var initialPrice = <%=initial_ord_total%>;
 			var finalPrice = 0;
 			var totalPrice = 0;
 			var totalMileage = 0;
@@ -464,38 +469,52 @@
 
 			or_mileage.value = totalMileage;
 			or_total.value = totalPrice;
-
+			final_price.value = totalPrice + parseInt(total_del.value);
 		}
 	</script>
+<script>
+function delChange(index, check){
+	
+	
+	
+	var x = index;
+	var val = check;
+	var original_price = <%=delPrice%>;
+	var final_del = 0;
+	var del_price = document.getElementsByName("ord_delivery_pay");
+	var total_del = document.getElementById("or_del_price");
+	var total_price = document.getElementById("or_final_price");
+	var order_price = document.getElementById("or_price");
+	
+	
+	if(check == 0){
+		
+		del_price[x].value = original_price[x];	
+	}
+	else{
+		
+		del_price[x].value = 0;
+	}
+	
+	for(i=0; i<del_price.length; i++){
+		final_del += parseInt(del_price[i].value);
+	}
+	
+	total_del.value = final_del;
+	
+	total_price.value = parseInt(order_price.value) + final_del;
+	
+}
 
+
+</script>
 	<script language="javascript">
-		function mil_radio(e) {
-			var fm = document.orderInfo;
-			if (fm.ord_mileage[0].checked == true) {
-				mil_div1.style.display = "none";
-				document.getElementById('or_total_mileage').value = 0;
-			} else if (ord_mileage[1].checked == true) {
-				mil_div1.style.display = "block";
-			}
-			calTotal();
-		}
+	function ec_check
+	
+	
+	
 	</script>
 
-	<!-- Select2 -->
-	<script>
-		$(document).ready(function() {
-			$(".select2_single").select2({
-				placeholder : "항목을 선택하세요",
-				allowClear : true
-			});
-			$(".select2_group").select2({});
-			$(".select2_multiple").select2({
-				maximumSelectionLength : 6,
-				placeholder : "항목을 선택하세요",
-				allowClear : true
-			});
-		});
-	</script>
 
 </body>
 </html>

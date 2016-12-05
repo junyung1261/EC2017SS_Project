@@ -11,10 +11,13 @@
 	dateVo dvo2 = new dateVo();
 	String set_day = null;
 	
+	System.out.println("Ω√¿€");
 	productDao pdao = new productDao();
 	companyDao cdao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
 	companyList = cdao.companyList();
+	
+	System.out.println("≥°");
 %>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

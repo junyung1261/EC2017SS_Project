@@ -2,7 +2,7 @@ package ec.member;
 
 public class memberVo {
 	private int mem_id;
-	private int mem_method;
+	private String mem_method;
 	private String mem_user_id;
 	private String mem_password;
 	private String mem_birth;
@@ -18,10 +18,10 @@ public class memberVo {
 	public void setMem_id(int mem_id) {
 		this.mem_id = mem_id;
 	}
-	public int getMem_method() {
+	public String getMem_method() {
 		return mem_method;
 	}
-	public void setMem_method(int mem_method) {
+	public void setMem_method(String mem_method) {
 		this.mem_method = mem_method;
 	}
 	public String getMem_user_id() {

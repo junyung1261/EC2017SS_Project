@@ -55,11 +55,11 @@
 	ecDao ecdao = new ecDao();
    	rst[7] = ecdao.ecChargeInitial(mem_id, now);					//insert ec_charge initialize error
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_charge 持失");	 
+	System.out.println("ec_pay 持失");	 
 	epDao epdao = new epDao();
    	rst[8] = epdao.ecPayInitial(mem_id, now);						   //insert ec_pay initialize error
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	System.out.println("ec_total 持失");	
+	System.out.println("ec_refund 持失");	
 	erDao erdao = new erDao();
 	rst[9] = erdao.ecRefundInitial(mem_id, now);					//insert ec_refund initialize error
 	///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -135,7 +135,7 @@
                           <div class="col-md-2 col-sm-2 col-xs-2">
 			               <div class="x_panel">
 			                  <div class="x_title"><h2>상품정보조회 </h2>
-			                    <button type="button" class="btn btn-warning btn-xs pull-right" onClick="javascript:window.open('adm_order_insert_pop.jsp?pid=<%=pvo.getPd_id() %>','<%=pvo.getPd_id() %>주문','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=1,location=0');">주문</button>
+			                    <button type="button" class="btn btn-warning btn-xs pull-right" onClick="javascript:window.open('adm_order_insert_pop.jsp?pid=<%=pvo.getPd_id() %>&cid=<%=co_id %>','<%=pvo.getPd_id() %>주문','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=1,location=0');">주문</button>
 			                    <div class="clearfix"></div>
 			                  </div>
 			                  <div class="x_content">

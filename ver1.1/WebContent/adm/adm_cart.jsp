@@ -14,7 +14,7 @@
 <%
 	memberDao mdao = new memberDao();
 	memberVo mvo = mdao.selectMember(1);
-	System.out.println(mvo.getMem_id());
+	
 	cartDao cartDao = new cartDao();
 	ArrayList<cartVo> cart_list = cartDao.getCart_List(mvo.getMem_id());
 
@@ -33,16 +33,13 @@
 <title>EC Corporation</title>
 
 <!-- Bootstrap -->
-<link href="../vendors/bootstrap/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Font Awesome -->
-<link href="../vendors/font-awesome/css/font-awesome.min.css"
-	rel="stylesheet">
+<link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 <!-- NProgress -->
 <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
 <!-- iCheck -->
 <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-
 <!-- Custom Theme Style -->
 <link href="../build/css/custom.min.css" rel="stylesheet">
 </head>
@@ -51,55 +48,20 @@
 <body class="nav-md">
 	<div class="container body">
 		<div class="main_container">
-			<div class="col-md-3 left_col">
-				<div class="left_col scroll-view"><%@include file="adm_sidebar.jsp"%></div>
-			</div>
-			<%@include file="adm_top.jsp"%>
-
-
-
 
 			<!-- page content -->
 			<div class="right_col" role="main">
 				<div class="">
-					<div class="page-title">
-						<div class="title_left">
-							<h3>
-								장바구니 <small></small>
-							</h3>
-						</div>
-						<div class="title_right">
-							<div
-								class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-								
-							</div>
-						</div>
-					</div>
-
-
-
-
 					<div class="clearfix"></div>
 					<div class="row">
 						<div class="col-md-12 col-sm-12 col-xs-12">
 							<div class="x_panel">
 								<div class="x_title">
-									<h3>
-										Table design <small>Custom design</small>
-									</h3>
-
-
+									<h3>장바구니<small>Cart</small></h3>
 									<div class="clearfix"></div>
 								</div>
-
 								<div class="x_content">
 									<form name="form_cart" class="form-horizontal form-label-left">
-										<p>
-											Add class
-											<code>bulk_action</code>
-											to table for bulk actions options on row select
-										</p>
-
 										<div class="table-responsive">
 											<table class="table table-striped jambo_table bulk_action">
 												<thead>
@@ -123,27 +85,15 @@
 															String co_id = rdao.getCoByPd(pdvo.getPd_id());
 													%>
 													<tr>
-														<td class="a-center "><input type="checkbox"
-															class="flat" id="record_id" name="table_records[]"
-															value=<%=mvo.getMem_id()%>,<%=pddvo.getPdd_id()%>,<%=cartvo.getCart_count()%>,<%=co_id%>"></td>
-														<td><%=co_id%>/<%=pdvo.getPd_name()%><br /><%=pddvo.getCol_id()%>
-															/ <%=pddvo.getSz_id()%><a
-															href="javascript:orderPopup();"><i
-																class="fa fa-external-link"></i></a></td>
-														<td><%=pdvo.getPd_price()%>원 <br /><%=cartvo.getCart_count()%>개&nbsp;&nbsp;<a
-															href="javascript:companyPopup();"><i
-																class="fa fa-external-link"></i></a></td>
-														<td><%=cartvo.getCart_count()%>&nbsp;&nbsp;<a
-															href="javascript:productPopup();"><i
-																class="fa fa-external-link"></i></a></td>
+														<td class="a-center ">
+														<input type="checkbox" class="flat" id="record_id" name="table_records[]" value=<%=mvo.getMem_id()%>,<%=pddvo.getPdd_id()%>,<%=cartvo.getCart_count()%>,<%=co_id%>">
+														</td>
+														<td><%=co_id%>/<%=pdvo.getPd_name()%><br /><%=pddvo.getCol_id()%>/ <%=pddvo.getSz_id()%></td>
+														<td><%=pdvo.getPd_price()%>원 <br /><%=cartvo.getCart_count()%>개</td>
+														<td><%=cartvo.getCart_count()%></td>
 														<td><%=pdvo.getPd_price() * cartvo.getCart_count()%>원</td>
-
-
 													</tr>
-													<%
-														}
-													%>
-
+													<%}%>
 
 												</tbody>
 											</table>
@@ -151,11 +101,8 @@
 										<div class="ln_solid"></div>
 										<div class="form-group">
 											<div class="col-md-12 col-sm-12 col-xs-12">
-
-												<input type="button" class="btn btn-primary pull-right"
-													value="주문하기" onClick="getPost('01')"> <input
-													type="button" class="btn btn-primary pull-right"
-													value="선택삭제" onClick="getPost('02')">
+											<input type="button" class="btn btn-primary pull-right" value="주문하기" onClick="getPost('01')">
+											 <input type="button" class="btn btn-primary pull-right" value="선택삭제" onClick="getPost('02')">
 											</div>
 										</div>
 									</form>

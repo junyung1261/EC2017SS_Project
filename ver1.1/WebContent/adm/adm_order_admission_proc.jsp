@@ -26,30 +26,42 @@
 	String[] ord_count_list = request.getParameterValues("ord_count");
 	String[] ord_total_price = request.getParameterValues("ord_total_price");
 	String[] ord_use_mileage = request.getParameterValues("ord_use_mileage");
-	int index = Integer.parseInt(request.getParameter("index"));
+	String[] ord_delivery_pay = request.getParameterValues("ord_delivery_pay");
+	String[] pro_index = request.getParameterValues("pro_index");
+	
+	
+	
+	int del_index = Integer.parseInt(request.getParameter("del_index"));
+	int[] ord_delivery_method = new int[del_index];
+	int index = ord_count_list.length;
 	
 	
 	long or_id = odao.order_insert(ovo);
 	
-	for(int i=0; i<index; i++){
+	for(int i=0; i<del_index; i++){
 		
+		ord_delivery_method[i] = Integer.parseInt(request.getParameter("ord_delivery_method"+i));
 		
-		ovo.setPd_id(Integer.parseInt(pd_id_list[i]));
-		ovo.setCo_id(co_id_list[i]);
-		ovo.setPdd_id(Integer.parseInt(pdd_id_list[i]));
-		ovo.setOrd_count(Integer.parseInt(ord_count_list[i]));
-		ovo.setOrd_price(Integer.parseInt(ord_total_price[i]));
-		ovo.setOrd_use_mileage(Integer.parseInt(ord_use_mileage[i]));
-		
-		rst *= odao.order_detail_insert(ovo, or_id);
+		for(int j=0; j<Integer.parseInt(pro_index[i]); j++){
+			
+			ovo.setPd_id(Integer.parseInt(pd_id_list[i]));
+			ovo.setCo_id(co_id_list[i]);
+			ovo.setPdd_id(Integer.parseInt(pdd_id_list[i]));
+			ovo.setOrd_count(Integer.parseInt(ord_count_list[i]));
+			ovo.setOrd_price(Integer.parseInt(ord_total_price[i]));
+			ovo.setOrd_use_mileage(Integer.parseInt(ord_use_mileage[i]));
+			
+			ovo.setOrd_delivery_pay(Integer.parseInt(ord_delivery_pay[i]));
+			ovo.setOrd_delivery_method(ord_delivery_method[i]);
+			rst *= odao.order_detail_insert(ovo, or_id);
+			
+		}
 	}
-	
 	productDao pdao = new productDao();
 	product_detailDao pddao = new product_detailDao();
 
 	deliveryDao dedao = new deliveryDao();
 	relDao rdao = new relDao();
-	
 	
 	
 	
