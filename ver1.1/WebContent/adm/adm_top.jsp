@@ -38,7 +38,7 @@
                 <span>Settings</span>
               </a>
             </li>
-            <li><a href="javascript:;">Help</a></li>
+            <li><a href="/ver1.1/adm/10_message/adm_message.jsp">Messages</a></li>
             <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
           </ul>
         </li>

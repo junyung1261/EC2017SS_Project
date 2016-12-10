@@ -7,25 +7,25 @@
 <%@ page import = "ec.company.*" %>
 <%@ page import = "ec.order_cart.*" %>
 
-<%	
-	request.setCharacterEncoding("EUC-kr");
+<%   
+   request.setCharacterEncoding("EUC-kr");
 
-	String loginId = (String)session.getAttribute("loginId");
-	memberDao mdao = new memberDao();
-	memberVo mvo = mdao.selectMember(loginId);
-	
-	ocDao ocdao = new ocDao();
-	ArrayList<ocVo> cartList = new ArrayList<ocVo>();
+   String loginId = (String)session.getAttribute("loginId");
+   memberDao mdao = new memberDao();
+   memberVo mvo = mdao.selectMember(loginId);
+   
+   ocDao ocdao = new ocDao();
+   ArrayList<ocVo> cartList = new ArrayList<ocVo>();
 
-	ArrayList<ocVo> companyList = new ArrayList<ocVo>();
-	companyList = ocdao.getCartCompany(mvo.getMem_id()); 
-	
-	productDao pdao = new productDao();
-	product_detailDao pddao = new product_detailDao();
-	
-	discountDao disdao = new discountDao();
-	companyDao cdao = new companyDao();
-	
+   ArrayList<ocVo> companyList = new ArrayList<ocVo>();
+   companyList = ocdao.getCartCompany(mvo.getMem_id()); 
+   
+   productDao pdao = new productDao();
+   product_detailDao pddao = new product_detailDao();
+   
+   discountDao disdao = new discountDao();
+   companyDao cdao = new companyDao();
+   
 %>    
 <!DOCTYPE html>
 <html lang="en">
@@ -48,20 +48,20 @@
     
     <style>
     .count {
-    	border:none;
-    	background:transparent; 
-    	width:25px; 
-    	text-align:center; 
+       border:none;
+       background:transparent; 
+       width:25px; 
+       text-align:center; 
     }
     .price_each{
-    	border:none;
-    	width:80px;
-    	background:transparent; 
+       border:none;
+       width:80px;
+       background:transparent; 
     }
     .color, .size{
-    	border:none;
-    	width:50px;
-    	background:transparent;
+       border:none;
+       width:50px;
+       background:transparent;
     }
     </style>
   </head>
@@ -105,10 +105,10 @@
                   <div class="x_content">
                     <!-- start  list -->
                     <%  
-                    	int index_co = 0;        //장바구니 내 회사 종류 카운트
-                    	int index_pdd = 0;       //전체 카운트
-                    	for(ocVo cvo : companyList){ 
-                    		companyVo cvo2 = cdao.getCompanyInfo(cvo.getOc_co_id());
+                       int index_co = 0;        //장바구니 내 회사 종류 카운트
+                       int index_pdd = 0;       //전체 카운트
+                       for(ocVo cvo : companyList){ 
+                          companyVo cvo2 = cdao.getCompanyInfo(cvo.getOc_co_id());
                     %>
                     <div class="row">
                       <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;"><%=cvo2.getCo_name() %></p>
@@ -127,35 +127,35 @@
                         </thead>
                         <tbody>
                      <%
-	                		int price_each = 0; 	//한 회사 내에서의 상폼 각각의 가격
-	                		int count_co = 0;  		//한 회사 내에서의 상품 총 주문 수량
-	                		int price_co = 0;		//한 회사 내에서 상품 총 주문금액
-	                		int discount_co = 0;	//한 회사 내에서 상품 총 할인금액
-	                		int index_pdd_co = 0;	//한 회사 내의 상품 개수 카운트
-                    		cartList = ocdao.getCartList(mvo.getMem_id(), cvo.getOc_co_id()); 
-	                    	for(ocVo ocvo : cartList){ 
-								////////////////////////////////////////////////////////////////////
-								int pdd_id = ocvo.getOc_pdd_id();
-	                    		product_detailVo pddvo = pddao.selectByPdd_id(pdd_id);
-	                    		int pd_id = pddvo.getPd_id();
-	                    		productVo pdvo = pdao.getProductInfo(pd_id);
-	                    		int pd_price = pdvo.getPd_price();
-	                    		discountVo disvo = disdao.selectDiscount(pd_id);
-	                    		////////////////////////////////////////////////////////////////////
-	                    		if(disvo.getDis()==1){
-		                    		if(disvo.getDis_method()==0){ 
-		                    			price_each = pd_price-(int)(pd_price*disvo.getDis_rate()*0.01);
-		                    			discount_co += (int)(pd_price*disvo.getDis_rate()*0.01) * ocvo.getOc_opt_count();
-		                    		}
-		                    		else{ 
-			                        	price_each = pdvo.getPd_price()-disvo.getDis_value();
-			                        	discount_co += disvo.getDis_value()* ocvo.getOc_opt_count();
-		                    		}
-	                    		}
-								////////////////////////////////////////////////////////////////////
-								count_co +=ocvo.getOc_opt_count();
-								price_co +=ocvo.getOc_opt_count()*pdvo.getPd_price();
-	               	 %>
+                         int price_each = 0;    //한 회사 내에서의 상폼 각각의 가격
+                         int count_co = 0;        //한 회사 내에서의 상품 총 주문 수량
+                         int price_co = 0;      //한 회사 내에서 상품 총 주문금액
+                         int discount_co = 0;   //한 회사 내에서 상품 총 할인금액
+                         int index_pdd_co = 0;   //한 회사 내의 상품 개수 카운트
+                          cartList = ocdao.getCartList(mvo.getMem_id(), cvo.getOc_co_id()); 
+                          for(ocVo ocvo : cartList){ 
+                        ////////////////////////////////////////////////////////////////////
+                        int pdd_id = ocvo.getOc_pdd_id();
+                             product_detailVo pddvo = pddao.selectByPdd_id(pdd_id);
+                             int pd_id = pddvo.getPd_id();
+                             productVo pdvo = pdao.getProductInfo(pd_id);
+                             int pd_price = pdvo.getPd_price();
+                             discountVo disvo = disdao.selectDiscount(pd_id);
+                             ////////////////////////////////////////////////////////////////////
+                             if(disvo.getDis()==1){
+                                if(disvo.getDis_method()==0){ 
+                                   price_each = pd_price-(int)(pd_price*disvo.getDis_rate()*0.01);
+                                   discount_co += (int)(pd_price*disvo.getDis_rate()*0.01) * ocvo.getOc_opt_count();
+                                }
+                                else{ 
+                                    price_each = pdvo.getPd_price()-disvo.getDis_value();
+                                    discount_co += disvo.getDis_value()* ocvo.getOc_opt_count();
+                                }
+                             }
+                        ////////////////////////////////////////////////////////////////////
+                        count_co +=ocvo.getOc_opt_count();
+                        price_co +=ocvo.getOc_opt_count()*pdvo.getPd_price();
+                      %>
                         <tr>
                           <td><%=pdvo.getPd_id() %></td>
                           <td><ul class="list-inline"><li><img src="<%=pdvo.getPd_main_img() %>" class="avatar" alt="Avatar"></li></ul></td>
@@ -173,11 +173,11 @@
                           <!-- 전송용 정보 (결제용) -->
                           </td>
                         </tr>
-                    <%		
-                    	index_pdd_co++;
-                    	index_pdd++;	//회사 상관없이 상품의 개수에 따라 input 배열 번호를 정하는 변수
-	                    }
-	                %>
+                    <%      
+                       index_pdd_co++;
+                       index_pdd++;   //회사 상관없이 상품의 개수에 따라 input 배열 번호를 정하는 변수
+                       }
+                   %>
                         <tr>
                           <td></td>
                           <td></td>
@@ -192,17 +192,17 @@
                     </table>
                     <%
                           int delivery = 0;
-                    	  if(cvo2.getCo_delivery()==0){
-                    		  delivery = 0;
-                    	  }
-                    	  else{
-                    		  if(count_co * price_each >= cvo2.getCo_delivery_condition()){
-                    			  delivery = 0;
-                    		  }
-                    		  else{
-                    			  delivery = cvo2.getCo_delivery_base();
-                    		  }
-                    	  }  
+                         if(cvo2.getCo_delivery()==0){
+                            delivery = 0;
+                         }
+                         else{
+                            if(count_co * price_each >= cvo2.getCo_delivery_condition()){
+                               delivery = 0;
+                            }
+                            else{
+                               delivery = cvo2.getCo_delivery_base();
+                            }
+                         }  
                     %>
                   </div>  
                   <div class="col-xs-4">
@@ -229,13 +229,14 @@
                         </tbody>
                       </table>
                     </div>
-                    <input type="hidden" name="index_co" value="<%=index_co %>">
+                    
                     <input type="hidden" name="index_pdd_co" value="<%=index_pdd_co %>">
                     <%index_co++; %>
                   </div>
                   </div>
                   
                   <%} %>
+                  <input type="hidden" name="index_co" value="<%=index_co %>">
                     <!-- end project list -->
                 </div>
                 </div>
@@ -268,64 +269,64 @@
     <script>
     
     function plusF(idx, price_base, price_each,co_idx,delivery,base,condition){
-  	  
-  	  var target_opt_count = document.getElementsByName('opt_count')[idx];
-  	  var target_price = document.getElementsByName('price')[idx];
-  	  var target_price_co = document.getElementsByName('price_co')[co_idx];
-  	  var target_discount_co = document.getElementsByName('discount_co')[co_idx];
-  	  var target_total_co = document.getElementsByName('total_co')[co_idx];
-  	  var target_total_delivery = document.getElementsByName('total_delivery')[co_idx];
-  	  
-  	  target_opt_count.value = parseInt(target_opt_count.value) + 1;
-  	  target_price.value = parseInt(target_opt_count.value) * parseInt(price_each);
-  	  target_price_co.value = parseInt(target_price_co.value) + parseInt(price_base);
+       
+       var target_opt_count = document.getElementsByName('opt_count')[idx];
+       var target_price = document.getElementsByName('price')[idx];
+       var target_price_co = document.getElementsByName('price_co')[co_idx];
+       var target_discount_co = document.getElementsByName('discount_co')[co_idx];
+       var target_total_co = document.getElementsByName('total_co')[co_idx];
+       var target_total_delivery = document.getElementsByName('total_delivery')[co_idx];
+       
+       target_opt_count.value = parseInt(target_opt_count.value) + 1;
+       target_price.value = parseInt(target_opt_count.value) * parseInt(price_each);
+       target_price_co.value = parseInt(target_price_co.value) + parseInt(price_base);
       target_discount_co.value = parseInt(target_discount_co.value) + parseInt(price_base) - parseInt(price_each);
-  	  
-  	  if(parseInt(delivery)==0){
-  		  target_total_delivery.value = 0;
-  	  }else{
-  		  if(parseInt(target_price_co.value) - parseInt(target_discount_co.value) >= parseInt(condition)){
-  			  target_total_delivery.value = 0;
-  		  }
-  		  else{
-  			  target_total_delivery.value = parseInt(base);
-  		  }
-  	  }
-  	target_total_co.value = parseInt(target_price_co.value) - parseInt(target_discount_co.value) + parseInt(target_total_delivery.value);
+       
+       if(parseInt(delivery)==0){
+          target_total_delivery.value = 0;
+       }else{
+          if(parseInt(target_price_co.value) - parseInt(target_discount_co.value) >= parseInt(condition)){
+             target_total_delivery.value = 0;
+          }
+          else{
+             target_total_delivery.value = parseInt(base);
+          }
+       }
+     target_total_co.value = parseInt(target_price_co.value) - parseInt(target_discount_co.value) + parseInt(target_total_delivery.value);
     }
     
     function minusF(idx, price_base, price_each,co_idx,delivery,base,condition){
-    	
-  	  var target_opt_count = document.getElementsByName('opt_count')[idx];
-  	  var target_price = document.getElementsByName('price')[idx];
-  	  var target_price_co = document.getElementsByName('price_co')[co_idx];
-  	  var target_discount_co = document.getElementsByName('discount_co')[co_idx];
-  	  var target_total_co = document.getElementsByName('total_co')[co_idx];
-	  var target_total_delivery = document.getElementsByName('total_delivery')[co_idx];
-  	  
-  	  if(parseInt(target_opt_count.value) == 1){
-  	  	target_count.value = 1;
-  	  }
-  	  else{
-  		  target_opt_count.value = parseInt(target_opt_count.value) - 1;  
-  	  }
-  	  
-  	  target_price.value = parseInt(target_opt_count.value) * parseInt(price_each);
-  	  target_price_co.value = parseInt(target_price_co.value) - parseInt(price_base);
-  	  target_discount_co.value = parseInt(target_discount_co.value) - parseInt(price_base) + parseInt(price_each);
-  	  
-  	  if(parseInt(delivery)==0){
-		  target_total_delivery.value = 0;
-  	  }
-  	  else{
-		  if(parseInt(target_price_co.value) - parseInt(target_discount_co.value) >= parseInt(condition)){
-			  target_total_delivery.value = 0;
-		  }
-		  else{
-			  target_total_delivery.value = parseInt(base);
-		  }
-	  }
-  	  target_total_co.value = parseInt(target_price_co.value) - parseInt(target_discount_co.value) + parseInt(target_total_delivery.value);
+       
+       var target_opt_count = document.getElementsByName('opt_count')[idx];
+       var target_price = document.getElementsByName('price')[idx];
+       var target_price_co = document.getElementsByName('price_co')[co_idx];
+       var target_discount_co = document.getElementsByName('discount_co')[co_idx];
+       var target_total_co = document.getElementsByName('total_co')[co_idx];
+     var target_total_delivery = document.getElementsByName('total_delivery')[co_idx];
+       
+       if(parseInt(target_opt_count.value) == 1){
+          target_count.value = 1;
+       }
+       else{
+          target_opt_count.value = parseInt(target_opt_count.value) - 1;  
+       }
+       
+       target_price.value = parseInt(target_opt_count.value) * parseInt(price_each);
+       target_price_co.value = parseInt(target_price_co.value) - parseInt(price_base);
+       target_discount_co.value = parseInt(target_discount_co.value) - parseInt(price_base) + parseInt(price_each);
+       
+       if(parseInt(delivery)==0){
+        target_total_delivery.value = 0;
+       }
+       else{
+        if(parseInt(target_price_co.value) - parseInt(target_discount_co.value) >= parseInt(condition)){
+           target_total_delivery.value = 0;
+        }
+        else{
+           target_total_delivery.value = parseInt(base);
+        }
+     }
+       target_total_co.value = parseInt(target_price_co.value) - parseInt(target_discount_co.value) + parseInt(target_total_delivery.value);
     }
     
     </script>
@@ -333,9 +334,9 @@
     <script>
 
     function submit_all(){
-    	var target_form = document.cart_all;
-    	target_form.action = "adm_order_account_all.jsp";
-    	target_form.submit();
+       var target_form = document.cart_all;
+       target_form.action = "adm_order_account_all.jsp";
+       target_form.submit();
     }
     </script>
   </body>

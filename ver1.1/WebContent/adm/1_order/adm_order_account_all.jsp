@@ -6,77 +6,83 @@
 <%@ page import = "ec.company.*" %>
 <%@ page import = "ec.order_cart.*" %>
 <%@ page import = "ec.convert.*" %>
-<%	request.setCharacterEncoding("EUC-kr");
+<%@ page import = "java.util.*" %>
+<%   request.setCharacterEncoding("EUC-kr");
 
-	String loginId = (String)session.getAttribute("loginId");
-	memberDao mdao = new memberDao();
-	memberVo mvo = mdao.selectMember(loginId);
-	
-	String[] index_co = request.getParameterValues("index_co");		//총 회사 개수
-	String[] pdd_id = request.getParameterValues("pdd_id");			//상품 전체개수
-	String[] opt_count = request.getParameterValues("opt_count");	//수량
-	String[] index_pdd_co = request.getParameterValues("index_pdd_co"); 	//회사 별 상품 개수
-	
-	
-	int price = 0;		//순수 상품 가격
-	int discount = 0;	//상품전체 할인금액
-	int delivery = 0;	//상품전체 배송금액
-	int price_for_delivery = 0;  //회사별 금액
-	int mileage = 0;	//마일리지 사용금액
-	int total = 0;		//총 금액
-	
-	product_detailDao pddao = new product_detailDao();
-	productDao pdao = new productDao();
-	discountDao disdao = new discountDao();
-	companyDao cdao = new companyDao();
-	convertDao cvdao = new convertDao();
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	member_addressDao madao = new member_addressDao();
-	member_addressVo mavo = madao.getMemberInfo(mvo.getMem_id());			   //회원 배송지 정보 추출
-	//////////////////////////////////////////////////////////////////////////////////////////
+   String loginId = (String)session.getAttribute("loginId");
+   memberDao mdao = new memberDao();
+   memberVo mvo = mdao.selectMember(loginId);
+   
+   int index_co = Integer.parseInt(request.getParameter("index_co"));   //총 회사 개수
+   String[] pdd_id = request.getParameterValues("pdd_id");         //상품 전체개수
+   String[] opt_count = request.getParameterValues("opt_count");   //수량
+   String[] index_pdd_co = request.getParameterValues("index_pdd_co");    //회사 별 상품 개수
+   
+   
+   
+   int price = 0;      //순수 상품 가격
+   int discount = 0;   //상품전체 할인금액
+   int delivery = 0;   //상품전체 배송금액
+   int price_for_delivery = 0;  //회사별 금액
+   int mileage = 0;   //마일리지 사용금액
+   int total = 0;      //총 금액
+   
+   product_detailDao pddao = new product_detailDao();
+   productDao pdao = new productDao();
+   discountDao disdao = new discountDao();
+   companyDao cdao = new companyDao();
+   convertDao cvdao = new convertDao();
+   ocDao ocdao = new ocDao();
+   
+   //////////////////////////////////////////////////////////////////////////////////////////
+   member_addressDao madao = new member_addressDao();
+   member_addressVo mavo = madao.getMemberInfo(mvo.getMem_id());            //회원 배송지 정보 추출
+   //////////////////////////////////////////////////////////////////////////////////////////
 
-	int pdd_index = 0;
+   ArrayList<ocVo> companyList = new ArrayList<ocVo>();
+   companyList = ocdao.getCartCompany(mvo.getMem_id()); 
+   
+   int pdd_index = 0;
     for(int i=0;i<index_pdd_co.length;i++){
-    	price_for_delivery = 0;
-    	String co_id = null;
-    	for(int j=0; j<Integer.parseInt(index_pdd_co[i]);j++){ 
-    		
-			product_detailVo pddvo = pddao.selectByPdd_id(Integer.parseInt(pdd_id[pdd_index]));
-			int pd_id = pddvo.getPd_id();
-			productVo pdvo = pdao.getProductInfo(pd_id);
-			co_id = pdvo.getPd_co_id();
-			
-			discountVo disvo = disdao.selectDiscount(pd_id);
+       price_for_delivery = 0;
+       String co_id = null;
+       for(int j=0; j<Integer.parseInt(index_pdd_co[i]);j++){ 
+          
+         product_detailVo pddvo = pddao.selectByPdd_id(Integer.parseInt(pdd_id[pdd_index]));
+         int pd_id = pddvo.getPd_id();
+         productVo pdvo = pdao.getProductInfo(pd_id);
+         co_id = pdvo.getPd_co_id();
+         
+         discountVo disvo = disdao.selectDiscount(pd_id);
 
-			price += pdvo.getPd_price() * Integer.parseInt(opt_count[pdd_index]);
-			price_for_delivery += pdvo.getPd_price() * Integer.parseInt(opt_count[pdd_index]);
-			
-			if(disvo.getDis()==0){
-				discount = 0;
-			}else{
-				if(disvo.getDis_method()==0){
-					discount += (int)(pdvo.getPd_price() * disvo.getDis_rate() * 0.01);
-				}else{
-					discount += disvo.getDis_value();
-				}
-			}
-			pdd_index++;
-			
-    	}
-    	companyVo cvo = cdao.getCompanyInfo(co_id);
-    	if(cvo.getCo_delivery()==0){
-    		delivery += 0;
-    	}else{
-    		if(price_for_delivery>=cvo.getCo_delivery_condition()){
-    			delivery += 0;
-    		}
-    		else{
-    			delivery += cvo.getCo_delivery_base();
-    		}
-    	}
-	}
-	total = price - discount + delivery;
+         price += pdvo.getPd_price() * Integer.parseInt(opt_count[pdd_index]);
+         price_for_delivery += pdvo.getPd_price() * Integer.parseInt(opt_count[pdd_index]);
+         
+         if(disvo.getDis()==0){
+            discount = 0;
+         }else{
+            if(disvo.getDis_method()==0){
+               discount += (int)(pdvo.getPd_price() * disvo.getDis_rate() * 0.01* Integer.parseInt(opt_count[pdd_index]));
+            }else{
+               discount += disvo.getDis_value()* Integer.parseInt(opt_count[pdd_index]);
+            }
+         }
+         pdd_index++;
+         
+       }
+       companyVo cvo = cdao.getCompanyInfo(co_id);
+       if(cvo.getCo_delivery()==0){
+          delivery += 0;
+       }else{
+          if(price_for_delivery>=cvo.getCo_delivery_condition()){
+             delivery += 0;
+          }
+          else{
+             delivery += cvo.getCo_delivery_base();
+          }
+       }
+   }
+   total = price - discount + delivery;
 
 %>    
 <!DOCTYPE html>
@@ -100,33 +106,33 @@
     
     <style>
     .count {
-    	border:none;
-    	background:transparent; 
-    	width:25px; 
-    	text-align:center; 
+       border:none;
+       background:transparent; 
+       width:25px; 
+       text-align:center; 
     }
     
     .price_each{
-    	border:none;
-    	width:80px;
-    	background:transparent; 
+       border:none;
+       width:80px;
+       background:transparent; 
     }
     .color, .size{
-    	border:none;
-    	width:50px;
-    	background:transparent;
+       border:none;
+       width:50px;
+       background:transparent;
     }
-	
-	.delivery_small{
-		border:none;
-		background:transparent;
-		width:100px;
-	}
-	.delivery_large{
-		border:none;
-		background:transparent;
-		width:200px;
-	}
+   
+   .delivery_small{
+      border:none;
+      background:transparent;
+      width:100px;
+   }
+   .delivery_large{
+      border:none;
+      background:transparent;
+      width:200px;
+   }
     </style>
   </head>
 
@@ -193,11 +199,12 @@
                     <div class="col-sm-8 col-md-8 col-xs-8">
                     <%
                     pdd_index = 0;
-                    for(int i=0;i<index_pdd_co.length;i++){  
-                    	
-                    %> 
-                    
-                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">dd</p>
+                    int i=0;
+                    for(ocVo cvo : companyList){ 
+                      companyVo cvo2 = cdao.getCompanyInfo(cvo.getOc_co_id());
+                       
+                    %>  
+                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">배송그룹<%=i+1 %>[<%=cvo2.getCo_name() %>]</p>
                     <table class="table table-striped projects">
                       <thead>
                         <tr>
@@ -207,15 +214,15 @@
                           <th>사이즈</th>
                           <th>수량</th>
                           <th>가격</th>
-                          <th></th>
+                          <th>마일리지</th>
                         </tr>
                       </thead>
                       <tbody>
                       <%for(int j=0; j<Integer.parseInt(index_pdd_co[i]);j++){ 
-                    	  product_detailVo pddvo = pddao.selectByPdd_id(Integer.parseInt(pdd_id[pdd_index]));
-                    	  int pd_id = pddvo.getPd_id();
-                    	  productVo pvo = pdao.getProductInfo(pd_id);
-                    	  discountVo disvo = disdao.selectDiscount(pd_id);
+                         product_detailVo pddvo = pddao.selectByPdd_id(Integer.parseInt(pdd_id[pdd_index]));
+                         int pd_id = pddvo.getPd_id();
+                         productVo pvo = pdao.getProductInfo(pd_id);
+                         discountVo disvo = disdao.selectDiscount(pd_id);
                       %>
                         <tr>
                           <td><%=pd_id %></td>
@@ -223,32 +230,41 @@
                           <td><a><%=pvo.getPd_name() %></a><br /><small>장바구니 2016 추가</small></td>
                           <td><%=pddvo.getCol_id() %></td>
                           <td><%=pddvo.getSz_id() %></td>
-                          <td><%=opt_count[pdd_index] %>
-                          <td>
+                          <td><%=opt_count[pdd_index] %><td>
+                          
                           <%if(disvo.getDis()==0){ %>￦ <%=pvo.getPd_price() %><%} 
                           else{
-                        	  if(disvo.getDis_method()==0){%>￦ <%=pvo.getPd_price()-(int)(pvo.getPd_price()*disvo.getDis_rate()*0.01) %><%}
-                        	else{%>￦ <%=pvo.getPd_price()-disvo.getDis_value() %><%}
+                             if(disvo.getDis_method()==0){%>￦ <%=pvo.getPd_price()-(int)(pvo.getPd_price()*disvo.getDis_rate()*0.01) %><%}
+                           else{%>￦ <%=pvo.getPd_price()-disvo.getDis_value() %><%}
                           }
                           %>
                           <br /><small>( ￦ <%=pvo.getPd_price() %> )</small></td>
-                          <td>
+                          <td>￦ <input type="text" style="border:none;background:transparent;width:100px" name="mileage" value="0" onKeyup="setTotal()">
+                          
                           <!-- 전송용 정보 (결제용) -->
+                          <input type="hidden" name="pdd_id" value="<%=pdd_id[pdd_index] %>">
+                          <input type="hidden" name="col_id" value="<%=pddvo.getCol_id() %>">
+                          <input type="hidden" name="sz_id" value="<%=pddvo.getSz_id() %>">
+                          <input type="hidden" name="opt_count" value="<%=opt_count[pdd_index] %>">
                           </td>
-						</tr>
-					  <%
-					  
-					  pdd_index++;
+                  </tr>
+                 <%
+                 
+                 pdd_index++;
                       } %>
-                   
+  
                       </tbody>
+                      
                     </table>
-                  
-                   
-                  <%} %>
+                  <!-- 전송용 정보 (결제용) -->
+                 
+                    <input type="hidden" name="index_pdd_co" value="<%=index_pdd_co[i] %>">
+                  <%i++;
+                  } %>
+                   <input type="hidden" name="index_co" value="<%=index_co %>">
                   </div> 
                   <div class="col-xs-4">
-                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">바송정보
+                    <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">배송정보
                     <button type="button" class="btn btn-warning btn-xs pull-right" data-toggle="modal" data-target=".mem_address">변경</button></p>
                     <div class="table-responsive">
                       <table class="table">
@@ -385,18 +401,20 @@
     <!-- Custom Theme Scripts -->
     <script src="../../build/js/custom.min.js"></script>
     
- 	<script>
- 	function setTotal(){
- 		var mileage = document.getElementById("mileage");
- 		var target_total = document.getElementById("total");
- 		target_total.value = parseInt(<%=total%>)-parseInt(mileage.value);
- 		if(isNaN(parseInt(mileage.value))){
- 			mileage.value = 0;
- 			target_total.value = parseInt(<%=total%>)-parseInt(mileage.value);
- 		}
- 	}
- 	</script>
- 	
+    <script>
+    function setTotal(){
+       var mileage = document.getElementsByName("mileage");
+       var target_total = document.getElementById("total");
+       var mileage_total = document.getElementById("mileage");
+       var temp=0;
 
+      for(i=0; i<mileage.length; i++) {
+          if(isNaN(parseInt(mileage[i].value))) mileage[i].value = 0;
+          temp += parseInt(mileage[i].value);
+       }
+       mileage_total.value = parseInt(temp);
+       target_total.value = parseInt(<%=total%>) - parseInt(temp);
+    }
+    </script>
   </body>
 </html>

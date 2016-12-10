@@ -4,12 +4,12 @@
 <%@ page import="ec.date.*" %>
 <%@ page import="ec.order.*" %>
 <%@ page import="ec.company.*" %>
+<%@ page import="ec.convert.*" %>
 <%@ page import="ec.product.*,ec.product_detail.*" %>
 <%@ page import="ec.member.*" %>
-<%@ page import="ec.rel.*" %>
+
 <%	dateDao ddao = new dateDao();
-	dateVo dvo = new dateVo();
-	dvo = ddao.getToday();
+	String now = ddao.now();
 	
 	orderDao odao = new orderDao();
 	ArrayList<orderVo> list = new ArrayList<orderVo>();
@@ -30,7 +30,9 @@
 	productDao pdao = new productDao();
 	memberDao mdao = new memberDao();
 	
-	relDao rdao = new relDao();
+	convertDao cvdao = new convertDao();
+	
+
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -94,7 +96,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>결제 확인<small><%=dvo.getYear()+"-"+dvo.getMonth()+"-"+dvo.getDate()+" "+dvo.getHour()+":"+dvo.getMinute()+":"+dvo.getSecond()+" 현재" %></small></h2>
+                    <h2>결제 확인<small><%=now%> 현재 </small></h2>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
@@ -178,15 +180,13 @@
                             <thead>
                               <tr>
                                 <th>주문번호</th>
-                                <th>업체 ID</th>
-                                <th>상품번호</th>
-                                <th>상품명</th>
-                                <th>색상</th>
-                                <th>사이즈</th>
-                                <th>주문수량</th>
                                 <th>주문자</th>
                                 <th>주문방법</th>
-                                <th>주문금액</th>
+                                <th>결제금액</th>
+                                <th>상품금액</th>
+                                <th>할인금액</th>
+                                <th>배송비</th>
+                                <th>마일리지</th>
                                 <th>상태</th>
                                 <th>주문시간</th>
                               </tr>
@@ -198,26 +198,16 @@
                         	%>
                               <tr>
                                 <td><%=ovo.getOr_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=rdao.getCoByPd(ovo.getPd_id()) %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=ovo.getPd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=pvo.getPd_name() %>
-                                <td><%=pdvo.getCol_id() %></td>
-                                <td><%=pdvo.getSz_id() %></td>
-                                <td><%=ovo.getOrd_count() %></td>
                                 <td><%=ovo.getMem_name()%></td>
-                                <td><%if(ovo.getOr_account_method()==0){ %>EC Pay<%}
-                                	else if(ovo.getOr_account_method()==1){%>휴대폰 소액결제<%}
-                                	else if(ovo.getOr_account_method()==2){%>신용카드<%}
-                                	else if(ovo.getOr_account_method()==3){%>실시간 계좌이체<%}
-                                	else{%>무통장 입금 <%} %>
+                                <td><%if(ovo.getOr_account_method()==3){ %>무통장입금<%}
+                                	else{%>오류<%}%>
                                 </td>
-                                <td><%=ovo.getOrd_price() %>원</td>
-                              
-                                <td><%if(ovo.getOr_status()==0){ %><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">결제대기중</button><%}
-                                	else if(ovo.getOr_status()==1){%><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">결제완료</button><%}
-                                	else if(ovo.getOr_status()==2){%><button type="button" class="btn btn-warning btn-xs" onClick="javascript:orderPrePopup();">결제기간초과</button><%}
-                                	else {%>실시간 계좌이체<%}%>
-                                
+                                <td><%=cvdao.commify(ovo.getOr_account_value())%></td>
+                                <td><%=cvdao.commify(ovo.getOr_total_price())%></td>
+                                <td><%=cvdao.commify(ovo.getOr_total_discount())%></td>
+                                <td><%=cvdao.commify(ovo.getOr_total_delivery_price())%></td>
+                                <td><%=cvdao.commify(ovo.getOr_total_mileage())%></td>
+                                <td><button type="button" class="btn btn-warning btn-xs" onClick="">결제대기중</button></td>
                                 <td><%=ovo.getOr_account_time() %></td>
                               </tr>
                               <%} %>

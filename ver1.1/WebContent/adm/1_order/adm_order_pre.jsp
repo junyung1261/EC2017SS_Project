@@ -6,7 +6,7 @@
 <%@ page import="ec.company.*" %>
 <%@ page import="ec.product.*,ec.product_detail.*" %>
 <%@ page import="ec.member.*" %>
-<%@ page import="ec.rel.*" %>
+
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
@@ -30,7 +30,6 @@
 	product_detailDao pddao = new product_detailDao();
 	memberDao mdao = new memberDao();
 
-	relDao rdao = new relDao();
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -153,7 +152,6 @@
                                 <th>수량</th>
                                 <th>결제방법</th>
                                 <th>결제금액</th>
-                                <th>배송비 결제방식</th>
                                 <th>마일리지 사용</th>
                                 <th>수령인명</th>
                                 <th>수령인 연락처</th>
@@ -164,26 +162,24 @@
                             </thead>
                             <tbody>
                             <%for(orderVo ovo : list){ 
-                            product_detailVo pdvo = pddao.selectByPdd_id(ovo.getPdd_id());%>
+                            product_detailVo pdvo = pddao.selectByPdd_id(ovo.getPdd_id());
+                            productVo pvo = pdao.getProductInfo(pdvo.getPd_id());
+                            %>
                               <tr>
                                 <td><%=ovo.getOr_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=rdao.getCoByPd(ovo.getPd_id()) %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
+                                <td><%=pvo.getPd_co_id() %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
                                 <td><%=ovo.getPd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
                                 <td><%=pdvo.getCol_id() %></td>
                                 <td><%=pdvo.getSz_id() %></td>
                                 <td><%=ovo.getOrd_count() %></td>
-                                <td><%if(ovo.getOr_account_method()==0){ %>EC Pay<%}
-                                	else if(ovo.getOr_account_method()==1){%>휴대폰 소액결제<%}
-                                	else if(ovo.getOr_account_method()==2){%>신용카드<%}
-                                	else if(ovo.getOr_account_method()==3){%>실시간 계좌이체<%}
-                                	else{%>무통장 입금 <%} %>
+                                <td><%if(ovo.getOr_account_method()==0){ %>EC결제<%}
+                                	else if(ovo.getOr_account_method()==1){%>신용카드<%}
+                                	else if(ovo.getOr_account_method()==2){%>계좌이체<%}
+                                	else if(ovo.getOr_account_method()==3){%>무통장입금<%}
+                                	else{%>오류 <%} %>
                                 </td>
-                                <td><%=ovo.getOrd_price() - ovo.getOrd_use_mileage() %></td>
-                                <td><button type="button" class="btn btn-info btn-xs">
-                                	<%if(ovo.getOrd_delivery_method()==0){ %>선결제<%}
-                                	else{%>착불<%} %>
-                                	</button>
-                                </td>
+                                <td><%=ovo.getOrd_price() - ovo.getOrd_discount() - ovo.getOrd_use_mileage()  %></td>
+                                
                                 <td><button type="button" class="btn btn-success btn-xs"><%=ovo.getOrd_use_mileage() %></button></td>
                                 <td><%=ovo.getMem_name() %></td>
                                 <td><%=ovo.getMem_phone() %></td>
