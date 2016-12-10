@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import ec.connUtil.ConnUtil;
-
 public class product_detailDao {
 	// 수정부분 안되면 다십변경  int pd_id, String col_id, String sz_id, int stk_count _//
 	public int insertProductDetail(int pd_id, String col_id, String sz_id, int pd_stk_count) {
@@ -123,7 +122,6 @@ public class product_detailDao {
 	}
 	
 	
-	
 	public ArrayList<product_detailVo> getProductColor(int pd_id) {
 		ArrayList<product_detailVo> list = new ArrayList<product_detailVo>();
 		Connection conn = null;
@@ -131,7 +129,7 @@ public class product_detailDao {
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select col_id from product_detail where pd_id=? group by col_id order by col_id asc;";
+			String sql = "select col_id from product_detail where pd_id=? group by col_id";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
 			rs = ps.executeQuery();
@@ -148,17 +146,16 @@ public class product_detailDao {
 		return list;
 	}
 	
-	public ArrayList<product_detailVo> getProductSize(int pd_id, String col_id) {
+	public ArrayList<product_detailVo> getProductSize(int pd_id) {
 		ArrayList<product_detailVo> list = new ArrayList<product_detailVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select sz_id from product_detail where pd_id=? and col_id = ? order by sz_id asc;";
+			String sql = "select sz_id from product_detail where pd_id=? group by sz_id order by sz_id asc;";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
-			ps.setString(2, col_id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				product_detailVo vo = new product_detailVo();
@@ -197,25 +194,24 @@ public class product_detailDao {
 		return cnt;
 	}
 	
-	public int updateProductStock(int pd_id, String col_id, String sz_id){
-		  int rst = 0;
-		  Connection conn = null;
-		  PreparedStatement ps = null;
-		  try{
-		   conn = ConnUtil.getConnection();
-		   String sql = "update product_detail set pdd_stk_count = pdd_stk_count-1 where pd_id = ? and col_id = ? and sz_id = ?;";
-		   ps = conn.prepareStatement(sql);
-		   ps.setInt(1, pd_id);
-		   ps.setString(2, col_id);
-		   ps.setString(3, sz_id);
-		rst = ps.executeUpdate();
-		  }catch(Exception e){
-		   e.printStackTrace();
-		  }finally{
-		   ConnUtil.close(ps, conn);
-		  }
-		  return rst;
-		 }
-	
-	
+	public int updateProductStock(int pd_id, String col_id, String sz_id) {
+		int rst = 0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "update product_detail set pdd_stk_count = pdd_stk_count-1 where pd_id = ? and col_id = ? and sz_id = ?;";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, pd_id);
+			ps.setString(2, col_id);
+			ps.setString(3, sz_id);
+			rst = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(ps, conn);
+		}
+		return rst;
+	}
+
 }

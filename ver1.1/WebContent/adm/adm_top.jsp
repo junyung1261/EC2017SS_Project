@@ -1,5 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%	
+	request.setCharacterEncoding("EUC-kr");
+	String tid = (String)session.getAttribute("loginId");
+	
+	if(tid==null){
+		session.invalidate();
+%>
+	<script>
+	location.href="/ver1.1/adm/0_session/adm_login.jsp";
+	
+	
+	</script>	
+	<%} %>
+	
+	
 <!-- top navigation -->
 
 <div class="top_nav">
@@ -12,7 +27,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="">
           <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            <img src="../images/img.jpg" alt="">David Lee
+            <img src="/ver1.1/images/img.jpg" alt=""><%=tid %>
             <span class=" fa fa-angle-down"></span>
           </a>
           <ul class="dropdown-menu dropdown-usermenu pull-right">

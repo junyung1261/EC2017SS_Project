@@ -14,7 +14,7 @@ public class bankDao {
 		ResultSet rs = null;
 		try {
 			conn = ConnUtil.getConnection();
-			String sql = "select * from bank order by bank_id asc";
+			String sql = "select * from bank order by bank_name asc";
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {

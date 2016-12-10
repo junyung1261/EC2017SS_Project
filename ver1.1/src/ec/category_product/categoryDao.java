@@ -23,9 +23,6 @@ public class categoryDao {
 			ps.setInt(2, end);
 			rs = ps.executeQuery();
 			
-			
-			
-			
 			while (rs.next()) {
 				categoryVo vo = new categoryVo();	
 				vo.setCg_id(rs.getInt("cg_id"));
@@ -52,9 +49,6 @@ public class categoryDao {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, depth);
 			rs = ps.executeQuery();
-			
-			
-			
 			
 			while (rs.next()) {
 				

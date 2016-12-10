@@ -62,7 +62,6 @@ public class relDao {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, pd_id);
 			ps.setInt(2, cgp_id);
-			System.out.println(cgp_id);
 			
 			rst = ps.executeUpdate();
 		} catch (Exception e) {

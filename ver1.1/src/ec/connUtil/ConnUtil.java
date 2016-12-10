@@ -17,10 +17,10 @@ public class ConnUtil {
    }
 
    public static Connection getConnection() throws SQLException {
-      //String url = "jdbc:mysql://183.109.81.220:3306/ver1?useSSL=true&verifyServerCertificate=false";
-      String url = "jdbc:mysql://localhost:3306/ver1";
+      String url = "jdbc:mysql://183.109.81.220:3306/ver1?useSSL=true&verifyServerCertificate=false";
+      //String url = "jdbc:mysql://183.109.81.220:3306/ver1";
       String id = "root";
-      String password = "2661261a";
+      String password = "ec2017&ss";
       Connection conn = DriverManager.getConnection(url, id, password);
       return conn;
    }

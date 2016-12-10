@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import ec.connUtil.ConnUtil;
+
 public class member_addressDao {
 	public int insertMemberAddress(member_addressVo vo, int mem_id) {
 		int rst = 0;
@@ -27,7 +28,29 @@ public class member_addressDao {
 		}
 		return rst;
 	}
-	
+	public int updateMemberAddress(member_addressVo vo, int mem_id) {
+		int rst = 0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "update member_address set ma_name_recipient = ?, ma_phone_recipient = ? , ma_addr_zipcode = ? , ma_addr_base = ? where ma_mem_id= ?";
+			ps = conn.prepareStatement(sql);
+
+			ps.setString(1, vo.getMa_name_recipient());
+			ps.setString(2,  vo.getMa_phone_recipient());
+			ps.setString(3,  vo.getMa_addr_zipcode());
+			ps.setString(4,  vo.getMa_addr_base());
+			ps.setInt(5,  mem_id);
+
+			rst = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(ps, conn);
+		}
+		return rst;
+	}
 	public member_addressVo getMemberInfo(int mem_id) {
 		member_addressVo vo = new member_addressVo();
 		Connection conn = null;

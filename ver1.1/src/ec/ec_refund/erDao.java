@@ -3,6 +3,7 @@ package ec.ec_refund;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import ec.connUtil.ConnUtil;
 
@@ -27,26 +28,35 @@ public class erDao {
 		return rst;
 	}
 	
-	public int getTotalRefund(int mem_id) {
-		int sum = 0;
+	public ArrayList<erVo> refundList() {
+		ArrayList<erVo> list = new ArrayList<erVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-				conn = ConnUtil.getConnection();
-				String sql = "select sum(er_value) from ec_refund where er_mem_id = ?";
-				ps = conn.prepareStatement(sql);
-				ps.setInt(1, mem_id);
-					
+			conn = ConnUtil.getConnection();
+			String sql = "select * from ec_refund where er_state !=0 order by er_time desc";
+			ps = conn.prepareStatement(sql);
+			
 			rs = ps.executeQuery();
-			rs.next(); 
-			sum = rs.getInt("sum(er_value)");
+			while (rs.next()) {
+				erVo vo = new erVo();
+				
+				vo.setEr_id(rs.getInt("er_id"));
+				vo.setEr_mem_id(rs.getInt("er_mem_id"));
+				vo.setEr_why(rs.getInt("er_why"));
+				vo.setEr_value(rs.getInt("er_value"));
+				vo.setEr_state(rs.getInt("er_state"));
+				vo.setEr_time(rs.getString("er_time"));
+				
+				list.add(vo);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			ConnUtil.close(ps, conn);
+			ConnUtil.close(rs, ps, conn);
 		}
-		return sum;
+		return list;
 	}
 	
 	public String getRecentRefundTime(int mem_id) {

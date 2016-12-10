@@ -4,6 +4,8 @@
 <%	dateDao ddao = new dateDao();
 	dateVo dvo = new dateVo();
 	dvo = ddao.getToday();
+	
+	String loginId = (String)request.getAttribute("loginId");
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -38,7 +40,12 @@
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view"><%@include file="adm_sidebar.jsp" %></div>
+          <div class="left_col scroll-view">
+          
+          
+          <%@include file="adm_sidebar.jsp" %>
+          
+          </div>
         </div>
         <%@include file = "adm_top.jsp" %>
         <!-- page content -->

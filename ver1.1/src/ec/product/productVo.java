@@ -5,10 +5,12 @@ public class productVo {
 	private int pd_id;
 	
 	private String pd_name;
-	private String co_id;
+	private String pd_co_id;
+	private int pd_cgp_id;
 	private int pd_status;
 	private String pd_summary;
 	private String pd_main_img;
+	private String pd_detail_main_img;
 	private String pd_detail_img;
 	private String pd_reg_date;
 	private String pd_modify_date;
@@ -21,6 +23,7 @@ public class productVo {
 	private String pd_keyword;
 	
 	private int pd_price;
+	
 
 	public int getPd_id() {
 		return pd_id;
@@ -38,12 +41,20 @@ public class productVo {
 		this.pd_name = pd_name;
 	}
 
-	public String getCo_id() {
-		return co_id;
+	public String getPd_co_id() {
+		return pd_co_id;
 	}
 
-	public void setCo_id(String co_id) {
-		this.co_id = co_id;
+	public void setPd_co_id(String pd_co_id) {
+		this.pd_co_id = pd_co_id;
+	}
+
+	public int getPd_cgp_id() {
+		return pd_cgp_id;
+	}
+
+	public void setPd_cgp_id(int pd_cgp_id) {
+		this.pd_cgp_id = pd_cgp_id;
 	}
 
 	public int getPd_status() {
@@ -68,6 +79,14 @@ public class productVo {
 
 	public void setPd_main_img(String pd_main_img) {
 		this.pd_main_img = pd_main_img;
+	}
+
+	public String getPd_detail_main_img() {
+		return pd_detail_main_img;
+	}
+
+	public void setPd_detail_main_img(String pd_detail_main_img) {
+		this.pd_detail_main_img = pd_detail_main_img;
 	}
 
 	public String getPd_detail_img() {
@@ -142,6 +161,7 @@ public class productVo {
 		this.pd_price = pd_price;
 	}
 
+	
 	
 	
 }

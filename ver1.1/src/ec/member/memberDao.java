@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import ec.connUtil.ConnUtil;
 
 public class memberDao {
+	
+	//* 초기 회원 테이블 여러개를 생성하기 위한 식별번호 판단 *//
 	public int nextInsertMemberId() {
 		int cnt = 0;
 		Connection conn = null;
@@ -27,7 +29,36 @@ public class memberDao {
 		}
 		return cnt;
 	}
+	
+	//* 회원 로그인 유효성 체크 *//
+	public int loginCheck(String req_id, String req_pass) {
+		int rst = 0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from member where mem_user_id=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, req_id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				String DBpass = rs.getString("mem_password");
+				if ((DBpass.trim()).equals((req_pass.trim()))) {
+					rst = 2; // 로그인성공
+				} else {
+					rst = 1; // 비밀번호 틀림
+				}
+			} // 아이디 없음
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return rst;
+	}
 
+	//* 회원 가입 *//			
 	public int insertMember(memberVo vo) {
 		int rst = 0;
 		Connection conn = null;
@@ -54,6 +85,7 @@ public class memberDao {
 		return rst;
 	}
 	
+	//* 회원 리스트 *//
 	public ArrayList<memberVo> memberList(int req, int mem_method) {
 		ArrayList<memberVo> list = new ArrayList<memberVo>();
 		Connection conn = null;
@@ -101,6 +133,7 @@ public class memberDao {
 		return list;
 	}
 	
+	//* 회원 정보 추출 *//
 	public memberVo selectMember(int mem_id) {
 		memberVo vo = new memberVo();
 		Connection conn = null;
@@ -130,5 +163,36 @@ public class memberDao {
 		}
 		return vo;
 	}
+	
+	public memberVo selectMember(String mem_user_id) {
+		memberVo vo = new memberVo();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from member where mem_user_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, mem_user_id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				vo.setMem_id(rs.getInt("mem_id"));
+				vo.setMem_method(rs.getString("mem_method"));
+				vo.setMem_user_id(rs.getString("mem_user_id"));
+				vo.setMem_birth(rs.getString("mem_birth"));
+				vo.setMem_gender(rs.getInt("mem_gender"));
+				vo.setMem_msg_receive(rs.getInt("mem_msg_receive"));
+				vo.setMem_phone(rs.getString("mem_phone"));
+				vo.setMem_grade(rs.getInt("mem_grade")); 
+				vo.setMem_reg(rs.getString("mem_reg"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return vo;
+	}
+	
 
 }

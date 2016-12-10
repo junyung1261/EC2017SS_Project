@@ -3,7 +3,6 @@
 <%@ page import="java.util.*" %>
 <%@ page import="ec.order.*" %>
 <%@ page import="ec.product.*,ec.product_detail.*" %>
-<%@ page import="ec.delivery.*" %>
 <%@ page import="ec.member.*" %>
 <%@ page import="ec.cart.*" %>
 <%@ page import="ec.preorder.*" %>

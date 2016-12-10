@@ -48,4 +48,26 @@ public class etDao {
 		}
 		return total;
 	}
+	
+	public String getRecentTime(int mem_id) {
+		String time = null;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+				conn = ConnUtil.getConnection();
+				String sql = "select et_time from ec_total where et_mem_id = ?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, mem_id);
+					
+			rs = ps.executeQuery();
+			rs.next(); 
+			time = rs.getString("et_time");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(ps, conn);
+		}
+		return time;
+	}
 }

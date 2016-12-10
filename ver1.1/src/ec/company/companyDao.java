@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import ec.connUtil.ConnUtil;
-import ec.product.productVo;
 
 public class companyDao {
 	public int insertCompany(companyVo vo) {
@@ -135,6 +134,5 @@ public class companyDao {
 		}
 		return list;
 	}
-	
 
 }

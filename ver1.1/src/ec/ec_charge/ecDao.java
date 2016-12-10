@@ -3,9 +3,11 @@ package ec.ec_charge;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import ec.connUtil.ConnUtil;
+
 public class ecDao {
 	public int ecChargeInitial(int mem_id, String time) {
 		int rst = 0;
@@ -27,26 +29,34 @@ public class ecDao {
 		return rst;
 	}
 	
-	public int getTotalCharge(int mem_id) {
-		int sum = 0;
+	public ArrayList<ecVo> chargeList() {
+		ArrayList<ecVo> list = new ArrayList<ecVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-				conn = ConnUtil.getConnection();
-				String sql = "select sum(ec_value) from ec_charge where ec_mem_id = ?";
-				ps = conn.prepareStatement(sql);
-				ps.setInt(1, mem_id);
-					
+			conn = ConnUtil.getConnection();
+			String sql = "select * from ec_charge where ec_how !=0 order by ec_time desc";
+			ps = conn.prepareStatement(sql);
+			
 			rs = ps.executeQuery();
-			rs.next(); 
-			sum = rs.getInt("sum(ec_value)");
+			while (rs.next()) {
+				ecVo vo = new ecVo();
+				
+				vo.setEc_id(rs.getInt("ec_id"));
+				vo.setEc_mem_id(rs.getInt("ec_mem_id"));
+				vo.setEc_how(rs.getInt("ec_how"));
+				vo.setEc_value(rs.getInt("ec_value"));
+				vo.setEc_time(rs.getString("ec_time"));
+				
+				list.add(vo);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			ConnUtil.close(ps, conn);
+			ConnUtil.close(rs, ps, conn);
 		}
-		return sum;
+		return list;
 	}
 	
 	public String getRecentChargeTime(int mem_id) {

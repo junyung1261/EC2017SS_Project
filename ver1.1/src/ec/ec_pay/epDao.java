@@ -3,8 +3,7 @@ package ec.ec_pay;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Calendar;
-
+import java.util.ArrayList;
 import ec.connUtil.ConnUtil;
 
 public class epDao {
@@ -28,26 +27,34 @@ public class epDao {
 		return rst;
 	}
 	
-	public int getTotalPay(int mem_id) {
-		int sum = 0;
+	public ArrayList<epVo> payList() {
+		ArrayList<epVo> list = new ArrayList<epVo>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-				conn = ConnUtil.getConnection();
-				String sql = "select sum(ep_value) from ec_pay where ep_mem_id = ?";
-				ps = conn.prepareStatement(sql);
-				ps.setInt(1, mem_id);
-					
+			conn = ConnUtil.getConnection();
+			String sql = "select * from ec_pay where ep_where!=0 order by ep_time desc";
+			ps = conn.prepareStatement(sql);
+			
 			rs = ps.executeQuery();
-			rs.next(); 
-			sum = rs.getInt("sum(ep_value)");
+			while (rs.next()) {
+				epVo vo = new epVo();
+				
+				vo.setEp_id(rs.getInt("ep_id"));
+				vo.setEp_mem_id(rs.getInt("ep_mem_id"));
+				vo.setEp_where(rs.getInt("ep_where"));
+				vo.setEp_value(rs.getInt("ep_value"));
+				vo.setEp_time(rs.getString("ep_time"));
+				
+				list.add(vo);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			ConnUtil.close(ps, conn);
+			ConnUtil.close(rs, ps, conn);
 		}
-		return sum;
+		return list;
 	}
 	
 	public String getRecentPayTime(int mem_id) {
