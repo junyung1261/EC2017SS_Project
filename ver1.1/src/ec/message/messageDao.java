@@ -86,6 +86,8 @@ public class messageDao {
 		}
 		return list;
 	}
+	
+	
 	public messageVo selectReceivedMessage(int msg_id) {
 		messageVo vo = new messageVo();
 		Connection conn = null;
@@ -147,6 +149,58 @@ public class messageDao {
 		} finally {
 			ConnUtil.close(ps, conn);
 		}
-
+	}
+	
+	public int messageCount(String mem_user_id) {
+		int cnt = 0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select count(*) from message_receive where msg_receiver = ? and msg_state = 0";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, mem_user_id);
+			rs = ps.executeQuery();
+			rs.next();
+			cnt = rs.getInt("count(*)");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(ps, conn);
+		}
+		return cnt;
+	}
+	
+	public ArrayList<messageVo> getNewReceivedMessage(String msg_receiver) {
+		ArrayList<messageVo> list = new ArrayList<messageVo>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from message_receive where msg_receiver = ? and msg_state = 0 order by msg_time desc;";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, msg_receiver);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				messageVo vo = new messageVo();
+				
+				vo.setMsg_id(rs.getInt("msg_id"));
+				vo.setMsg_writer(rs.getString("msg_writer"));
+				vo.setMsg_receiver(rs.getString("msg_receiver"));
+				vo.setMsg_title(rs.getString("msg_title"));
+				vo.setMsg_contents(rs.getString("msg_contents"));
+				vo.setMsg_type(rs.getInt("msg_type"));
+				vo.setMsg_state(rs.getInt("msg_state"));
+				vo.setMsg_time(rs.getString("msg_time"));
+				list.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return list;
 	}
 }

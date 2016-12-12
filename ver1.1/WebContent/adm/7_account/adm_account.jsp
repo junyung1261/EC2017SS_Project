@@ -1,26 +1,45 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+
 <%@ page import="java.util.*" %>    
 <%@ page import="ec.date.*" %>
-<%@ page import="ec.order.*" %>
-<%@ page import="ec.convert.*" %>
+<%@ page import="ec.order.*, ec.order_detail.*" %>
+<%@ page import="ec.company.*, ec.couriercompany.*" %>
 <%@ page import="ec.product.*,ec.product_detail.*" %>
 <%@ page import="ec.member.*" %>
-
-<%	dateDao ddao = new dateDao();
+<%@ page import="ec.convert.*" %>
+<%@ page import="ec.fee.*" %>
+<%
+	dateDao ddao = new dateDao();
 	String now = ddao.now();
+
 	
+	oddDao oddao = new oddDao();
+	ArrayList<oddVo> list = new ArrayList<oddVo>();
+
 	orderDao odao = new orderDao();
-	ArrayList<orderVo> list = new ArrayList<orderVo>();
-	list = odao.orderList(0, null);
+	
+	String co_id = null;
+	if (request.getParameter("co_id") != null) {
+		co_id = request.getParameter("co_id");
+		list = oddao.orderDetailList(106, co_id);
+	} else {
+		list = oddao.orderDetailList(6, null);
+	}
+
+	companyDao cdao = new companyDao();
+	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
+	companyList = cdao.companyList();
 	
 	product_detailDao pddao = new product_detailDao();
 	productDao pdao = new productDao();
-	memberDao mdao = new memberDao();
-	convertDao cvdao = new convertDao();
 	
-
-%>    
+	ccDao ccdao = new ccDao();
+	memberDao mdao = new memberDao();
+	feeDao fdao = new feeDao();
+	feeVo fvo = fdao.getFeeInfo();
+	convertDao cvdao = new convertDao();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
   <head>
@@ -55,11 +74,9 @@
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <%@include file="../adm_sidebar.jsp" %>
-          </div>
+          <div class="left_col scroll-view"><%@include file="../adm_sidebar.jsp" %></div>
         </div>
-        <%@include file = "../adm_top.jsp" %>
+		<%@include file = "../adm_top.jsp" %>
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="">
@@ -83,74 +100,61 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>결제 확인<small><%=now%> 현재 </small></h2>
+                    <h2>상품 발송<small><%=now%> 현재</small></h2>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                 
-                  <br>
-                  <div class="row">     
+                    <form class="form-horizontal form-label-left">
+                      <div class="form-group">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <select class="select2_group form-control">
+                            <option>업체선택  </option>
+                            <%for(companyVo cvo : companyList){ %>
+                            <option><%=cvo.getCo_name() %></option>
+                            <%} %>
+                          </select>
+                        </div>
+                      </div> 
+                    </form>   
+                    <br>
                     <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                       <thead>
                         <tr>
                           <th>주문번호</th>
-                          <th>주문자</th>
-                          <th>주문방법</th>
-                          <th>결제금액</th>
+                          <th>정산예정금액</th>
+                          <th>수수료율</th>
                           <th>상품금액</th>
-                          <th>마일리지사용</th>
                           <th>할인금액</th>
                           <th>배송비</th>
+                          <th>구매확정시간</th>
                           <th>상태</th>
-                          <th>주문시간</th>
                         </tr>
                       </thead>
                       <tbody>
-                      <%
-                      int modal_index = 0;
-                      for(orderVo ovo : list){ 
-                  	%>
-                        <tr>
-                          <td><%=ovo.getOr_id() %>  <a href="javascript:window.open('adm_order_pop.jsp?oid=<%=ovo.getOr_id() %>','window팝업','width=1100,height=620,menubar=no,status=no,toolbar=no,scrollbars=auto,location=0');"><i class="fa fa-external-link"></i></a></td>
-                          <td><%=ovo.getMem_name()%></td>
-                          <td><%if(ovo.getOr_account_method()==3){ %>무통장입금<%}
-                          	else{%>오류<%}%>
-                          </td>
-                          <td><%=cvdao.commify(ovo.getOr_account_value())%></td>
-                          <td><%=cvdao.commify(ovo.getOr_total_price())%></td>
-                          <td><%=cvdao.commify(ovo.getOr_total_mileage()) %></td>
-                          <td><%=cvdao.commify(ovo.getOr_total_discount())%></td>
-                          <td><%=cvdao.commify(ovo.getOr_total_delivery_price())%></td>
-                          <td><button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target=".pay_confirm<%=modal_index%>">결제대기중</button>
-                          <div class="modal fade pay_confirm<%=modal_index%>" tabindex="-1" role="dialog" aria-hidden="true">
-		                    <div class="modal-dialog modal-sm">
-		                      <div class="modal-content">
-		                        <div class="modal-header">
-		                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-		                          <h4 class="modal-title" id="myModalLabel2"><%=ovo.getOr_id() %></h4>
-		                          <small><%=now %></small>
-		                        </div>
-		                        <div class="modal-body">
-		                          <p>구매자 [<%=ovo.getMem_name() %>] 의 결제를 확인하였으며</p>
-		                          <p>결제금액 <%=cvdao.commify(ovo.getOr_account_value())%> 에 대한</p>
-		                          <p>주문 [<%=ovo.getOr_id() %>] 을 승인합니다.</p>
-		                        </div>
-		                        <div class="modal-footer">
-		                          <a href="adm_order_status_update.jsp?oid=<%=ovo.getOr_id()%>&os=1">
-		                            <button type="button" class="btn btn-danger">결제확인처리</button>
-		                          </a>
-		                        </div>
-		                      </div>
-		                    </div>
-		                  </div>
-                          </td>
-                          <td><%=ovo.getOr_account_time() %></td>
-                        </tr>
-                        <%   modal_index++;
-                        } %>
-                      </tbody>
-                    </table>
-                 </div>
+                        <%for(oddVo odvo : list){ 
+                       	 	product_detailVo pdvo = pddao.selectByPdd_id(odvo.getPdd_id());
+                            productVo pvo = pdao.getProductInfo(pdvo.getPd_id());
+                            orderVo ovo = odao.getOrderInfo(odvo.getOr_id());
+                            memberVo mvo = mdao.selectMember(ovo.getMem_id());
+                            int account = fdao.account(odvo.getOrd_price(), odvo.getOrd_discount(), odvo.getOrd_delivery_pay(), fvo.getF_rate());
+                        %>
+                            <tr>
+                              <td><%=odvo.getOr_id() %>  <a href="javascript:window.open('../1_order/adm_order_status.jsp?odid=<%=odvo.getOrd_id() %>','주문상세정보','width=800,height=340,menubar=no,status=no,toolbar=no,scrollbars=auto,location=0');"><i class="fa fa-external-link"></i></a></td>
+                              <td><%=cvdao.commify(account) %></td>
+                              <td><%=fvo.getF_rate()*100%>%</td>
+                              <td><%=cvdao.commify(odvo.getOrd_price()) %></td>
+                              <td><%=cvdao.commify(odvo.getOrd_discount()) %></td>
+                              <td><%=cvdao.commify(odvo.getOrd_delivery_pay()) %></td>
+                              <td><%=odvo.getOrd_decision_time() %></td>
+                              <td><%if(odvo.getOrd_status()==600){ %><button type="button" class="btn btn-danger btn-xs">정산대기</button><%}
+                              		else {%><button type="button" class="btn btn-warning btn-xs">에러</button><%}
+                              	  %>
+                              </td>
+                            </tr>
+                            <%} %>
+                     </tbody>
+                   </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -159,11 +163,11 @@
         <!-- /page content -->
 
         <!-- footer content -->
-        <%@ include file="../adm_footer.jsp" %>
+        <%@include file = "../adm_footer.jsp" %>
         <!-- /footer content -->
       </div>
     </div>
-    </div>
+
     <!-- jQuery -->
     <script src="../../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
@@ -192,27 +196,10 @@
     <script src="../../vendors/pdfmake/build/vfs_fonts.js"></script>
     <!-- Select2 -->
     <script src="../../vendors/select2/dist/js/select2.full.min.js"></script>
-    <!-- ECharts -->
-    <script src="../../vendors/echarts/dist/echarts.min.js"></script>
-    <script src="../../vendors/echarts/map/js/world.js"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="../../build/js/custom.min.js"></script>
     
-    <!-- Popup -->
-	<script type="text/javascript">
-	function orderPopup(){
-		);
-	}
-	
-	function companyPopup(){
-		window.open('adm_company_pop.jsp?cid=00000001','window팝업','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
-	
-	function productPopup(){
-		window.open('adm_product_pop.jsp?pid=EA00000001','window팝업','width=400,height=755,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
-	</script>
-	<!-- Popup -->
 	
     <!-- Select2 -->
     <script>
@@ -312,7 +299,6 @@
       });
     </script>
     <!-- /Datatables -->
-   
     
   </body>
 </html>

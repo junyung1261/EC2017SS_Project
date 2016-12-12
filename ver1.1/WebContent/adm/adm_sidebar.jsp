@@ -73,9 +73,9 @@
       </li>
       <li><a><i class="fa fa-credit-card"></i> 정산관리<span class="fa fa-chevron-down"></span></a>
         <ul class="nav child_menu">
-          <li><a href="adm_account.jsp">정산대상처리</a></li>
-          <li><a href="adm_account_finish.jsp">정산완료내역</a></li>
-          <li><a href="adm_account_manual.jsp">정산처리 매뉴얼</a></li>
+          <li><a href="<%=abs %>7_account/adm_account.jsp">정산대상처리</a></li>
+          <li><a href="<%=abs %>7_account/adm_account_finish.jsp">정산완료내역</a></li>
+          <li><a href="<%=abs %>7_account/adm_account_manual.jsp">정산처리 매뉴얼</a></li>
         </ul>
       </li>
       <li><a><i class="fa fa-desktop"></i> 광고관리<span class="fa fa-chevron-down"></span></a>

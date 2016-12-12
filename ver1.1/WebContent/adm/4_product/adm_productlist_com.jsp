@@ -6,9 +6,6 @@
 <%@ page import="ec.company.*" %>
 <%	
 	dateDao ddao = new dateDao();
-	dateVo dvo = new dateVo();
-	dvo = ddao.getToday();
-	
 	
 	String now = ddao.now();
 	productDao pdao = new productDao();

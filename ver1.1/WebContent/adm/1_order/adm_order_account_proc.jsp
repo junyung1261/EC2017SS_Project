@@ -6,7 +6,7 @@
 <%@ page import = "ec.company.*" %>
 <%@ page import = "ec.order_cart.*" %>
 <%@ page import = "ec.convert.*" %>
-<%@ page import = "ec.order.*" %>
+<%@ page import = "ec.order.*, ec.order_detail.*" %>
 <%@ page import = "ec.date.*" %>
 
 
@@ -43,6 +43,8 @@
    dateDao ddao = new dateDao();
    orderDao odao = new orderDao();
    orderVo ovo = new orderVo();
+   oddDao oddao = new oddDao();
+   oddVo odvo = new oddVo();
    ocDao ocdao = new ocDao();
    
    //////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +119,7 @@
    ovo.setOr_account_method(Integer.parseInt(request.getParameter("or_account_method")));
    ovo.setOr_account_value(total);
    
-   long or_id = odao.order_insert(ovo, ddao.now());
+   long or_id = odao.insertOrder(ovo, ddao.now());
    pdd_index=0;
    for(int i=0; i<index_co; i++){
       
@@ -126,16 +128,19 @@
              int pd_id = pddvo.getPd_id();
          productVo pvo = pdao.getProductInfo(pd_id);
 
-         ovo.setPd_id(pd_id);
-         ovo.setCo_id(pvo.getPd_co_id());
-         ovo.setPdd_id(Integer.parseInt(pdd_id[pdd_index]));
-         ovo.setOrd_count(Integer.parseInt(opt_count[pdd_index]));
-         ovo.setOrd_price(pvo.getPd_price()*Integer.parseInt(opt_count[pdd_index]));
-         ovo.setOrd_discount(discount_pdd[pdd_index] );
-         ovo.setOrd_use_mileage(Integer.parseInt(mileage[pdd_index]));
-         ovo.setOrd_delivery_pay(delivery_co[i]);
-         
-         rst *= odao.order_detail_insert(ovo, or_id);
+         odvo.setPd_id(pd_id);
+         odvo.setCo_id(pvo.getPd_co_id());
+         odvo.setPdd_id(Integer.parseInt(pdd_id[pdd_index]));
+         odvo.setOrd_count(Integer.parseInt(opt_count[pdd_index]));
+         odvo.setOrd_price(pvo.getPd_price()*Integer.parseInt(opt_count[pdd_index]));
+         odvo.setOrd_discount(discount_pdd[pdd_index] );
+         odvo.setOrd_use_mileage(Integer.parseInt(mileage[pdd_index]));
+         if(j>0){
+        	 odvo.setOrd_delivery_pay(0);
+         }else{
+         	odvo.setOrd_delivery_pay(delivery_co[i]);
+         }
+         rst *= oddao.insertOrderDetail(odvo, or_id);
          rst *= ocdao.deleteCart(mvo.getMem_id(), Integer.parseInt(pdd_id[pdd_index]));
          pdd_index++;
       }

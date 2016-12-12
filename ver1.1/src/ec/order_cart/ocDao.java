@@ -85,8 +85,8 @@ public class ocDao {
 
 			ps.setInt(1, oc_count);
 			ps.setString(2, oc_reg);
-			ps.setInt(2, oc_mem_id);
-			ps.setInt(3, oc_pdd_id);
+			ps.setInt(3, oc_mem_id);
+			ps.setInt(4, oc_pdd_id);
 
 			rst = ps.executeUpdate();
 		} catch (Exception e) {

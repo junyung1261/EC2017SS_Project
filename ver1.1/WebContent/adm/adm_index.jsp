@@ -1,11 +1,36 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ page import="ec.date.*" %>
+<%@ page import="ec.statistics.*" %>
+<%@ page import="ec.convert.*" %>
+
 <%	dateDao ddao = new dateDao();
-	dateVo dvo = new dateVo();
-	dvo = ddao.getToday();
+	String now = ddao.now();
 	
+	order ord = new order();
+	product_click pc = new product_click();
+	member mem = new member();
+	company co = new company();
+	product pd = new product();
+	convertDao cvdao = new convertDao();
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int today_order = ord.todayOrderCount(ddao.getToday(0));
+	int compare_order = ord.compareOrder(ddao.getToday(0), ddao.getToday(-1));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int total_member = mem.totalMemberCount();
+	int compare_member = mem.compareMember(ddao.getToday(0));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int total_company = co.totalCompanyCount();
+	int compare_company = co.compareCompany(ddao.getToday(0));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int total_product = pd.totalProductCount();
+	int compare_product = pd.compareProduct(ddao.getToday(0));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int total_product_click = pc.countProductClickTotal();
+	int compare_product_click = pc.countProductClickToday(ddao.getToday(0));
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	String loginId = (String)request.getAttribute("loginId");
+
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -53,34 +78,79 @@
           <!-- top tiles -->
           <div class="row tile_count">
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Today Orders</span>
-              <div class="count">2,500</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>4% </i> From yesterday</span>
+              <span class="count_top"><i class="fa fa-shopping-cart"></i> Today Orders</span>
+              <div class="count"><%=cvdao.commify_count(today_order) %></div>
+              <span class="count_bottom">
+                <%if(compare_order==0){ %>
+                0
+                <%}else if(compare_order>0){ %>
+                <i class="green"><i class="fa fa-sort-asc"></i><%=Math.abs(compare_order) %> </i>
+                <%}else{ %>
+                <i class="red"><i class="fa fa-sort-desc"></i><%=Math.abs(compare_order) %> </i>
+                <%} %>
+                 From yesterday
+              </span>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-clock-o"></i> Product View Count</span>
-              <div class="count">12,350</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>
+              <span class="count_top"><i class="fa fa-eye"></i> Product View Count</span>
+              <div class="count"><%=total_product_click %></div>
+              <span class="count_bottom">
+                <%if(compare_product_click==0){ %>
+                0
+                <%}else if(compare_product_click>0){ %>
+                <i class="green"><i class="fa fa-sort-asc"></i><%=Math.abs(compare_product_click) %> </i>
+                <%}else{ %>
+                <i class="red"><i class="fa fa-sort-desc"></i><%=Math.abs(compare_product_click) %> </i>
+                <%} %>
+                 From yesterday
+              </span>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> App Downloads</span>
+              <span class="count_top"><i class="fa fa-download"></i> App Downloads</span>
               <div class="count green">2,500</div>
               <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Join members</span>
-              <div class="count">4,567</div>
-              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From yesterday</span>
+              <span class="count_top"><i class="fa fa-user-plus"></i> Total Members</span>
+              <div class="count"><%=total_member %></div>
+              <span class="count_bottom">
+                <%if(compare_member==0){ %>
+                0
+                <%}else if(compare_member>0){ %>
+                <i class="green"><i class="fa fa-sort-asc"></i><%=Math.abs(compare_member) %> </i>
+                <%}else{ %>
+                <i class="red"><i class="fa fa-sort-desc"></i><%=Math.abs(compare_member) %> </i>
+                <%} %>
+                 From yesterday
+               </span>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Total Companies</span>
-              <div class="count">2,315</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From yesterday</span>
+              <span class="count_top"><i class="fa fa-briefcase"></i> Total Companies</span>
+              <div class="count"><%=total_company %></div>
+              <span class="count_bottom">
+                <%if(compare_company==0){ %>
+                0
+                <%}else if(compare_company>0){ %>
+                <i class="green"><i class="fa fa-sort-asc"></i><%=Math.abs(compare_company) %> </i>
+                <%}else{ %>
+                <i class="red"><i class="fa fa-sort-desc"></i><%=Math.abs(compare_company) %> </i>
+                <%} %>
+                 From yesterday
+               </span>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Products (On Sale)</span>
-              <div class="count">7,325</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From yesterday</span>
+              <span class="count_top"><i class="fa fa-gift"></i> Products (On Sale)</span>
+              <div class="count"><%=total_product %></div>
+              <span class="count_bottom">
+                <%if(compare_product==0){ %>
+                0
+                <%}else if(compare_product>0){ %>
+                <i class="green"><i class="fa fa-sort-asc"></i><%=Math.abs(compare_product) %> </i>
+                <%}else{ %>
+                <i class="red"><i class="fa fa-sort-desc"></i><%=Math.abs(compare_product) %> </i>
+                <%} %>
+                 From yesterday
+               </span>
             </div>
           </div>
           <!-- /top tiles -->

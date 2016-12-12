@@ -7,6 +7,7 @@
 <%@ page import="ec.company.*" %>
 <%@ page import="ec.company_grade.*" %>
 <%@ page import="ec.product_discount.*" %>
+<%@ page import="ec.statistics.*" %>
 
 <%	
 	int pd_id = Integer.parseInt(request.getParameter("pid"));
@@ -32,6 +33,16 @@
 	
 	companyDao cdao = new companyDao();
 	companyVo cvo = cdao.getCompanyInfo(co_id);
+	
+	String today = ddao.getToday(0);
+	
+	product_click pc = new product_click();
+	int exist = pc.countProductClickToday(today, pd_id);
+	if(exist==0){
+		pc.createProductClick(today, pd_id);
+	}else{
+		pc.updateProductClick(today, pd_id);
+	}
 	
 %>    
 <!DOCTYPE html>

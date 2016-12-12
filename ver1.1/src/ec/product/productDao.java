@@ -244,5 +244,27 @@ public class productDao {
 		return vo;
 	}
 	
+	public String getProductName(int pd_id) {
+		String pd_name = null;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = ConnUtil.getConnection();
+			String sql = "select * from product where pd_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, pd_id);
+			rs = ps.executeQuery();
+			rs.next();
+			pd_name = rs.getString("pd_name");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ConnUtil.close(rs, ps, conn);
+		}
+		return pd_name;
+	}
+	
 	
 }

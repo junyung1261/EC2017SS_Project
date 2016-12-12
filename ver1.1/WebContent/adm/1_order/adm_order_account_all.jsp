@@ -18,8 +18,7 @@
    String[] opt_count = request.getParameterValues("opt_count");   //수량
    String[] index_pdd_co = request.getParameterValues("index_pdd_co");    //회사 별 상품 개수
    
-   
-   
+
    int price = 0;      //순수 상품 가격
    int discount = 0;   //상품전체 할인금액
    int delivery = 0;   //상품전체 배송금액

@@ -2,33 +2,42 @@
     pageEncoding="EUC-KR"%>
 <%@ page import="java.util.*" %>    
 <%@ page import="ec.date.*" %>
-<%@ page import="ec.order.*" %>
+<%@ page import="ec.order.*, ec.order_detail.*" %>
 <%@ page import="ec.company.*" %>
-<%@ page import="ec.product.*,ec.product_detail.*" %>
+<%@ page import="ec.couriercompany.*" %>
+<%@ page import="ec.product.*, ec.product_detail.*" %>
 <%@ page import="ec.member.*" %>
+<%@ page import="ec.convert.*" %>
 
 <%	dateDao ddao = new dateDao();
-	dateVo dvo = new dateVo();
-	dvo = ddao.getToday();
+	String now = ddao.now();
 	
-	orderDao odao = new orderDao();
-	ArrayList<orderVo> list = new ArrayList<orderVo>();
+	oddDao oddao = new oddDao();
+	ArrayList<oddVo> list = new ArrayList<oddVo>();
 	
 	String co_id = null;
 	if(request.getParameter("co_id")!=null){
 		co_id = request.getParameter("co_id");
-		list = odao.orderList(101, co_id);
+		list = oddao.orderDetailList(101, co_id);
 	}else{
-		list = odao.orderList(1, null);
+		list = oddao.orderDetailList(1, null);
 	}
+	
+	orderDao odao = new orderDao();
 	
 	companyDao cdao = new companyDao();
 	ArrayList<companyVo> companyList = new ArrayList<companyVo>();
 	companyList = cdao.companyList();
 	
+	ccDao ccdao = new ccDao();
+	ArrayList<ccVo> courierList = new ArrayList<ccVo>();
+	courierList = ccdao.CourierCompanyList();
+	
 	productDao pdao = new productDao();
 	product_detailDao pddao = new product_detailDao();
+	
 	memberDao mdao = new memberDao();
+	convertDao cvdao = new convertDao();
 
 %>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -91,7 +100,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>배송 준비<small><%=dvo.getYear()+"-"+dvo.getMonth()+"-"+dvo.getDate()+" "+dvo.getHour()+":"+dvo.getMinute()+":"+dvo.getSecond()+" 현재" %></small></h2>
+                    <h2>배송 준비<small><%=now %> 현재</small></h2>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
@@ -106,94 +115,111 @@
                           </select>
                         </div>
                       </div> 
-                    </form>   
-                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                      <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">요약</a>
-                        </li>
-                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">상세</a>
-                        </li>
-                      </ul>
-                      <div id="myTabContent" class="tab-content">
-                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                          <div class="col-md-8 col-sm-8 col-xs-12">
-                            <div class="x_panel">
-                              <div class="x_title">
-                              <h2>배송준비시간 분석</h2>
-                              <div class="clearfix"></div>
-                              </div>
-                              <div class="x_content">
-                                <div id="mainb" style="height:350px;"></div>
-                              </div>
-                            </div>
-                          </div>
+                    </form><br> 
+                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                      <thead>
+                        <tr>
+                          <th>상품명</th>
+                          <th>색상</th>
+                          <th>사이즈</th>
+                          <th>수량</th>
+                          <th>상품금액</th>
+                          <th>할인금액</th>
+                          <th>배송비</th>
+                          <th>주문자</th>
+                          <th>상태</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                 <%	
+                 	  int modal_index = 0;
+                 	  for(oddVo oddvo : list){ 
+                      product_detailVo pdvo = pddao.selectByPdd_id(oddvo.getPdd_id());
+                      String pd_name = pdao.getProductName(oddvo.getPd_id());
+                      long or_id = oddvo.getOr_id();
+                      orderVo ovo = odao.getOrderInfo(or_id);
+                      memberVo mvo = mdao.selectMember(ovo.getMem_id());
+                 %>	
+                        <tr>
+                          <td><%=pd_name %>&nbsp;&nbsp;<a href=""><i class="fa fa-external-link"></i></a></td>
+                          <td><%=pdvo.getCol_id() %></td>
+                          <td><%=pdvo.getSz_id() %></td>
+                          <td><%=oddvo.getOrd_count() %></td>
+                          <td><%=cvdao.commify(oddvo.getOrd_price())%></td>
+                          <td><%=cvdao.commify(oddvo.getOrd_discount())%></td>
+                          <td><%=cvdao.commify(oddvo.getOrd_delivery_pay())%></td>
+                          <td><%=mvo.getMem_user_id()%>&nbsp;&nbsp;<i class="fa fa-external-link" data-toggle="modal" data-target=".check_order<%=modal_index%>"></i>
                           
-                          <div class="col-md-4 col-sm-4 col-xs-12">
-                            <div class="x_panel">
-                              <div class="x_title">
-                                <h2>배송준비율</h2>
-                                <div class="clearfix"></div>
-                              </div>
-                              <div class="x_content">
-                                <div id="echart_pie1" style="height:350px;"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                          <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                            <thead>
-                              <tr>
-                                <th>주문번호</th>
-                                <th>업체 ID</th>
-                                <th>상품번호</th>
-                                <th>색상</th>
-                                <th>사이즈</th>
-                                <th>수량</th>
-                                <th>결제방법</th>
-                                <th>결제금액</th>
-                                <th>마일리지 사용</th>
-                                <th>수령인명</th>
-                                <th>수령인 연락처</th>
-                                <th>수령인 주소</th>
-                                <th>상태</th>
-                                <th>결제시간</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                            <%for(orderVo ovo : list){ 
-                            product_detailVo pdvo = pddao.selectByPdd_id(ovo.getPdd_id());
-                            productVo pvo = pdao.getProductInfo(pdvo.getPd_id());
-                            %>
-                              <tr>
-                                <td><%=ovo.getOr_id() %>  <a href="javascript:orderPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=pvo.getPd_co_id() %>&nbsp;&nbsp;<a href="javascript:companyPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=ovo.getPd_id() %>&nbsp;&nbsp;<a href="javascript:productPopup();"><i class="fa fa-external-link"></i></a></td>
-                                <td><%=pdvo.getCol_id() %></td>
-                                <td><%=pdvo.getSz_id() %></td>
-                                <td><%=ovo.getOrd_count() %></td>
-                                <td><%if(ovo.getOr_account_method()==0){ %>EC결제<%}
-                                	else if(ovo.getOr_account_method()==1){%>신용카드<%}
-                                	else if(ovo.getOr_account_method()==2){%>계좌이체<%}
-                                	else if(ovo.getOr_account_method()==3){%>무통장입금<%}
-                                	else{%>오류 <%} %>
-                                </td>
-                                <td><%=ovo.getOrd_price() - ovo.getOrd_discount() - ovo.getOrd_use_mileage()  %></td>
-                                
-                                <td><button type="button" class="btn btn-success btn-xs"><%=ovo.getOrd_use_mileage() %></button></td>
-                                <td><%=ovo.getMem_name() %></td>
-                                <td><%=ovo.getMem_phone() %></td>
-                                <td><%=ovo.getMem_address() %></td>
-                                <td><button type="button" class="btn btn-warning btn-xs" onClick="javascript:window.open('adm_order_pre_proc.jsp?oid=<%=ovo.getOr_id()%>&odm=0&dc=0','window팝업','width=400,height=420,menubar=no,status=no,toolbar=no,scrollbars=no,location=0')">상품준비중</button>
-                                </td>
-                                <td><%=ovo.getOr_account_time() %></td>
-                              </tr>
-                              <%} %>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
+                          <div class="modal fade check_order<%=modal_index%>" tabindex="-1" role="dialog" aria-hidden="true">
+		                    <div class="modal-dialog modal-md">
+		                      <div class="modal-content">
+		                        <div class="modal-header">
+		                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+		                          <h4 class="modal-title" id="myModalLabel2">주문자 배송지 정보</h4>
+		                          <small>주문시간 : <%=ovo.getOr_account_time() %></small>
+		                        </div>
+		                        <div class="modal-body">
+		                          <p>수령인 : <%=ovo.getMem_name() %></p>
+		                          <p>우편번호 : <%=ovo.getMem_zipcode() %></p>
+		                          <p>주소 : <%=ovo.getMem_address() %></p>
+		                          <p>연락처 : <%=ovo.getMem_phone() %></p>
+		                        </div>
+		                        <div class="modal-footer">
+		                          <a href="adm_order_status_update.jsp?oid=<%=ovo.getOr_id()%>&os=1">
+		                            <button type="button" class="btn btn-danger">결제확인처리</button>
+		                          </a>
+		                        </div>
+		                      </div>
+		                    </div>
+		                  </div>
+       
+                          </td>
+                          <td><button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".pre_confirm<%=modal_index%>">상품준비중</button>  
+                          <form action="adm_order_status_update.jsp" method="post">
+                          <div class="modal fade pre_confirm<%=modal_index%>" role="dialog" aria-hidden="true">
+		                    <div class="modal-dialog modal-md">
+		                      <div class="modal-content">
+		                        <div class="modal-header">
+		                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+		                          <h4 class="modal-title" id="myModalLabel2">배송 정보 입력</h4>
+		                          <small>현재시간 : <%=now %></small>
+		                        </div>
+		                        <div class="modal-body">
+		                          <div class="row">
+				                      <div class="form-group col-md-12 col-sm-12 col-xs-12">
+				                        <div class="col-md-6 col-sm-6 col-xs-6">
+				                                                             배송 업체	 : 
+				                          <select name="odc" class="select2_courier form-control"  width="100%" tabindex="-1" >
+					                        <option></option>
+					                        <%for(ccVo ccvo : courierList){ %>
+				                            <option value="<%=ccvo.getCc_id()%>"><%=ccvo.getCc_name() %></option>
+				                            <%} %>
+				                          </select>
+				                        </div>
+				                        <div class="col-md-6 col-sm-6 col-xs-6">
+				                                                             송장 번호	 : 
+				                          <input type="text" name="odn" class="form-control" value="">
+				                        </div>
+				                      </div>
+				                  </div>
+		                        </div>
+		                        <div class="modal-footer">
+		                          <input type="hidden" name="oid" value="<%=ovo.getOr_id()%>">
+		                          <input type="hidden" name="odid" value="<%=oddvo.getOrd_id()%>">
+		                          <input type="hidden" name="os" value="2">
+		                          <input type="submit" class="btn btn-danger" value="상품발송처리">
+		                        </div>
+		                      </div>
+		                    </div>
+		                  </div>
+                          </form>
+                          </td>
+                        </tr>
+                  <%	modal_index++;
+                  
+                 	  } 	%>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -236,33 +262,11 @@
     <script src="../../vendors/pdfmake/build/vfs_fonts.js"></script>
     <!-- Select2 -->
     <script src="../../vendors/select2/dist/js/select2.full.min.js"></script>
-    <!-- ECharts -->
-    <script src="../../vendors/echarts/dist/echarts.min.js"></script>
-    <script src="../../vendors/echarts/map/js/world.js"></script>
+    
     <!-- Custom Theme Scripts -->
     <script src="../../build/js/custom.min.js"></script>
     <!-- Popup -->
-	<script type="text/javascript">
-	function orderPopup(){
-		window.open('adm_order_pop.jsp?oid=00000001','window팝업','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
 	
-	function companyPopup(){
-		window.open('adm_company_pop.jsp?cid=00000001','window팝업','width=800,height=530,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
-	
-	function productPopup(){
-		window.open('adm_product_pop.jsp?pid=EA00000001','window팝업','width=400,height=755,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
-	
-	function orderPrePopup(){ 
-		
-		
-		
-		window.open('adm_order_pre_proc.jsp? oid=EA00000001&odm=0&dc=0','window팝업','width=400,height=420,menubar=no,status=no,toolbar=no,scrollbars=no,location=0');
-	}
-	</script>
-	<!-- Popup -->
     <!-- Select2 -->
     <script>
       $(document).ready(function() {
@@ -270,6 +274,10 @@
           placeholder: "항목을 선택하세요.",
           allowClear: true
         });
+        $(".select2_courier").select2({
+            placeholder: "택배사",
+            allowClear: true
+          });
         $(".select2_group").select2({});
         
       });
@@ -357,344 +365,7 @@
       });
     </script>
     <!-- /Datatables -->
-    
-    <!--  chart -->
-    <script>
-      var theme = {
-          color: [
-              '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
-              '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
-          ],
 
-          title: {
-              itemGap: 8,
-              textStyle: {
-                  fontWeight: 'normal',
-                  color: '#408829'
-              }
-          },
-
-          dataRange: {
-              color: ['#1f610a', '#97b58d']
-          },
-
-          toolbox: {
-              color: ['#408829', '#408829', '#408829', '#408829']
-          },
-
-          tooltip: {
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              axisPointer: {
-                  type: 'line',
-                  lineStyle: {
-                      color: '#408829',
-                      type: 'dashed'
-                  },
-                  crossStyle: {
-                      color: '#408829'
-                  },
-                  shadowStyle: {
-                      color: 'rgba(200,200,200,0.3)'
-                  }
-              }
-          },
-
-          dataZoom: {
-              dataBackgroundColor: '#eee',
-              fillerColor: 'rgba(64,136,41,0.2)',
-              handleColor: '#408829'
-          },
-          grid: {
-              borderWidth: 0
-          },
-
-          categoryAxis: {
-              axisLine: {
-                  lineStyle: {
-                      color: '#408829'
-                  }
-              },
-              splitLine: {
-                  lineStyle: {
-                      color: ['#eee']
-                  }
-              }
-          },
-
-          valueAxis: {
-              axisLine: {
-                  lineStyle: {
-                      color: '#408829'
-                  }
-              },
-              splitArea: {
-                  show: true,
-                  areaStyle: {
-                      color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
-                  }
-              },
-              splitLine: {
-                  lineStyle: {
-                      color: ['#eee']
-                  }
-              }
-          },
-          timeline: {
-              lineStyle: {
-                  color: '#408829'
-              },
-              controlStyle: {
-                  normal: {color: '#408829'},
-                  emphasis: {color: '#408829'}
-              }
-          },
-
-          k: {
-              itemStyle: {
-                  normal: {
-                      color: '#68a54a',
-                      color0: '#a9cba2',
-                      lineStyle: {
-                          width: 1,
-                          color: '#408829',
-                          color0: '#86b379'
-                      }
-                  }
-              }
-          },
-          map: {
-              itemStyle: {
-                  normal: {
-                      areaStyle: {
-                          color: '#ddd'
-                      },
-                      label: {
-                          textStyle: {
-                              color: '#c12e34'
-                          }
-                      }
-                  },
-                  emphasis: {
-                      areaStyle: {
-                          color: '#99d2dd'
-                      },
-                      label: {
-                          textStyle: {
-                              color: '#c12e34'
-                          }
-                      }
-                  }
-              }
-          },
-          force: {
-              itemStyle: {
-                  normal: {
-                      linkStyle: {
-                          strokeColor: '#408829'
-                      }
-                  }
-              }
-          },
-          chord: {
-              padding: 4,
-              itemStyle: {
-                  normal: {
-                      lineStyle: {
-                          width: 1,
-                          color: 'rgba(128, 128, 128, 0.5)'
-                      },
-                      chordStyle: {
-                          lineStyle: {
-                              width: 1,
-                              color: 'rgba(128, 128, 128, 0.5)'
-                          }
-                      }
-                  },
-                  emphasis: {
-                      lineStyle: {
-                          width: 1,
-                          color: 'rgba(128, 128, 128, 0.5)'
-                      },
-                      chordStyle: {
-                          lineStyle: {
-                              width: 1,
-                              color: 'rgba(128, 128, 128, 0.5)'
-                          }
-                      }
-                  }
-              }
-          },
-          gauge: {
-              startAngle: 225,
-              endAngle: -45,
-              axisLine: {
-                  show: true,
-                  lineStyle: {
-                      color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
-                      width: 8
-                  }
-              },
-              axisTick: {
-                  splitNumber: 10,
-                  length: 12,
-                  lineStyle: {
-                      color: 'auto'
-                  }
-              },
-              axisLabel: {
-                  textStyle: {
-                      color: 'auto'
-                  }
-              },
-              splitLine: {
-                  length: 18,
-                  lineStyle: {
-                      color: 'auto'
-                  }
-              },
-              pointer: {
-                  length: '90%',
-                  color: 'auto'
-              },
-              title: {
-                  textStyle: {
-                      color: '#333'
-                  }
-              },
-              detail: {
-                  textStyle: {
-                      color: 'auto'
-                  }
-              }
-          },
-          textStyle: {
-              fontFamily: 'Arial, Verdana, sans-serif'
-          }
-      };
-      
-      
-      
-      var echartBar = echarts.init(document.getElementById('mainb'), theme);
-
-      echartBar.setOption({
-        
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['Android', 'iOS']
-        },
-        toolbox: {
-          show: false
-        },
-        calculable: false,
-        xAxis: [{
-          type: 'category',
-          data: ['16-10-28', '16-10-29', '16-10-30', '16-10-31', '16-11-01', '16-11-02', '16-11-03']
-        }],
-        yAxis: [{
-          type: 'value'
-        }],
-        series: [{
-          name: 'Android',
-          type: 'bar',
-          data: [4, 3, 2, 4, 3, 3, 3],
-          markPoint: {
-            data: [{
-              type: 'max',
-              name: 'MAX'
-            }, {
-              type: 'min',
-              name: 'MIN'
-            }]
-          },
-          markLine: {
-            data: [{
-              type: 'average',
-              name: 'AVG'
-            }]
-          }
-        }, {
-          name: 'iOS',
-          type: 'bar',
-          data: [2, 2, 4, 2, 3, 2, 5],
-          markPoint: {
-              data: [{
-                type: 'max',
-                name: 'MAX'
-              }, {
-                type: 'min',
-                name: 'MIN'
-              }]
-            },
-            markLine: {
-              data: [{
-                type: 'average',
-                name: 'AVG'
-              }]
-            },
-          markLine: {
-            data: [{
-              type: 'average',
-              name: 'AVG'
-            }]
-          }
-        }]
-      });
-      
-var echartPieCollapse = echarts.init(document.getElementById('echart_pie1'), theme);
-      
-      echartPieCollapse.setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        legend: {
-          x: 'center',
-          y: 'bottom',
-          data: ['배송처리', '상품품절', '기타사유']
-        },
-        toolbox: {
-          show: true,
-          feature: {
-            magicType: {
-              show: true,
-              type: ['pie', 'funnel']
-            },
-            restore: {
-              show: true,
-              title: "Restore"
-            },
-            saveAsImage: {
-              show: true,
-              title: "Save Image"
-            }
-          }
-        },
-        calculable: true,
-        series: [{
-          name: 'Area Mode',
-          type: 'pie',
-          radius: [25, 90],
-          center: ['50%', 170],
-          roseType: 'area',
-          x: '50%',
-          max: 40,
-          sort: 'ascending',
-          data: [{
-            value: 100,
-            name: '배송처리'
-          }, {
-            value: 5,
-            name: '상품품절'
-          }, {
-            value: 15,
-            name: '기타사유'
-          }]
-        }]
-      });
-    </script>
-    <!-- /chart end -->
     
   </body>
 </html>
